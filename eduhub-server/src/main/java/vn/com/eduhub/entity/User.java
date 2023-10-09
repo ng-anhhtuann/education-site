@@ -1,5 +1,6 @@
 package vn.com.eduhub.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import lombok.*;
@@ -14,56 +15,57 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-@Document(collection = "USER")
+@Document(collection = "users")
 public class User {
 
     @Id
-    @SerializedName("ID")
+    @SerializedName("id")
     @Expose
     private String id;
 
-    @SerializedName("USERNAME")
+    @SerializedName("userName")
     @Expose
-    @Field("USERNAME")
+    @Field("userName")
     private String userName;
 
-    @SerializedName("PASSWORD")
+    @JsonIgnore
+    @SerializedName("password")
     @Expose
-    @Field("PASSWORD")
+    @Field("password")
     private String password;
 
-    @SerializedName("EMAIL")
+    @SerializedName("email")
     @Expose
-    @Field("EMAIL")
+    @Field("email")
     private String email;
 
-    @SerializedName("BALANCE")
+    @SerializedName("balance")
     @Expose
-    @Field("BALANCE")
+    @Field("balance")
     private Long balance;
 
-    @SerializedName("AVATAR")
+    @SerializedName("avatar")
     @Expose
-    @Field("AVATAR")
+    @Field("avatar")
     private String avatar;
 
-    @SerializedName("ROLE")
+    @SerializedName("role")
     @Expose
-    @Field("ROLE")
+    @Field("role")
     private String role;
 
-    @SerializedName("UPDATED_DATE")
+    @SerializedName("updatedDate")
     @Expose
-    @Field("UPDATED_DATE")
+    @Field("updatedDate")
     private Date updatedDate;
 
-    @SerializedName("CREATED_DATE")
+    @SerializedName("createdDate")
     @Expose
-    @Field("CREATED_DATE")
+    @Field("createdDate")
     private Date createdDate;
 
-    @SerializedName("IS_VERIFIED")
+    @SerializedName("isVerified")
     @Expose
-    @Field("IS_VERIFIED")
+    @Field("isVerified")
     private Boolean isVerified;
 }
