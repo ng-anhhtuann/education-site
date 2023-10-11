@@ -9,23 +9,23 @@ import org.springframework.web.bind.annotation.RestController;
 import vn.com.eduhub.constant.ApiConstant;
 import vn.com.eduhub.constant.UrlConst;
 import vn.com.eduhub.controller.req.CommonSearchReq;
-import vn.com.eduhub.controller.req.UserAddReq;
-import vn.com.eduhub.controller.rest.IUserRest;
+import vn.com.eduhub.controller.req.CourseAddReq;
+import vn.com.eduhub.controller.rest.ICourseRest;
 import vn.com.eduhub.dto.res.BaseRes;
-import vn.com.eduhub.service.IUserService;
+import vn.com.eduhub.service.ICourseService;
 
 @RestController
 @CrossOrigin(origins = "*", allowedHeaders = "*")
-@RequestMapping(UrlConst.USER)
+@RequestMapping(UrlConst.COURSE)
 @Component
-@Tag(name = ApiConstant.SWAGGER_USER)
-public class UserRestImpl implements IUserRest {
+@Tag(name = ApiConstant.SWAGGER_COURSE)
+public class CourseRestImpl implements ICourseRest {
 
     @Autowired
-    IUserService userService;
+    ICourseService courseService;
 
     @Override
-    public BaseRes add(UserAddReq userAddReq) {
+    public BaseRes add(CourseAddReq courseAddReq) {
         return new BaseRes();
     }
 
