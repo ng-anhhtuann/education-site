@@ -9,50 +9,61 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.util.Date;
+import java.util.List;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-@Document(collection = "users")
-public class User {
+@Document(collection = "courses")
+public class Course {
 
     @Id
     @SerializedName("id")
     @Expose
     private String id;
 
-    @SerializedName("userName")
+    @SerializedName("price")
     @Expose
-    @Field("userName")
-    private String userName;
+    @Field("price")
+    private Long price;
 
     @JsonIgnore
-    @SerializedName("password")
+    @SerializedName("title")
     @Expose
-    @Field("password")
-    private String password;
+    @Field("title")
+    private String title;
 
-    @SerializedName("email")
+    @SerializedName("tagList")
     @Expose
-    @Field("email")
-    private String email;
+    @Field("tag_list")
+    private List<String> tagList;
 
-    @SerializedName("balance")
+    @SerializedName("studentList")
     @Expose
-    @Field("balance")
-    private Long balance;
+    @Field("student_list")
+    private List<String> studentList;
 
-    @SerializedName("avatarUrl")
+    @SerializedName("studentCount")
     @Expose
-    @Field("avatar_url")
-    private String avatarUrl;
+    @Field("student_count")
+    private Long studentCount;
 
-    @SerializedName("role")
+    @SerializedName("teacherId")
     @Expose
-    @Field("role")
-    private String role;
+    @Field("teacher_id")
+    private String teacherId;
+
+    @SerializedName("description")
+    @Expose
+    @Field("description")
+    private String description;
+
+    @SerializedName("thumbnailUrl")
+    @Expose
+    @Field("thumbnail_url")
+    private String thumbnailUrl;
 
     @SerializedName("updatedDate")
     @Expose
@@ -63,9 +74,4 @@ public class User {
     @Expose
     @Field("created_date")
     private Date createdDate;
-
-    @SerializedName("isVerified")
-    @Expose
-    @Field("is_verified")
-    private Boolean isVerified;
 }
