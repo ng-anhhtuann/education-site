@@ -1,6 +1,8 @@
 package vn.com.eduhub.controller.rest.impl;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -25,22 +27,22 @@ public class CourseRestImpl implements ICourseRest {
     ICourseService courseService;
 
     @Override
-    public BaseRes add(CourseAddReq courseAddReq) {
+    public BaseRes add(CourseAddReq courseAddReq, HttpServletRequest req, HttpServletResponse res) {
         return new BaseRes();
     }
 
     @Override
-    public BaseRes list(CommonSearchReq searchDto) {
+    public BaseRes list(CommonSearchReq searchDto, HttpServletRequest req, HttpServletResponse res) {
         return new BaseRes();
     }
 
     @Override
-    public BaseRes detail(String id) {
+    public BaseRes detail(String id, HttpServletRequest req, HttpServletResponse res) {
         return new BaseRes();
     }
 
     @Override
-    public BaseRes delete(String id) {
+    public BaseRes delete(String id, HttpServletRequest req, HttpServletResponse res) {
         return new BaseRes();
     }
 }
