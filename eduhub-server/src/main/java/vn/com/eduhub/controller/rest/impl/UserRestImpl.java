@@ -1,5 +1,6 @@
 package vn.com.eduhub.controller.rest.impl;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -15,6 +16,7 @@ import vn.com.eduhub.controller.req.CommonSearchReq;
 import vn.com.eduhub.controller.req.UserAddReq;
 import vn.com.eduhub.controller.rest.AbstractRest;
 import vn.com.eduhub.controller.rest.IUserRest;
+import vn.com.eduhub.controller.validation.UserValidator;
 import vn.com.eduhub.dto.auth.SignUpDto;
 import vn.com.eduhub.dto.res.BaseRes;
 import vn.com.eduhub.entity.User;
@@ -32,13 +34,16 @@ public class UserRestImpl extends AbstractRest implements IUserRest {
     @Autowired
     IUserService userService;
 
+    @Autowired
+    UserValidator validator;
+
     @Override
     public BaseRes add(UserAddReq request, HttpServletRequest req, HttpServletResponse res) {
         long start = System.currentTimeMillis();
         try {
+            validator.validateEdit(request);
             SignUpDto dto = mapper.map(request, SignUpDto.class);
-            User user = userService.edit(dto);
-            return this.successHandler.handlerSuccess(user, start);
+            return this.successHandler.handlerSuccess(this.userService.edit(dto), start);
         } catch (Exception ex) {
             ex.printStackTrace();
             return this.errorHandler.handlerException(ex, req, res, start);
@@ -47,16 +52,35 @@ public class UserRestImpl extends AbstractRest implements IUserRest {
 
     @Override
     public BaseRes list(CommonSearchReq searchDto, HttpServletRequest req, HttpServletResponse res) {
-        return new BaseRes();
+        long start = System.currentTimeMillis();
+        try {
+            return this.successHandler.handlerSuccess(this.userService.getList(searchDto), start);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return this.errorHandler.handlerException(ex, req, res, start);
+        }
     }
 
     @Override
     public BaseRes detail(String id, HttpServletRequest req, HttpServletResponse res) {
-        return new BaseRes();
+        long start = System.currentTimeMillis();
+        try {
+            return this.successHandler.handlerSuccess(this.userService.detail(id), start);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return this.errorHandler.handlerException(ex, req, res, start);
+        }
     }
 
     @Override
+    @JsonIgnore
     public BaseRes delete(String id, HttpServletRequest req, HttpServletResponse res) {
-        return new BaseRes();
+        long start = System.currentTimeMillis();
+        try {
+            return this.successHandler.handlerSuccess(null, start);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return this.errorHandler.handlerException(ex, req, res, start);
+        }
     }
 }

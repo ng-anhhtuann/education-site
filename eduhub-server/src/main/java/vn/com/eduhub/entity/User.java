@@ -25,7 +25,7 @@ public class User {
 
     @SerializedName("userName")
     @Expose
-    @Field("userName")
+    @Field("user_name")
     private String userName;
 
     @JsonIgnore

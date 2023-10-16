@@ -15,6 +15,6 @@ public class ErrorHandlerImpl implements ErrorHandler {
     @Override
     public BaseRes handlerException(Exception ex, HttpServletRequest req, HttpServletResponse res, long start) {
         long took = start != 0 ? (System.currentTimeMillis() - start) : start;
-        return new BaseRes(Long.valueOf(res.getStatus()), HttpStatus.INTERNAL_SERVER_ERROR.name(), "Something's wrong!", new Date(), took, ex.getMessage(), null);
+        return new BaseRes((long) HttpStatus.BAD_REQUEST.value(), HttpStatus.BAD_REQUEST.name(), "Something's wrong!", new Date(), took, ex.getMessage(), null);
     }
 }

@@ -2,6 +2,7 @@ package vn.com.eduhub.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import vn.com.eduhub.controller.req.CommonSearchReq;
 import vn.com.eduhub.dto.master.CourseDto;
 import vn.com.eduhub.dto.res.ObjectDataRes;
 import vn.com.eduhub.entity.Course;
@@ -20,7 +21,7 @@ public class CourseServiceImpl implements ICourseService {
     }
 
     @Override
-    public ObjectDataRes<Course> getList() {
+    public ObjectDataRes<Course> getList(CommonSearchReq req) {
         return null;
     }
 
