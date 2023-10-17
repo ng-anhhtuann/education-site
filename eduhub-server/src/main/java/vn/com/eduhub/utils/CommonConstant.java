@@ -6,4 +6,5 @@ public class CommonConstant {
     public static final String DUPLICATE_EMAIL = "Email existed in system";
     public static final String DUPLICATE_USERNAME = "Username existed in system";
     public static final String VALID_EMAIL = "Invalid mail pattern";
+    public static final String AUTH_FAIL = "Wrong account or password!";
 }

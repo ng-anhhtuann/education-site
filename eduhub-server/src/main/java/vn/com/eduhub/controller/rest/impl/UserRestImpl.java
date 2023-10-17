@@ -17,9 +17,9 @@ import vn.com.eduhub.controller.req.UserAddReq;
 import vn.com.eduhub.controller.rest.AbstractRest;
 import vn.com.eduhub.controller.rest.IUserRest;
 import vn.com.eduhub.controller.validation.UserValidator;
+import vn.com.eduhub.dto.auth.LogInDto;
 import vn.com.eduhub.dto.auth.SignUpDto;
 import vn.com.eduhub.dto.res.BaseRes;
-import vn.com.eduhub.entity.User;
 import vn.com.eduhub.service.IUserService;
 
 @RestController
@@ -65,6 +65,7 @@ public class UserRestImpl extends AbstractRest implements IUserRest {
     public BaseRes detail(String id, HttpServletRequest req, HttpServletResponse res) {
         long start = System.currentTimeMillis();
         try {
+            validator.validateId(id);
             return this.successHandler.handlerSuccess(this.userService.detail(id), start);
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -78,6 +79,17 @@ public class UserRestImpl extends AbstractRest implements IUserRest {
         long start = System.currentTimeMillis();
         try {
             return this.successHandler.handlerSuccess(null, start);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return this.errorHandler.handlerException(ex, req, res, start);
+        }
+    }
+
+    @Override
+    public BaseRes login(LogInDto dto, HttpServletRequest req, HttpServletResponse res) {
+        long start = System.currentTimeMillis();
+        try {
+            return this.successHandler.handlerSuccess(this.userService.login(dto), start);
         } catch (Exception ex) {
             ex.printStackTrace();
             return this.errorHandler.handlerException(ex, req, res, start);

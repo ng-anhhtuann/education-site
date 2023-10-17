@@ -51,4 +51,12 @@ public class UserValidator {
 
         }
     }
+
+    /**
+     * Validate data not found
+     */
+    public void validateId(String id) throws Exception {
+        if (!userRepository.existsById(id))
+            throw new Exception(CommonConstant.DATA_NOT_FOUND);
+    }
 }

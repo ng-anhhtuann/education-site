@@ -6,9 +6,10 @@ package vn.com.eduhub.constant;
 public class ApiConstant {
 
     public static final String GET_SEARCH_LIST = "Get list by search condition";
-    public static final String UPDATE_OR_CREATE = "Save new or Update";
+    public static final String UPDATE_OR_CREATE = "Sign up new or Update";
     public static final String GET_DETAIL = "Get detail by id";
     public static final String DELETE = "Delete by id";
+    public static final String LOGIN = "Sign in";
 
     public static final String SUCCESS = "Success";
     public static final String UNAUTHORIZED = "Unauthorized";

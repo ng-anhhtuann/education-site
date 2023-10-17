@@ -8,6 +8,7 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 import vn.com.eduhub.controller.req.CommonSearchReq;
+import vn.com.eduhub.dto.auth.LogInDto;
 import vn.com.eduhub.dto.auth.SignUpDto;
 import vn.com.eduhub.dto.res.ObjectDataRes;
 import vn.com.eduhub.entity.User;
@@ -20,15 +21,12 @@ import java.util.*;
 @Service
 public class UserServiceImpl implements IUserService {
 
+    private static final Query query = new Query();
+    private final ModelMapper mapper = new ModelMapper();
     @Autowired
     MongoTemplate mongoTemplate;
-
     @Autowired
     UserRepository userRepository;
-
-    private static final Query query = new Query();
-
-    private final ModelMapper mapper = new ModelMapper();
 
     /**
      * @flow Nếu có id thì là update
@@ -37,7 +35,7 @@ public class UserServiceImpl implements IUserService {
      */
     @Override
     public User edit(SignUpDto dto) {
-        if (dto.getId() == null || dto.getId().isEmpty() || dto.getId().isBlank()){
+        if (dto.getId() == null || dto.getId().isEmpty() || dto.getId().isBlank()) {
             User user = mapper.map(dto, User.class);
             user.setId(String.valueOf(UUID.randomUUID()).concat(String.valueOf(System.currentTimeMillis())));
             user.setBalance(999999999L);
@@ -47,7 +45,7 @@ public class UserServiceImpl implements IUserService {
             return user;
         } else {
             Optional<User> userOrNull = userRepository.findById(dto.getId());
-            if (userOrNull.isPresent()){
+            if (userOrNull.isPresent()) {
                 User user = userOrNull.get();
                 user.setPassword(dto.getPassword());
                 user.setAvatarUrl(dto.getAvatarUrl());
@@ -116,5 +114,20 @@ public class UserServiceImpl implements IUserService {
     @Override
     public boolean delete(String id) {
         return true;
+    }
+
+    @Override
+    public User login(LogInDto dto) throws Exception {
+        Query query = new Query();
+        query.addCriteria(
+            new Criteria().orOperator(
+                Criteria.where("user_name").is(dto.getAccount()),
+                Criteria.where("email").is(dto.getAccount())
+            )
+                .and("password").is(dto.getPassword())
+        );
+        User user = mongoTemplate.findOne(query, User.class);
+        if (user == null) throw new Exception(CommonConstant.AUTH_FAIL);
+        return user;
     }
 }
