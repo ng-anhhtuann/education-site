@@ -21,10 +21,11 @@ import java.util.*;
 @Service
 public class UserServiceImpl implements IUserService {
 
-    private static final Query query = new Query();
     private final ModelMapper mapper = new ModelMapper();
+
     @Autowired
     MongoTemplate mongoTemplate;
+
     @Autowired
     UserRepository userRepository;
 
@@ -57,7 +58,7 @@ public class UserServiceImpl implements IUserService {
     }
 
     /**
-     * @flow Search field được cho phép ở user là userName, email, role
+     * @flow Search field được cho phép ở user là user_name, email, role
      * Datatype của các field search đều là String
      * Dynamic search lúc này kiểm tra chuỗi có chứa chuỗi con hay không.
      * Nếu page = 0 thì là lấy hết record theo trạng thái search
@@ -69,46 +70,51 @@ public class UserServiceImpl implements IUserService {
     public ObjectDataRes<User> getList(CommonSearchReq req) {
         List<User> listData = new ArrayList<>();
 
+        Query query = new Query();
         query.with(Sort.by(Sort.Order.desc("created_date")));
 
         if (req.getPage() != null && req.getPage() > 0 && req.getPageSize() != null && req.getPageSize() >= 0) {
             query.skip((long) (req.getPage() - 1) * req.getPageSize());
             query.limit(req.getPageSize());
         }
+
         if ((req.getPage() != null && req.getPage() == 0) || (req.getPageSize() == null && req.getPage() == null)) {
             query.limit(0);
         }
 
-        if (req.getSearchType().equals("ALL")) {
-            listData = mongoTemplate.find(query, User.class);
-        }
         if (req.getSearchType().equals("FIELD") && req.getParams() != null) {
             Criteria criteria = new Criteria();
+            List<Criteria> criteriaList = new ArrayList<>();
+
             for (Map.Entry<String, Object> entry : req.getParams().entrySet()) {
                 String key = entry.getKey();
                 Object value = entry.getValue();
 
                 if (value instanceof String) {
-                    criteria.andOperator(Criteria.where(key).regex(String.valueOf(value), "i"));
+                    criteriaList.add(Criteria.where(key).regex(String.valueOf(value), "i"));
                 } else {
-                    criteria.andOperator(Criteria.where(key).is(value));
+                    criteriaList.add(Criteria.where(key).is(value));
                 }
             }
 
-            query.addCriteria(criteria);
-            listData = mongoTemplate.find(query, User.class);
+            if (!criteriaList.isEmpty()) {
+                criteria.andOperator(criteriaList.toArray(new Criteria[0]));
+                query.addCriteria(criteria);
+                listData = mongoTemplate.find(query, User.class);
+            }
         }
 
         return new ObjectDataRes<>(listData.size(), listData);
     }
 
+
     /**
      * Lấy thông tin bằng id
      */
     @Override
-    public User detail(String id) {
+    public SignUpDto detail(String id) {
         Optional<User> userOptional = userRepository.findById(id);
-        return userOptional.orElseGet(User::new);
+        return mapper.map(userOptional.orElseGet(User::new), SignUpDto.class);
     }
 
     @Override

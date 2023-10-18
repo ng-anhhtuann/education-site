@@ -1,6 +1,7 @@
 package vn.com.eduhub.controller.rest.impl;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -57,7 +58,7 @@ public class UserRestImpl extends AbstractRest implements IUserRest {
             return this.successHandler.handlerSuccess(this.userService.getList(searchDto), start);
         } catch (Exception ex) {
             ex.printStackTrace();
-            return this.errorHandler.handlerException(ex, req, res, start);
+            return this.errorHandler.handlerException(ex, req, null, start);
         }
     }
 
@@ -74,7 +75,7 @@ public class UserRestImpl extends AbstractRest implements IUserRest {
     }
 
     @Override
-    @JsonIgnore
+    @Operation(hidden = true)
     public BaseRes delete(String id, HttpServletRequest req, HttpServletResponse res) {
         long start = System.currentTimeMillis();
         try {

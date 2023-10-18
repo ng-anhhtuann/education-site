@@ -18,8 +18,10 @@ public class UserValidator {
 
     public static final Pattern VALID_EMAIL_ADDRESS_REGEX =
         Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
+
     @Autowired
     MongoTemplate mongoTemplate;
+
     @Autowired
     UserRepository userRepository;
 
@@ -34,7 +36,7 @@ public class UserValidator {
     public void validateEdit(UserAddReq req) throws Exception {
         if (req.getId() != null && !req.getId().isEmpty() && !req.getId().isBlank()) {
             if (!userRepository.existsById(req.getId()))
-                throw new Exception(CommonConstant.DATA_NOT_FOUND);
+                throw new Exception(CommonConstant.USER_NOT_FOUND);
         } else {
             if (!check(req.getEmail()))
                 throw new Exception(CommonConstant.VALID_EMAIL);
@@ -57,6 +59,6 @@ public class UserValidator {
      */
     public void validateId(String id) throws Exception {
         if (!userRepository.existsById(id))
-            throw new Exception(CommonConstant.DATA_NOT_FOUND);
+            throw new Exception(CommonConstant.USER_NOT_FOUND);
     }
 }
