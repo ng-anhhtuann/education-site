@@ -14,7 +14,6 @@ public class CourseAddReq {
     private Long price;
     private String title;
     private List<String> tagList;
-    private List<String> studentList;
     private Long studentCount;
     private String teacherId;
     private String description;

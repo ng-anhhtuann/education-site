@@ -9,7 +9,7 @@ public interface CommonService<ENTITY, DTO> {
 
     ObjectDataRes<ENTITY> getList(CommonSearchReq req);
 
-    ENTITY detail(String id);
+    DTO detail(String id);
 
     boolean delete(String id);
 

@@ -40,11 +40,6 @@ public class Course {
     @Field("tag_list")
     private List<String> tagList;
 
-    @SerializedName("studentList")
-    @Expose
-    @Field("student_list")
-    private List<String> studentList;
-
     @SerializedName("studentCount")
     @Expose
     @Field("student_count")
