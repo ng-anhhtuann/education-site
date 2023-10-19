@@ -13,6 +13,7 @@ import vn.com.eduhub.dto.res.ObjectDataRes;
 import vn.com.eduhub.entity.Course;
 import vn.com.eduhub.repository.CourseRepository;
 import vn.com.eduhub.service.ICourseService;
+import vn.com.eduhub.utils.CommonConstant;
 
 import java.util.*;
 
@@ -42,9 +43,10 @@ public class CourseServiceImpl implements ICourseService {
      * <p>
      * Khi cập nhật khoá học chỉ cho phép cập nhật theo các field:
      * price, title, tagList, description, thumbnailUrl
+     * @throws Exception 
      */
     @Override
-    public Course edit(CourseDto dto) {
+    public Course edit(CourseDto dto) throws Exception {
         if (dto.getId() == null || dto.getId().isEmpty() || dto.getId().isBlank()) {
             Course course = mapper.map(dto, Course.class);
             course.setId(String.valueOf(UUID.randomUUID()).concat(String.valueOf(System.currentTimeMillis())));
@@ -56,15 +58,16 @@ public class CourseServiceImpl implements ICourseService {
             Optional<Course> courseOptional = courseRepository.findById(dto.getId());
             if (courseOptional.isPresent()) {
                 Course course = courseOptional.get();
-                course.setPrice(dto.getPrice());
-                course.setTitle(dto.getTitle());
-                course.setTagList(dto.getTagList());
-                course.setDescription(dto.getDescription());
-                course.setThumbnailUrl(dto.getThumbnailUrl());
+                if (dto.getPrice() != null ) course.setPrice(dto.getPrice());
+                if (dto.getTitle() != null ) course.setTitle(dto.getTitle());
+                if (dto.getTagList() != null ) course.setTagList(dto.getTagList());
+                if (dto.getDescription() != null ) course.setDescription(dto.getDescription());
+                if (dto.getThumbnailUrl() != null ) course.setThumbnailUrl(dto.getThumbnailUrl());
                 courseRepository.save(course);
                 return course;
+            } else {
+            	throw new Exception(CommonConstant.COURSE_NOT_FOUND);
             }
-            return null;
         }
     }
 
@@ -84,13 +87,20 @@ public class CourseServiceImpl implements ICourseService {
     @Override
     public ObjectDataRes<Course> getList(CommonSearchReq req) {
         List<Course> listData = new ArrayList<>();
+        
         Query query = new Query();
+        
         query.with(Sort.by(Sort.Order.desc("created_date")));
 
         if (req.getPage() != null && req.getPage() > 0 && req.getPageSize() != null && req.getPageSize() >= 0) {
             query.skip((long) (req.getPage() - 1) * req.getPageSize());
             query.limit(req.getPageSize());
         }
+        
+		/**
+		 * Limit the number of returned documents to limit. 
+		 * A zero or negative value is considered as unlimited.
+		 */
         if ((req.getPage() != null && req.getPage() == 0) || (req.getPageSize() == null && req.getPage() == null)) {
             query.limit(0);
         }
@@ -123,13 +133,25 @@ public class CourseServiceImpl implements ICourseService {
     }
 
     @Override
-    public CourseDto detail(String id) {
+    public CourseDto detail(String id) throws Exception {
         Optional<Course> courseOptional = courseRepository.findById(id);
-        return mapper.map(courseOptional.orElseGet(Course::new), CourseDto.class);
+        if (courseOptional.isEmpty()) {
+        	throw new Exception(CommonConstant.COURSE_NOT_FOUND);
+        }
+        return mapper.map(courseOptional.get(), CourseDto.class);
     }
 
     @Override
-    public boolean delete(String id) {
-        return false;
+    public String delete(String id) throws Exception {
+        Optional<Course> courseOptional = courseRepository.findById(id);
+        if (courseOptional.isEmpty()) {
+        	throw new Exception(CommonConstant.COURSE_NOT_FOUND);
+        }
+        try {
+        	courseRepository.deleteById(id);
+        	return id;
+        } catch (Exception ex) {
+        	throw new Exception(CommonConstant.PROCESS_FAIL);
+        }
     }
 }

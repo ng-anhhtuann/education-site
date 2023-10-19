@@ -16,10 +16,12 @@ public class UserAddReq {
     private String userName;
     @Schema(description = "password", example = "chienbinh156", required = true)
     private String password;
+    @Schema(description = "password", example = "chienbinh156", required = true)
+    private String rePassword;
     @Schema(description = "email", example = "chienbinh156@gmail.com", required = true)
     private String email;
     @Schema(description = "avatar", example = CommonConstant.DEFAULT_AVATAR_URL, required = false)
-    private String avatar;
+    private String avatarUrl;
     @Schema(description = "role", example = "TEACHER", required = true)
     private String role;
 }

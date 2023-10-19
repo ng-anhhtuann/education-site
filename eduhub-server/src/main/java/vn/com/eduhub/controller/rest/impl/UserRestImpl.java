@@ -1,6 +1,5 @@
 package vn.com.eduhub.controller.rest.impl;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
@@ -66,7 +65,6 @@ public class UserRestImpl extends AbstractRest implements IUserRest {
     public BaseRes detail(String id, HttpServletRequest req, HttpServletResponse res) {
         long start = System.currentTimeMillis();
         try {
-            validator.validateId(id);
             return this.successHandler.handlerSuccess(this.userService.detail(id), start);
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -96,4 +94,5 @@ public class UserRestImpl extends AbstractRest implements IUserRest {
             return this.errorHandler.handlerException(ex, req, res, start);
         }
     }
+
 }

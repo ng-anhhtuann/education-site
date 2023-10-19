@@ -25,11 +25,7 @@ public class CourseValidator {
     UserRepository userRepository;
 
     public void validateEdit(CourseAddReq req) throws Exception {
-        if (req.getId() != null && !req.getId().isEmpty() && !req.getId().isBlank()) {
-            if (!courseRepository.existsById(req.getId()))
-                throw new Exception(CommonConstant.COURSE_NOT_FOUND);
-        } else {
-
+        if (req.getId() == null) {
             Query query = new Query();
             query.addCriteria(Criteria.where("title").is(req.getTitle()));
             if (mongoTemplate.findOne(query, Course.class) != null)
@@ -47,12 +43,7 @@ public class CourseValidator {
             if (mongoTemplate.findOne(queryRole, User.class) == null)
                 throw new Exception(CommonConstant.ROLE_NOT_MATCH);
 
-
         }
     }
 
-    public void validateId(String id) throws Exception {
-        if (!courseRepository.existsById(id))
-            throw new Exception(CommonConstant.COURSE_NOT_FOUND);
-    }
 }

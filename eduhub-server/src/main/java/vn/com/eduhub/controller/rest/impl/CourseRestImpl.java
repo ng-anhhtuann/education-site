@@ -16,7 +16,6 @@ import vn.com.eduhub.controller.req.CourseAddReq;
 import vn.com.eduhub.controller.rest.AbstractRest;
 import vn.com.eduhub.controller.rest.ICourseRest;
 import vn.com.eduhub.controller.validation.CourseValidator;
-import vn.com.eduhub.dto.auth.SignUpDto;
 import vn.com.eduhub.dto.master.CourseDto;
 import vn.com.eduhub.dto.res.BaseRes;
 import vn.com.eduhub.service.ICourseService;
@@ -64,7 +63,6 @@ public class CourseRestImpl extends AbstractRest implements ICourseRest {
     public BaseRes detail(String id, HttpServletRequest req, HttpServletResponse res) {
         long start = System.currentTimeMillis();
         try {
-            validator.validateId(id);
             return this.successHandler.handlerSuccess(this.courseService.detail(id), start);
         } catch (Exception ex) {
             ex.printStackTrace();

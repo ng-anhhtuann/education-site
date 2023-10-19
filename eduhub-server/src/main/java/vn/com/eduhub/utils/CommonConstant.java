@@ -11,4 +11,7 @@ public class CommonConstant {
     public static final String VALID_EMAIL = "Invalid mail pattern!";
     public static final String AUTH_FAIL = "Wrong account or password!";
     public static final String DUPLICATE_TITLE = "Title existed in other course";
+    public static final String PROCESS_FAIL = "Process failed!";
+    public static final String REPASSWORD_FAIL = "Wrong retype password";
+    public static final String DUPLICATE_SUBSCRIPTION = "Subscription existed!";
 }
