@@ -43,6 +43,7 @@ public class SubscriptionServiceImpl implements ISubscriptionService {
 	
 	/**
 	 * Add subscription with validate data
+	 * Not edit
 	 */
 	@Override
 	public Subscription edit(SubscriptionDto dto) throws Exception {

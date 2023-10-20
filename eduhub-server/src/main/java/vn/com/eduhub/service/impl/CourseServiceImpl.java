@@ -58,6 +58,7 @@ public class CourseServiceImpl implements ICourseService {
             Optional<Course> courseOptional = courseRepository.findById(dto.getId());
             if (courseOptional.isPresent()) {
                 Course course = courseOptional.get();
+                course.setUpdatedDate(new Date());
                 if (dto.getPrice() != null ) course.setPrice(dto.getPrice());
                 if (dto.getTitle() != null ) course.setTitle(dto.getTitle());
                 if (dto.getTagList() != null ) course.setTagList(dto.getTagList());
@@ -76,7 +77,7 @@ public class CourseServiceImpl implements ICourseService {
      * + min_price là cận dưới của price
      * + max_price là cận trên của price
      * + title
-     * + tag_list (mảng)
+     * + tag_list (mảng các tag topic liên quan đến khóa học)
      * Datatype của các field search đều là String
      * Dynamic search lúc này kiểm tra chuỗi có chứa chuỗi con hay không.
      * Nếu page = 0 thì là lấy hết record theo trạng thái search
