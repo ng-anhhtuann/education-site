@@ -1,6 +1,5 @@
 package vn.com.eduhub.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import lombok.*;
@@ -29,7 +28,6 @@ public class Course {
     @Field("price")
     private Long price;
 
-    @JsonIgnore
     @SerializedName("title")
     @Expose
     @Field("title")
@@ -39,11 +37,6 @@ public class Course {
     @Expose
     @Field("tag_list")
     private List<String> tagList;
-
-    @SerializedName("studentList")
-    @Expose
-    @Field("student_list")
-    private List<String> studentList;
 
     @SerializedName("studentCount")
     @Expose

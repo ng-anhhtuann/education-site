@@ -2,6 +2,8 @@ package vn.com.eduhub.dto.auth;
 
 import lombok.*;
 
+import java.util.Date;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -14,4 +16,6 @@ public class SignUpDto {
     private String email;
     private String avatarUrl;
     private String role;
+    private Date updatedDate;
+    private Date createdDate;
 }
