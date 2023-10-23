@@ -24,40 +24,40 @@ import lombok.ToString;
 @Document(collection = "images")
 public class Image {
 
-	@Id
-	@SerializedName("id")
-	@Expose
-	private String id;
+    @Id
+    @SerializedName("id")
+    @Expose
+    private String id;
 
-	@SerializedName("name")
-	@Expose
-	@Field("name")
-	private String name;
+    @SerializedName("name")
+    @Expose
+    @Field("name")
+    private String name;
 
-	@JsonIgnore
-	@SerializedName("isAvatar")
-	@Expose
-	@Field("is_avatar")
-	private Boolean isAvatar;
+    @JsonIgnore
+    @SerializedName("isAvatar")
+    @Expose
+    @Field("is_avatar")
+    private Boolean isAvatar;
 
-	@SerializedName("url")
-	@Expose
-	@Field("url")
-	private String url;
+    @SerializedName("url")
+    @Expose
+    @Field("url")
+    private String url;
 
-	@SerializedName("ownerId")
-	@Expose
-	@Field("owner_id")
-	private String ownerId;
+    @SerializedName("ownerId")
+    @Expose
+    @Field("owner_id")
+    private String ownerId;
 
-	@SerializedName("updatedDate")
-	@Expose
-	@Field("updated_date")
-	private Date updatedDate;
+    @SerializedName("updatedDate")
+    @Expose
+    @Field("updated_date")
+    private Date updatedDate;
 
-	@SerializedName("createdDate")
-	@Expose
-	@Field("created_date")
-	private Date createdDate;
+    @SerializedName("createdDate")
+    @Expose
+    @Field("created_date")
+    private Date createdDate;
 
 }

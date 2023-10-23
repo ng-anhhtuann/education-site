@@ -11,7 +11,7 @@ public class ApiConstant {
     public static final String DELETE = "Delete by id";
     public static final String LOGIN = "Sign in";
     public static final String SUBSCRIPTION = "Subscript to a course by id";
-    
+
     public static final String SUCCESS = "Success";
     public static final String UNAUTHORIZED = "Unauthorized";
     public static final String INTERNAL_SERVER_ERROR = "Internal Server Error";

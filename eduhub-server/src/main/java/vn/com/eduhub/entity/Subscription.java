@@ -17,24 +17,24 @@ import java.util.Date;
 @Document(collection = "subscription")
 public class Subscription {
 
-	@Id
-	@SerializedName("id")
-	@Expose
-	private String id;
+    @Id
+    @SerializedName("id")
+    @Expose
+    private String id;
 
-	@SerializedName("studentId")
-	@Expose
-	@Field("student_id")
-	private String studentId;
+    @SerializedName("studentId")
+    @Expose
+    @Field("student_id")
+    private String studentId;
 
-	@SerializedName("courseId")
-	@Expose
-	@Field("course_id")
-	private String courseId;
+    @SerializedName("courseId")
+    @Expose
+    @Field("course_id")
+    private String courseId;
 
-	@SerializedName("createdDate")
-	@Expose
-	@Field("created_date")
-	private Date createdDate;
+    @SerializedName("createdDate")
+    @Expose
+    @Field("created_date")
+    private Date createdDate;
 
 }

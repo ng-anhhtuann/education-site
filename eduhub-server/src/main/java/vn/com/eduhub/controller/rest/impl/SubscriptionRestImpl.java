@@ -26,16 +26,16 @@ import vn.com.eduhub.service.ISubscriptionService;
 @RequestMapping(UrlConst.SUBSCRIPTION)
 @Component
 @Tag(name = ApiConstant.SWAGGER_SUBSCRIPTION)
-public class SubscriptionRestImpl extends AbstractRest implements ISubscriptionRest{
+public class SubscriptionRestImpl extends AbstractRest implements ISubscriptionRest {
 
     private final ModelMapper mapper = new ModelMapper();
 
     @Autowired
     ISubscriptionService subscriptionService;
-	
-	@Override
-	public BaseRes add(SubscriptionReq request, HttpServletRequest req, HttpServletResponse res) {
-		long start = System.currentTimeMillis();
+
+    @Override
+    public BaseRes add(SubscriptionReq request, HttpServletRequest req, HttpServletResponse res) {
+        long start = System.currentTimeMillis();
         try {
             SubscriptionDto dto = mapper.map(request, SubscriptionDto.class);
             return this.successHandler.handlerSuccess(this.subscriptionService.edit(dto), start);
@@ -43,10 +43,10 @@ public class SubscriptionRestImpl extends AbstractRest implements ISubscriptionR
             ex.printStackTrace();
             return this.errorHandler.handlerException(ex, req, res, start);
         }
-	}
+    }
 
-	@Override
-	public BaseRes list(CommonSearchReq searchDto, HttpServletRequest req, HttpServletResponse res) {
+    @Override
+    public BaseRes list(CommonSearchReq searchDto, HttpServletRequest req, HttpServletResponse res) {
         long start = System.currentTimeMillis();
         try {
             return this.successHandler.handlerSuccess(this.subscriptionService.getList(searchDto), start);
@@ -54,20 +54,20 @@ public class SubscriptionRestImpl extends AbstractRest implements ISubscriptionR
             ex.printStackTrace();
             return this.errorHandler.handlerException(ex, req, null, start);
         }
-	}
+    }
 
-	@Override
+    @Override
     @Operation(hidden = true)
-	public BaseRes detail(String id, HttpServletRequest req, HttpServletResponse res) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    public BaseRes detail(String id, HttpServletRequest req, HttpServletResponse res) {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
-	@Override
+    @Override
     @Operation(hidden = true)
-	public BaseRes delete(String id, HttpServletRequest req, HttpServletResponse res) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    public BaseRes delete(String id, HttpServletRequest req, HttpServletResponse res) {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
 }

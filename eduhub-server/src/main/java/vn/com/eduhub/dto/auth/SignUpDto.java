@@ -10,6 +10,7 @@ import java.util.Date;
 @AllArgsConstructor
 @ToString
 public class SignUpDto {
+
     private String id;
     private String userName;
     private String password;

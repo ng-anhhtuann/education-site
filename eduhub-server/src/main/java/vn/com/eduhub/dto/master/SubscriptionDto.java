@@ -1,4 +1,5 @@
 package vn.com.eduhub.dto.master;
+
 import lombok.*;
 
 @Getter
@@ -7,6 +8,7 @@ import lombok.*;
 @AllArgsConstructor
 @ToString
 public class SubscriptionDto {
-	private String studentId;
-	private String courseId;
+
+    private String studentId;
+    private String courseId;
 }

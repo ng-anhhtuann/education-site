@@ -8,8 +8,9 @@ import lombok.*;
 @AllArgsConstructor
 @ToString
 public class LogInDto {
+
     /**
-     * Representing `userName` or `email`
+     * Representing `userName` or `email` 
      * User can use either field for logging in to their account
      */
     private String account;

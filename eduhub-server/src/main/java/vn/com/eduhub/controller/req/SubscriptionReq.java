@@ -13,9 +13,9 @@ import lombok.ToString;
 @AllArgsConstructor
 @ToString
 public class SubscriptionReq {
-    @Schema(description = "student_id", example = "123-31jj-f8ura-3jsaf", required = true)
-	private String studentId;
-    @Schema(description = "course_id", example = "123-31jj-f8ura-3jsaf", required = true)
-	private String courseId;
-}
 
+    @Schema(description = "student_id", example = "123-31jj-f8ura-3jsaf", required = true)
+    private String studentId;
+    @Schema(description = "course_id", example = "123-31jj-f8ura-3jsaf", required = true)
+    private String courseId;
+}

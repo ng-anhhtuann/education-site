@@ -14,11 +14,8 @@ public class FirebaseConfig {
 
     @Bean
     public FirebaseApp initFirebase() throws IOException {
-        FileInputStream serviceAccount =
-            new FileInputStream("src/main/resources/eduhub-key.json");
-        FirebaseOptions options = new FirebaseOptions.Builder()
-            .setCredentials(GoogleCredentials.fromStream(serviceAccount))
-            .build();
+        FileInputStream serviceAccount = new FileInputStream("src/main/resources/eduhub-key.json");
+        FirebaseOptions options = new FirebaseOptions.Builder().setCredentials(GoogleCredentials.fromStream(serviceAccount)).build();
 
         return FirebaseApp.initializeApp(options);
     }

@@ -23,39 +23,39 @@ import lombok.ToString;
 @Document(collection = "videos")
 public class Video {
 
-	@Id
-	@SerializedName("id")
-	@Expose
-	private String id;
+    @Id
+    @SerializedName("id")
+    @Expose
+    private String id;
 
-	@SerializedName("title")
-	@Expose
-	@Field("title")
-	private String title;
+    @SerializedName("title")
+    @Expose
+    @Field("title")
+    private String title;
 
-	@SerializedName("url")
-	@Expose
-	@Field("url")
-	private String url;
+    @SerializedName("url")
+    @Expose
+    @Field("url")
+    private String url;
 
-	@SerializedName("courseId")
-	@Expose
-	@Field("course_id")
-	private String courseId;
+    @SerializedName("courseId")
+    @Expose
+    @Field("course_id")
+    private String courseId;
 
-	@SerializedName("description")
-	@Expose
-	@Field("description")
-	private String description;
-	
-	@SerializedName("updatedDate")
-	@Expose
-	@Field("updated_date")
-	private Date updatedDate;
+    @SerializedName("description")
+    @Expose
+    @Field("description")
+    private String description;
 
-	@SerializedName("createdDate")
-	@Expose
-	@Field("created_date")
-	private Date createdDate;
-	
+    @SerializedName("updatedDate")
+    @Expose
+    @Field("updated_date")
+    private Date updatedDate;
+
+    @SerializedName("createdDate")
+    @Expose
+    @Field("created_date")
+    private Date createdDate;
+
 }

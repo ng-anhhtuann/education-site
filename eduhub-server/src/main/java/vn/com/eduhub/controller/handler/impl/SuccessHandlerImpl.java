@@ -9,6 +9,7 @@ import java.util.Date;
 
 @Service
 public class SuccessHandlerImpl implements SuccessHandler {
+
     @Override
     public BaseRes handlerSuccess(Object resObj, long start) {
         long took = System.currentTimeMillis() - start;

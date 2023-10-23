@@ -1,5 +1,8 @@
 package vn.com.eduhub.service;
 
-public interface IVideoService {
+import vn.com.eduhub.dto.master.VideoDto;
+import vn.com.eduhub.entity.Video;
+
+public interface IVideoService extends CommonService<Video, VideoDto> {
 
 }

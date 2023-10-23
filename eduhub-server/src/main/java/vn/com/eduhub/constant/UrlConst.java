@@ -11,7 +11,7 @@ public class UrlConst {
     public static final String DELETE = "/delete";
     public static final String DETAIL = "/detail";
     public static final String LOGIN = "/login";
-    
+
     public static final String SUBSCRIPTION = "/subscription";
     public static final String USER = "/user";
     public static final String COURSE = "/course";

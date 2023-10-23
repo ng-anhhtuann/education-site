@@ -1,5 +1,8 @@
 package vn.com.eduhub.service;
 
-public interface IImageService {
+import vn.com.eduhub.dto.master.ImageDto;
+import vn.com.eduhub.entity.Image;
+
+public interface IImageService extends CommonService<Image, ImageDto> {
 
 }
