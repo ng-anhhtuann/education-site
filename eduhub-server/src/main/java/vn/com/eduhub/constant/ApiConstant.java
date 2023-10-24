@@ -21,7 +21,9 @@ public class ApiConstant {
     public static final String INTERNAL_SERVER_ERROR_CODE = "500";
     public static final String FORBIDDEN_CODE = "402";
 
-    public static final String SWAGGER_USER = "Common User Rest API";
-    public static final String SWAGGER_COURSE = "Common Course Rest API";
-    public static final String SWAGGER_SUBSCRIPTION = "Common Subscription Rest API";
+    public static final String SWAGGER_USER = "User Rest API";
+    public static final String SWAGGER_COURSE = "Course Rest API";
+    public static final String SWAGGER_VIDEO = "Video Rest API";
+    public static final String SWAGGER_IMAGE = "Image Rest API";
+    public static final String SWAGGER_SUBSCRIPTION = "Subscription Rest API";
 }

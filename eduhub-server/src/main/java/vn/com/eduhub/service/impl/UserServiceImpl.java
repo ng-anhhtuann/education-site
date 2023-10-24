@@ -53,6 +53,7 @@ public class UserServiceImpl implements IUserService {
             user.setBalance(999999999L);
             user.setAvatarUrl(CommonConstant.DEFAULT_AVATAR_URL);
             user.setCreatedDate(new Date());
+            user.setUpdatedDate(null);
             userRepository.insert(user);
             return user;
         } else {

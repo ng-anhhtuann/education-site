@@ -51,6 +51,7 @@ public class CourseServiceImpl implements ICourseService {
             Course course = mapper.map(dto, Course.class);
             course.setId(String.valueOf(UUID.randomUUID()).concat(String.valueOf(System.currentTimeMillis())));
             course.setStudentCount(0L);
+            course.setUpdatedDate(null);
             course.setCreatedDate(new Date());
             courseRepository.insert(course);
             return course;
