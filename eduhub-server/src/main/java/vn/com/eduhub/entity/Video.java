@@ -33,6 +33,11 @@ public class Video {
     @Field("title")
     private String title;
 
+    @SerializedName("name")
+    @Expose
+    @Field("name")
+    private String name;
+
     @SerializedName("url")
     @Expose
     @Field("url")

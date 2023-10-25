@@ -34,7 +34,6 @@ public class Image {
     @Field("name")
     private String name;
 
-    @JsonIgnore
     @SerializedName("isAvatar")
     @Expose
     @Field("is_avatar")

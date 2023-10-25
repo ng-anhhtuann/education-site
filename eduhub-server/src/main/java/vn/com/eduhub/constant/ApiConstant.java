@@ -11,6 +11,9 @@ public class ApiConstant {
     public static final String DELETE = "Delete by id";
     public static final String LOGIN = "Sign in";
     public static final String SUBSCRIPTION = "Subscript to a course by id";
+    public static final String IMAGE_UPLOAD = "Upload strict Image";
+    public static final String VIDEO_UPLOAD = "Upload strict Video";
+    public static final String DELETE_FILE = "Delete file by file name";
 
     public static final String SUCCESS = "Success";
     public static final String UNAUTHORIZED = "Unauthorized";
@@ -26,4 +29,5 @@ public class ApiConstant {
     public static final String SWAGGER_VIDEO = "Video Rest API";
     public static final String SWAGGER_IMAGE = "Image Rest API";
     public static final String SWAGGER_SUBSCRIPTION = "Subscription Rest API";
+    public static final String SWAGGER_FILE = "File Rest API";
 }

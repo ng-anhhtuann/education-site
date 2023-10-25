@@ -35,7 +35,6 @@ public class ImageRestImpl extends AbstractRest implements IImageRest {
     public BaseRes add(ImageAddReq request, HttpServletRequest req, HttpServletResponse res) {
         long start = System.currentTimeMillis();
         try {
-//            validator.validateEdit(courseAddReq);
             ImageDto dto = mapper.map(request, ImageDto.class);
             return this.successHandler.handlerSuccess(this.imageService.edit(dto), start);
         } catch (Exception ex) {
