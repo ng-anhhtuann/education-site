@@ -3,6 +3,8 @@ package vn.com.eduhub.controller.rest;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
@@ -20,7 +22,7 @@ public interface FileRest {
     @Operation(summary = ApiConstant.VIDEO_UPLOAD)
     BaseRes uploadVideo(@RequestParam("video") MultipartFile video, HttpServletRequest req, HttpServletResponse res);
 
-    @PostMapping(value = UrlConst.DELETE_FILE)
+    @DeleteMapping(value = UrlConst.DELETE_FILE)
     @Operation(summary = ApiConstant.DELETE_FILE)
     BaseRes deleteFile(@RequestParam("fileName") String fileName, HttpServletRequest req, HttpServletResponse res);
 
