@@ -9,5 +9,12 @@
   "token_uri": "https://oauth2.googleapis.com/token",
   "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
   "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-zk4x8%40edu-hub-3772f.iam.gserviceaccount.com",
-  "universe_domain": "googleapis.com"
+  "universe_domain": "googleapis.com",
+  "apiKey": "AIzaSyADVFETrG2nn0AOXz7O58BGrDWMx6RVbB8",
+  "authDomain": "edu-hub-3772f.firebaseapp.com",
+  "projectId": "edu-hub-3772f",
+  "storageBucket": "edu-hub-3772f.appspot.com",
+  "messagingSenderId": "912180621843",
+  "appId": "1:912180621843:web:8ed97b86cff76bfa1585e6",
+  "measurementId": "G-TNF81R7TBN"
 }

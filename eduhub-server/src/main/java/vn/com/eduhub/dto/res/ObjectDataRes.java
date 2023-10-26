@@ -10,6 +10,7 @@ import java.util.List;
 @AllArgsConstructor
 @ToString
 public class ObjectDataRes<T> {
+
     private int totalData;
     private List<T> datas;
 }

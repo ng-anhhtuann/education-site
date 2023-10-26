@@ -10,6 +10,7 @@ import vn.com.eduhub.utils.CommonConstant;
 @AllArgsConstructor
 @ToString
 public class UserAddReq {
+
     @Schema(description = "id", example = "123-31jj-f8ura-3jsaf", required = false)
     private String id;
     @Schema(description = "userName", example = "chienbinh156", required = true)

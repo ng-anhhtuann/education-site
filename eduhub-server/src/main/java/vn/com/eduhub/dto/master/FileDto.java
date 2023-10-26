@@ -7,8 +7,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class SubscriptionDto {
-
-    private String studentId;
-    private String courseId;
+public class FileDto {
+    private String fileName;
+    private String fileUrl;
 }

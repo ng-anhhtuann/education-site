@@ -11,6 +11,7 @@ import java.util.HashMap;
 @AllArgsConstructor
 @ToString
 public class CommonSearchReq {
+
     @Schema(description = "page", example = "1", required = false)
     private Integer page;
     @Schema(description = "pageSize", example = "10", required = false)

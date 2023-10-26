@@ -72,6 +72,12 @@ public class CourseRestImpl extends AbstractRest implements ICourseRest {
 
     @Override
     public BaseRes delete(String id, HttpServletRequest req, HttpServletResponse res) {
-        return new BaseRes();
+        long start = System.currentTimeMillis();
+        try {
+            return this.successHandler.handlerSuccess(this.courseService.delete(id), start);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return this.errorHandler.handlerException(ex, req, res, start);
+        }
     }
 }

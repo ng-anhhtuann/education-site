@@ -51,6 +51,7 @@ public class CourseServiceImpl implements ICourseService {
             Course course = mapper.map(dto, Course.class);
             course.setId(String.valueOf(UUID.randomUUID()).concat(String.valueOf(System.currentTimeMillis())));
             course.setStudentCount(0L);
+            course.setUpdatedDate(null);
             course.setCreatedDate(new Date());
             courseRepository.insert(course);
             return course;
@@ -59,15 +60,20 @@ public class CourseServiceImpl implements ICourseService {
             if (courseOptional.isPresent()) {
                 Course course = courseOptional.get();
                 course.setUpdatedDate(new Date());
-                if (dto.getPrice() != null ) course.setPrice(dto.getPrice());
-                if (dto.getTitle() != null ) course.setTitle(dto.getTitle());
-                if (dto.getTagList() != null ) course.setTagList(dto.getTagList());
-                if (dto.getDescription() != null ) course.setDescription(dto.getDescription());
-                if (dto.getThumbnailUrl() != null ) course.setThumbnailUrl(dto.getThumbnailUrl());
+                if (dto.getPrice() != null)
+                    course.setPrice(dto.getPrice());
+                if (dto.getTitle() != null)
+                    course.setTitle(dto.getTitle());
+                if (dto.getTagList() != null)
+                    course.setTagList(dto.getTagList());
+                if (dto.getDescription() != null)
+                    course.setDescription(dto.getDescription());
+                if (dto.getThumbnailUrl() != null)
+                    course.setThumbnailUrl(dto.getThumbnailUrl());
                 courseRepository.save(course);
                 return course;
             } else {
-            	throw new Exception(CommonConstant.COURSE_NOT_FOUND);
+                throw new Exception(CommonConstant.COURSE_NOT_FOUND);
             }
         }
     }
@@ -88,9 +94,9 @@ public class CourseServiceImpl implements ICourseService {
     @Override
     public ObjectDataRes<Course> getList(CommonSearchReq req) {
         List<Course> listData = new ArrayList<>();
-        
+
         Query query = new Query();
-        
+
         query.with(Sort.by(Sort.Order.desc("created_date")));
 
         if (req.getPage() != null && req.getPage() > 0 && req.getPageSize() != null && req.getPageSize() >= 0) {
@@ -137,7 +143,7 @@ public class CourseServiceImpl implements ICourseService {
     public CourseDto detail(String id) throws Exception {
         Optional<Course> courseOptional = courseRepository.findById(id);
         if (courseOptional.isEmpty()) {
-        	throw new Exception(CommonConstant.COURSE_NOT_FOUND);
+            throw new Exception(CommonConstant.COURSE_NOT_FOUND);
         }
         return mapper.map(courseOptional.get(), CourseDto.class);
     }
@@ -146,13 +152,13 @@ public class CourseServiceImpl implements ICourseService {
     public String delete(String id) throws Exception {
         Optional<Course> courseOptional = courseRepository.findById(id);
         if (courseOptional.isEmpty()) {
-        	throw new Exception(CommonConstant.COURSE_NOT_FOUND);
+            throw new Exception(CommonConstant.COURSE_NOT_FOUND);
         }
         try {
-        	courseRepository.deleteById(id);
-        	return id;
+            courseRepository.deleteById(id);
+            return id;
         } catch (Exception ex) {
-        	throw new Exception(CommonConstant.PROCESS_FAIL);
+            throw new Exception(CommonConstant.PROCESS_FAIL);
         }
     }
 }
