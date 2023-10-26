@@ -15,10 +15,8 @@ import vn.com.eduhub.controller.req.CommonSearchReq;
 import vn.com.eduhub.controller.req.VideoAddReq;
 import vn.com.eduhub.controller.rest.AbstractRest;
 import vn.com.eduhub.controller.rest.IVideoRest;
-import vn.com.eduhub.dto.master.ImageDto;
 import vn.com.eduhub.dto.master.VideoDto;
 import vn.com.eduhub.dto.res.BaseRes;
-import vn.com.eduhub.service.IImageService;
 import vn.com.eduhub.service.IVideoService;
 
 @RestController

@@ -13,7 +13,6 @@ import vn.com.eduhub.constant.ApiConstant;
 import vn.com.eduhub.constant.UrlConst;
 import vn.com.eduhub.controller.rest.AbstractRest;
 import vn.com.eduhub.controller.rest.FileRest;
-import vn.com.eduhub.dto.master.ImageDto;
 import vn.com.eduhub.dto.res.BaseRes;
 import vn.com.eduhub.service.IFileService;
 

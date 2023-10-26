@@ -12,6 +12,7 @@ import java.io.IOException;
 @Configuration
 public class FirebaseConfig {
 
+    @SuppressWarnings("deprecation")
     @Bean
     public FirebaseApp initFirebase() throws IOException {
         FileInputStream serviceAccount = new FileInputStream("src/main/resources/eduhub-key.json");
