@@ -15,4 +15,6 @@ public class CommonConstant {
     public static final String PROCESS_FAIL = "Process failed!";
     public static final String REPASSWORD_FAIL = "Wrong retype password";
     public static final String DUPLICATE_SUBSCRIPTION = "Subscription existed!";
+    public static final String VIDEO_INVALID = "Uploaded file is not an video.";
+    public static final String IMAGE_INVALID = "Uploaded file is not an image.";
 }
