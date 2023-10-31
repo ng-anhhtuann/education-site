@@ -12,11 +12,8 @@ import vn.com.eduhub.service.IFileService;
 import vn.com.eduhub.utils.CommonConstant;
 
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.io.File;
 import java.io.IOException;
 import java.net.URLEncoder;
-import java.io.FileOutputStream;
 import java.util.Objects;
 
 @Service
@@ -36,19 +33,18 @@ public class FileServiceImpl implements IFileService {
     private String appName;
 
     private final String IMAGE = "image";
-    
+
     private final String VIDEO = "video";
-    
+
     @Override
     public FileDto uploadImage(MultipartFile multipartFile) throws Exception {
-
         String fileName = generateUniqueFileName(multipartFile.getOriginalFilename());
         if (!isImageFile(Objects.requireNonNull(multipartFile.getOriginalFilename())))
             throw new Exception(CommonConstant.IMAGE_INVALID);
+
         try {
-            File file = this.convertToFile(multipartFile, fileName);
-            String url = this.uploadFile(fileName, file, IMAGE);
-            file.delete();
+            byte[] fileBytes = multipartFile.getBytes();
+            String url = this.uploadFile(fileName, fileBytes, IMAGE);
             return new FileDto(fileName, url);
         } catch (Exception e) {
             e.printStackTrace();
@@ -62,10 +58,10 @@ public class FileServiceImpl implements IFileService {
         String fileName = generateUniqueFileName(multipartFile.getOriginalFilename());
         if (!isVideoFile(Objects.requireNonNull(multipartFile.getOriginalFilename())))
             throw new Exception(CommonConstant.VIDEO_INVALID);
+
         try {
-            File file = this.convertToFile(multipartFile, fileName);
-            String url = this.uploadFile(fileName, file, VIDEO);
-            file.delete();
+            byte[] fileBytes = multipartFile.getBytes();
+            String url = this.uploadFile(fileName, fileBytes, VIDEO);
             return new FileDto(fileName, url);
         } catch (Exception e) {
             e.printStackTrace();
@@ -96,24 +92,15 @@ public class FileServiceImpl implements IFileService {
         return sb.toString();
     }
 
-    private String uploadFile(String fileName, File file, String type) throws IOException {
+    private String uploadFile(String fileName, byte[] fileBytes, String type) throws IOException {
         BlobId blobId = BlobId.of(bucketName, fileName);
         BlobInfo blobInfo = BlobInfo.newBuilder(blobId).setContentType(type).build();
         ClassPathResource serviceAccount = new ClassPathResource(path);
         Storage storage = StorageOptions.newBuilder().setCredentials(GoogleCredentials.fromStream(serviceAccount.getInputStream()))
                 .setProjectId(appName).build().getService();
-        storage.create(blobInfo, Files.readAllBytes(file.toPath()));
+        storage.create(blobInfo, fileBytes);
 
         return String.format(downloadUrl, URLEncoder.encode(fileName, String.valueOf(StandardCharsets.UTF_8)));
-    }
-
-    private File convertToFile(MultipartFile multipartFile, String fileName) throws IOException {
-        File tempFile = new File(fileName);
-        try (FileOutputStream fos = new FileOutputStream(tempFile)) {
-            fos.write(multipartFile.getBytes());
-            fos.close();
-        }
-        return tempFile;
     }
 
     private boolean isImageFile(String fileName) {
