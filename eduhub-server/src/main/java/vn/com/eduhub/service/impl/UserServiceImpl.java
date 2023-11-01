@@ -40,11 +40,10 @@ public class UserServiceImpl implements IUserService {
     @Autowired
     SubscriptionRepository subscriptionRepository;
 
-	/**
-	 * @throws Exception
-	 * @flow Nếu có id thì là update Các field được phép update là avatarUrl và
-	 *       password Nếu không có id thì là thêm mới hoàn toàn.
-	 */
+    /**
+     * @throws Exception
+     * @flow Nếu có id thì là update Các field được phép update là avatarUrl và password Nếu không có id thì là thêm mới hoàn toàn.
+     */
     @Override
     public User edit(SignUpDto dto) throws Exception {
         if (dto.getId() == null || dto.getId().isEmpty() || dto.getId().isBlank()) {
@@ -60,10 +59,17 @@ public class UserServiceImpl implements IUserService {
             Optional<User> userOrNull = userRepository.findById(dto.getId());
             if (userOrNull.isPresent()) {
                 User user = userOrNull.get();
-                if (dto.getPassword() != null)
+                if (dto.getPassword() != null || !dto.getPassword().trim().isEmpty()) {
                     user.setPassword(dto.getPassword());
-                if (dto.getAvatarUrl() != null)
+                } else {
+                    throw new Exception(CommonConstant.EMPTY_PASSWORD);
+                }
+                
+                if (dto.getAvatarUrl() != null || !dto.getPassword().trim().isEmpty()) {
                     user.setAvatarUrl(dto.getAvatarUrl());
+                } else {
+                    throw new Exception(CommonConstant.PROCESS_FAIL);
+                }
                 user.setUpdatedDate(new Date());
                 userRepository.save(user);
                 return user;
@@ -73,14 +79,12 @@ public class UserServiceImpl implements IUserService {
         }
     }
 
-	/**
-	 * @flow Search field được cho phép ở user là user_name, email, role Datatype
-	 *       của các field search đều là String Dynamic search lúc này kiểm tra
-	 *       chuỗi có chứa chuỗi con hay không. Nếu page = 0 thì là lấy hết record
-	 *       theo trạng thái search Nếu searchType = "ALL" thì sẽ là search tất cả
-	 *       mặc kệ các params Nếu searchType = "FIELD" thì sẽ là search theo params
-	 * @default Sort by date created
-	 */
+    /**
+     * @flow Search field được cho phép ở user là user_name, email, role Datatype của các field search đều là String Dynamic search lúc này
+     *       kiểm tra chuỗi có chứa chuỗi con hay không. Nếu page = 0 thì là lấy hết record theo trạng thái search Nếu searchType = "ALL"
+     *       thì sẽ là search tất cả mặc kệ các params Nếu searchType = "FIELD" thì sẽ là search theo params
+     * @default Sort by date created
+     */
     @Override
     public ObjectDataRes<User> getList(CommonSearchReq req) {
         List<User> listData = new ArrayList<>();
@@ -126,11 +130,11 @@ public class UserServiceImpl implements IUserService {
         return new ObjectDataRes<>(listData.size(), listData);
     }
 
-	/**
-	 * Lấy thông tin bằng id
-	 * 
-	 * @throws Exception
-	 */
+    /**
+     * Lấy thông tin bằng id
+     * 
+     * @throws Exception
+     */
     @Override
     public SignUpDto detail(String id) throws Exception {
         Optional<User> userOptional = userRepository.findById(id);
@@ -150,9 +154,8 @@ public class UserServiceImpl implements IUserService {
     public User login(LogInDto dto) throws Exception {
         Query query = new Query();
         query.addCriteria(
-                new Criteria().orOperator(
-                        Criteria.where("user_name").is(dto.getAccount()), 
-                        Criteria.where("email").is(dto.getAccount())).and("password").is(dto.getPassword()));
+                new Criteria().orOperator(Criteria.where("user_name").is(dto.getAccount()), Criteria.where("email").is(dto.getAccount()))
+                        .and("password").is(dto.getPassword()));
         User user = mongoTemplate.findOne(query, User.class);
         if (user == null)
             throw new Exception(CommonConstant.AUTH_FAIL);

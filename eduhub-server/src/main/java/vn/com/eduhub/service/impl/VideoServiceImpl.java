@@ -53,10 +53,15 @@ public class VideoServiceImpl implements IVideoService {
             if (imageOptional.isPresent()) {
                 Video video = imageOptional.get();
                 video.setUpdatedDate(new Date());
-                if (dto.getTitle() != null)
+                if (dto.getTitle() != null || !dto.getTitle().trim().isEmpty())
                     video.setTitle(dto.getTitle());
-                if (dto.getDescription() != null)
+                else
+                    throw new Exception(CommonConstant.EMPTY_TITLE);
+
+                if (dto.getDescription() != null || !dto.getDescription().trim().isEmpty())
                     video.setDescription(dto.getDescription());
+                else
+                    throw new Exception(CommonConstant.EMPTY_DESCRIPTION);
                 videoRepository.save(video);
                 return video;
             } else {
@@ -82,8 +87,7 @@ public class VideoServiceImpl implements IVideoService {
         }
 
         /**
-         * Limit the number of returned documents to limit.
-         * A zero or negative value is considered as unlimited.
+         * Limit the number of returned documents to limit. A zero or negative value is considered as unlimited.
          */
         if ((req.getPage() != null && req.getPage() == 0) || (req.getPageSize() == null && req.getPage() == null)) {
             query.limit(0);
