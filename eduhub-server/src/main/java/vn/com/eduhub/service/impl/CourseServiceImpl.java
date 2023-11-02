@@ -29,21 +29,15 @@ public class CourseServiceImpl implements ICourseService {
     CourseRepository courseRepository;
 
     /**
-     * Mô tả:
-     * id : id của khoá học cần cập nhật (nếu có id truyền vào khác null)
-     * price: giá tiền mua khoá học
-     * title : tên/tiêu đề course
-     * tagList : thẻ từ khoá liên quan đến khoá học
-     * teacherId : id user truyền vào tương ứng người tạo khoá học
-     * description : mô tả khoá học tổng quan
-     * thumbnailUrl : link dẫn đến hình ảnh thumbnail khoá học
+     * Mô tả: id : id của khoá học cần cập nhật (nếu có id truyền vào khác null) price: giá tiền mua khoá học title : tên/tiêu đề course
+     * tagList : thẻ từ khoá liên quan đến khoá học teacherId : id user truyền vào tương ứng người tạo khoá học description : mô tả khoá học
+     * tổng quan thumbnailUrl : link dẫn đến hình ảnh thumbnail khoá học
      * <p>
-     * Khi tạo mới course thì chỉ cho phép tạo mới theo các field:
-     * price, title, tagList, teacherId, description, thumbnailUrl
+     * Khi tạo mới course thì chỉ cho phép tạo mới theo các field: price, title, tagList, teacherId, description, thumbnailUrl
      * <p>
-     * Khi cập nhật khoá học chỉ cho phép cập nhật theo các field:
-     * price, title, tagList, description, thumbnailUrl
-     * @throws Exception 
+     * Khi cập nhật khoá học chỉ cho phép cập nhật theo các field: price, title, tagList, description, thumbnailUrl
+     * 
+     * @throws Exception
      */
     @Override
     public Course edit(CourseDto dto) throws Exception {
@@ -62,15 +56,25 @@ public class CourseServiceImpl implements ICourseService {
                 course.setUpdatedDate(new Date());
                 if (dto.getPrice() != null)
                     course.setPrice(dto.getPrice());
-                if (dto.getTitle() != null)
+                if (dto.getTitle() != null || !dto.getTitle().trim().isEmpty()) {
                     course.setTitle(dto.getTitle());
+                } else {
+                    throw new Exception(CommonConstant.EMPTY_TITLE);
+                }
+
                 if (dto.getTagList() != null)
                     course.setTagList(dto.getTagList());
-                if (dto.getDescription() != null)
-                    course.setDescription(dto.getDescription());
-                if (dto.getThumbnailUrl() != null)
-                    course.setThumbnailUrl(dto.getThumbnailUrl());
-                courseRepository.save(course);
+                if (dto.getDescription() != null || !dto.getDescription().trim().isEmpty()) {
+                    course.setDescription(dto.getDescription());}
+                else {
+                    throw new Exception(CommonConstant.EMPTY_DESCRIPTION);
+                }
+                if (dto.getThumbnailUrl() != null || !dto.getThumbnailUrl().trim().isEmpty()) {
+                    course.setThumbnailUrl(dto.getThumbnailUrl());}
+                else {
+                    throw new Exception(CommonConstant.PROCESS_FAIL);
+                }
+                    courseRepository.save(course);
                 return course;
             } else {
                 throw new Exception(CommonConstant.COURSE_NOT_FOUND);
@@ -79,16 +83,10 @@ public class CourseServiceImpl implements ICourseService {
     }
 
     /**
-     * @flow Search field được cho phép ở course là:
-     * + min_price là cận dưới của price
-     * + max_price là cận trên của price
-     * + title
-     * + tag_list (mảng các tag topic liên quan đến khóa học)
-     * Datatype của các field search đều là String
-     * Dynamic search lúc này kiểm tra chuỗi có chứa chuỗi con hay không.
-     * Nếu page = 0 thì là lấy hết record theo trạng thái search
-     * Nếu searchType = "ALL" thì sẽ là search tất cả mặc kệ các params
-     * Nếu searchType = "FIELD" thì sẽ là search theo params
+     * @flow Search field được cho phép ở course là: + min_price là cận dưới của price + max_price là cận trên của price + title + tag_list
+     *       (mảng các tag topic liên quan đến khóa học) Datatype của các field search đều là String Dynamic search lúc này kiểm tra chuỗi
+     *       có chứa chuỗi con hay không. Nếu page = 0 thì là lấy hết record theo trạng thái search Nếu searchType = "ALL" thì sẽ là search
+     *       tất cả mặc kệ các params Nếu searchType = "FIELD" thì sẽ là search theo params
      * @default Sort by date created
      */
     @Override
@@ -103,11 +101,10 @@ public class CourseServiceImpl implements ICourseService {
             query.skip((long) (req.getPage() - 1) * req.getPageSize());
             query.limit(req.getPageSize());
         }
-        
-		/**
-		 * Limit the number of returned documents to limit. 
-		 * A zero or negative value is considered as unlimited.
-		 */
+
+        /**
+         * Limit the number of returned documents to limit. A zero or negative value is considered as unlimited.
+         */
         if ((req.getPage() != null && req.getPage() == 0) || (req.getPageSize() == null && req.getPage() == null)) {
             query.limit(0);
         }
