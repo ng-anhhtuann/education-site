@@ -12,6 +12,8 @@ import vn.com.eduhub.utils.CommonConstant;
 public class VideoAddReq {
     @Schema(description = "id", example = "123-31jj-f8ura-3jsaf", required = false)
     private String id;
+    @Schema(description = "name", example = "nameonstorage", required = false)
+    private String name;
     @Schema(description = "title", example = "my avatar", required = true)
     private String title;
     @Schema(description = "url", example = CommonConstant.DEFAULT_AVATAR_URL, required = true)
