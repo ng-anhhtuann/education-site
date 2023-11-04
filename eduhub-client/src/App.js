@@ -1,72 +1,41 @@
-import { useState } from "react";
-
-// import styles of this component
-import styles from "./App.module.css"
-
-// import other components to use
-import Header from './Components/Header/Header';
-import MasonryLayout from './Components/MasonryLayout/MasonryLayout';
-import ContainerCard from './Components/ContainerCard/ContainerCard';
-import Dropdown from './Components/Elements/Dropdown/Dropdown';
-
-// import json files 
-import images from "./Jsons/Images.json"
-
-// App component
-const App = () => {
-  // dropdown items
-  const ddItems = [
-    {
-      id: 1,
-      title: "All Images",
-      active: true
-    },
-    {
-      id: 2,
-      title: "Topic Images",
-      active: false
-    },
-    {
-      id: 3,
-      title: "Nature Images",
-      active: false
-    },
-    {
-      id: 4,
-      title: "NFT Images",
-      active: false
-    },
-    {
-      id: 5,
-      title: "Space Images",
-      active: false
-    }
-  ]
-
-  const [categoryImage, setCategoryImage] = useState(images.categories.all)
-
-  const takeDdTitle = (ddTitle) => {
-    setCategoryImage(() => {
-      let categoryChoose = Object.keys(images.categories).filter(item => {
-        const titleSplited = ddTitle.toLowerCase().split(" ")[0]
-        return item.toLowerCase().includes(titleSplited)
-      })
-      return [ ...images.categories[categoryChoose] ]
-    })
-  }
-
+import "./App.css"
+import Header from "./components/common/header/Header"
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom"
+import About from "./components/about/About"
+import CourseHome from "./components/allcourses/CourseHome"
+import Team from "./components/team/Team"
+import Pricing from "./components/pricing/Pricing"
+import Blog from "./components/blog/Blog"
+import Contact from "./components/contact/Contact"
+import Footer from "./components/common/footer/Footer"
+import Home from "./components/home/Home"
+import Login from "./components/login/login"
+import Register from "./components/register/register"
+function App() {
   return (
     <>
+      <Router>
         <Header />
-        <div className="flex justify-content-center" style={{ marginTop: "50px", padding: '50px' }}>
-          <ContainerCard>
-              <div className={`${styles["gallery-setting"]} flex justify-content-between align-items-center`}>
-                <h1>All images</h1>
-                <Dropdown title="All Images" items={ddItems} liftingDdTextUp={takeDdTitle} />
-              </div>
-              <MasonryLayout images={categoryImage} />
-          </ContainerCard>
-        </div>
+        <link
+          rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+          integrity="sha384-aAUYaYJio4fDl11u2DwhIb9i7Eo0RSQou1A1v0RPZf0G4kX7zDw6NjxuzdhlOaGf"
+          crossorigin="anonymous"
+        />
+
+        <Switch>
+          <Route exact path='/' component={Home} />
+          <Route exact path='/about' component={About} />
+          <Route exact path='/courses' component={CourseHome} />
+          <Route exact path='/team' component={Team} />
+          <Route exact path='/pricing' component={Pricing} />
+          <Route exact path='/journal' component={Blog} />
+          <Route exact path='/contact' component={Contact} />
+          <Route exact path='/login' component={Login} />
+          <Route exact path='/register' component={Register} />
+        </Switch>
+        <Footer />
+      </Router>
     </>
   )
 }
