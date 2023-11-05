@@ -16,11 +16,10 @@ function App() {
     <>
       <Router>
         <Header />
-        <link
-          rel="stylesheet"
+        <link 
+          rel="stylesheet" 
           href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
-          integrity="sha384-aAUYaYJio4fDl11u2DwhIb9i7Eo0RSQou1A1v0RPZf0G4kX7zDw6NjxuzdhlOaGf"
-          crossorigin="anonymous"
+          crossOrigin="anonymous"
         />
 
         <Switch>
