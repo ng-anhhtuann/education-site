@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import Back from "../common/back/Back"
+import Back from "../../shared/components/common/back/Back"
 import { Link } from "react-router-dom"
 import './login.css';
 import Toast from "../../shared/components/Toast";

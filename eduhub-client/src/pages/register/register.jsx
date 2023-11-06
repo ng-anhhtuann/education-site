@@ -1,5 +1,5 @@
 import React from "react";
-import Back from "../common/back/Back"
+import Back from "../../shared/components/common/back/Back"
 import "./register.css";
 
 const Register = () => {

@@ -4,7 +4,9 @@ const AuthService = {
     login: (e) => {
         return API.post('user/login', e)
             .then((res) => {
-                console.log(res)
+                if (res.data.status !== 200){
+                    return res.data.errors;
+                }
                 const id = res.data.data.id
                 setHeadersAndStorage(id);
                 return res;
