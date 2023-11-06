@@ -11,6 +11,9 @@
     border-radius: 5px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
+.login-form h2 {
+    margin-bottom: 20px;
+}
 
 .login-form input[type="text"],
 .login-form input[type="password"] {
