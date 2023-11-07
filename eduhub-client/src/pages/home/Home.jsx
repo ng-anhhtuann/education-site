@@ -1,11 +1,27 @@
 import React from "react"
 import Heading from "../../shared/components/common/heading/Heading"
 import "./home.css"
-import { homeAbout } from "../../dummydata"
+import Header from "../../shared/components/common/header/Header"
 
 const Home = () => {
+  const homeAbout = [
+    {
+      id: 1,
+      cover: "https://img.icons8.com/dotty/80/000000/storytelling.png",
+      title: "Online Courses",
+      desc: "Improve your seft-taught skill and earn more experience throughout organizational courses.",
+    },
+    {
+      id: 1,
+      cover: "https://img.icons8.com/ios/80/000000/diploma.png",
+      title: "Earn A Certificates",
+      desc: "Earn certificate each course for cop more badge and further upgrade your CV.",
+    }
+  ]
+  
   return (
     <>
+    <Header />
       <section className='aboutHome'>
         <div className='container flexSB'>
           <div className='left row'>

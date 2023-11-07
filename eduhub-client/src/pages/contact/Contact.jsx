@@ -1,10 +1,12 @@
 import React from "react"
 import Back from "../../shared/components/common/back/Back"
 import "./contact.css"
+import Header from "../../shared/components/common/header/Header"
 
 const Contact = () => {
   return (
     <>
+    <Header/>
       <Back title='Contact us' />
       <section className='contacts padding'>
         <div className='container shadow flexSB'>

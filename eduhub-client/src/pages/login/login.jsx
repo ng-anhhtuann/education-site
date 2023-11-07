@@ -4,6 +4,7 @@ import { Link } from "react-router-dom"
 import './login.css';
 import Toast from "../../shared/components/Toast";
 import AuthService from '../../shared/service/authService'; // Import your AuthService
+import Header from '../../shared/components/common/header/Header';
 
 const Login = () => {
     const [account, setAccount] = useState(''); // State to manage the username input
@@ -49,6 +50,7 @@ const Login = () => {
 
     return (
         <>
+        <Header/>
             <Back title='Login' />
             <section className="login-container">
                 {toast}
