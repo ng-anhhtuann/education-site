@@ -3,25 +3,25 @@ import Heading from "../../shared/components/common/heading/Heading"
 import "./home.css"
 import Header from "../../shared/components/common/header/Header"
 
-const Home = () => {
+const Welcome = () => {
   const homeAbout = [
     {
       id: 1,
       cover: "https://img.icons8.com/dotty/80/000000/storytelling.png",
       title: "Online Courses",
-      desc: "Improve your seft-taught skill and earn more experience throughout organizational courses.",
+      desc: "Enroll in organizational courses to improve your self-taught skills, gain experience, and earn certificates with badges to enhance your professional profile.",
     },
     {
       id: 1,
       cover: "https://img.icons8.com/ios/80/000000/diploma.png",
       title: "Earn A Certificates",
-      desc: "Earn certificate each course for cop more badge and further upgrade your CV.",
+      desc: "By earning certificates for each course, you can enhance your CV with more badges, showcasing your expertise and dedication to continuous learning.",
     }
   ]
   
   return (
     <>
-    <Header />
+      <Header route={'/login'} routeName={"LOGIN"} hidden={false}/>
       <section className='aboutHome'>
         <div className='container flexSB'>
           <div className='left row'>
@@ -32,11 +32,11 @@ const Home = () => {
             <div className='items'>
               {homeAbout.map((val, index) => {
                 return (
-                  <div className='item flexSB'>
+                  <div className='item flexSB' key={index}>
                     <div className='img'>
-                      <img src={val.cover} alt='' key={index}/>
+                      <img src={val.cover} alt=''/>
                     </div>
-                    <div className='text' key={index}>
+                    <div className='text'>
                       <h2>{val.title}</h2>
                       <p>{val.desc}</p>
                     </div>
@@ -51,4 +51,4 @@ const Home = () => {
   )
 }
 
-export default Home
+export default Welcome

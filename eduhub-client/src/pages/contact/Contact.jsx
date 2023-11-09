@@ -6,7 +6,7 @@ import Header from "../../shared/components/common/header/Header"
 const Contact = () => {
   return (
     <>
-    <Header/>
+    <Header route={'/login'} routeName={"LOGIN"} hidden={false}/>
       <Back title='Contact us' />
       <section className='contacts padding'>
         <div className='container shadow flexSB'>
@@ -35,9 +35,7 @@ const Contact = () => {
                 <input type='email' placeholder='Email' />
               </div>
               <input type='text' placeholder='Subject' />
-              <textarea cols='30' rows='10'>
-                Create a message here...
-              </textarea>
+              <textarea cols='30' rows='10' placeholder="Create a message here..."/>
               <button className='primary-btn'>SEND MESSAGE</button>
             </form>
           </div>
