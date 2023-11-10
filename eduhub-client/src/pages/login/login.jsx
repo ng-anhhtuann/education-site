@@ -1,79 +1,89 @@
-import React, { useState, useMemo } from 'react';
-import Back from "../../shared/components/common/back/Back"
-import { Link } from "react-router-dom"
-import './login.css';
+import React, { useState, useMemo } from "react";
+import Back from "../../shared/components/common/back/Back";
+import { Link, useNavigate } from "react-router-dom";
+import "./login.css";
 import Toast from "../../shared/components/Toast";
-import AuthService from '../../shared/service/authService'; // Import your AuthService
+import AuthService from "../../shared/service/authService"; // Import your AuthService
+import Header from "../../shared/components/common/header/Header";
 
 const Login = () => {
-    const [account, setAccount] = useState(''); // State to manage the username input
-    const [password, setPassword] = useState(''); // State to manage the password input
-    const [isNotify, setIsNotify] = useState(false);
-    const [textNotify, setTextNotify] = useState('');
-    const [typeNotify, setTypeNotify] = useState('');
+  const navigate = useNavigate();
 
-    const handleLogin = (e) => {
-        e.preventDefault();
-        const userData = {
-            account,
-            password,
-        };
+  const [account, setAccount] = useState(""); // State to manage the username input
+  const [password, setPassword] = useState(""); // State to manage the password input
+  const [isNotify, setIsNotify] = useState(false);
+  const [textNotify, setTextNotify] = useState("");
+  const [typeNotify, setTypeNotify] = useState("");
 
-        AuthService.login(userData)
-            .then((userData) => {
-                setTypeNotify('success'); //Set type for Toast
-                setTextNotify(`Login successfully!`); //Set text for Toast
-                return setIsNotify(true); //Set turning on Toast
-            })
-            .catch((err) => {
-                setTypeNotify('error');
-                setTextNotify(err);
-                return setIsNotify(true);
-            });
+  const handleLogin = (e) => {
+    e.preventDefault();
+    const userData = {
+      account,
+      password,
     };
 
-    // if (isNotify) {
-    //     setTimeout(() => {
-    //         setIsNotify(false);
-    //         if (typeNotify === 'success') {
-    //             navigate('/chat');
-    //         }
-    //     }, 2000);
-    // }
+    AuthService.login(userData)
+      .then((res) => {
+        if (res.data.status !== 200) {
+          setTypeNotify("error");
+          setTextNotify(res.data.errors);
+          return setIsNotify(true);
+        } else {
+          setTypeNotify("success");
+          setTextNotify(`Login successfully!`);
+          return setIsNotify(true);
+        }
+      })
+      .catch((err) => {
+        setTypeNotify("error");
+        setTextNotify(err);
+        return setIsNotify(true);
+      });
+  };
 
-    const toast = useMemo(() => {
-        return (
-            <Toast isNotify={isNotify} text={textNotify} type={typeNotify} />
-        );
-    }, [isNotify, textNotify, typeNotify]);
+  if (isNotify) {
+    setTimeout(() => {
+      setIsNotify(false);
+      if (typeNotify === "success") {
+        navigate("/home");
+      }
+    }, 2000);
+  }
 
-    return (
-        <>
-            <Back title='Login' />
-            <section className="login-container">
-                {toast}
-                <form className="login-form">
-                    <h2>Login</h2>
-                    <input
-                        id="Username"
-                        type="text"
-                        placeholder="Username"
-                        value={account}
-                        onChange={e => setAccount(e.target.value)}
-                    />
-                    <input
-                        id="Password"
-                        type="password"
-                        placeholder="Password"
-                        value={password}
-                        onChange={e => setPassword(e.target.value)}
-                    />
-                    <Link to="/register">Don't have an account? Register here</Link>
-                    <button type="button" onClick={handleLogin}>Login</button>
-                </form>
-            </section>
-        </>
-    );
+  const toast = useMemo(() => {
+    return <Toast isNotify={isNotify} text={textNotify} type={typeNotify} />;
+  }, [isNotify, textNotify, typeNotify]);
+
+  return (
+    <>
+      <Header route={'/register'} routeName={"REGISTER"} hidden={false}/>
+      <Back title="Login" />
+      <section className="login-container">
+        {toast}
+        <form className="login-form">
+          <h2>Login</h2>
+          <input
+            id="Username"
+            type="text"
+            placeholder="Username"
+            value={account}
+            onChange={(e) => setAccount(e.target.value)}
+          />
+          <input
+            id="Password"
+            type="password"
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+          <Link to="/register">Don't have an account? Register here</Link>
+          <button type="button" onClick={handleLogin}>
+            Login
+          </button>
+        </form>
+      </section>
+    </>
+  );
 };
 
 export default Login;

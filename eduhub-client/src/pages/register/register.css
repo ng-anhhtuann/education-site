@@ -12,8 +12,13 @@
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
+.register-form h2 {
+  margin-bottom: 20px;
+}
+
 .register-form input[type="text"],
-.register-form input[type="password"] {
+.register-form input[type="password"],
+.register-form input[type="email"] {
     width: 100%;
     padding: 10px;
     margin-bottom: 20px;
@@ -30,3 +35,24 @@
     border-radius: 5px;
     cursor: pointer;
 }
+
+.select-container {
+    display: flex;
+    margin-bottom: 20px;
+    align-items: center;
+    justify-content: space-between;
+  }
+  
+  .select-container label {
+    display: flex;
+    margin-right: 10px; /* Add spacing between label and select */
+  }
+  
+  .select-container select {
+    display: flex;
+    flex: 1; /* Expand the select element to fill available space */
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+  }
+  
