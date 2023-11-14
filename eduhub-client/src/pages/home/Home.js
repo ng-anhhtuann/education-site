@@ -1,12 +1,11 @@
 import React from "react";
 import Heading from "../../shared/components/common/heading/Heading";
 import SearchBar from "./SearchBar";
-import Navbar from "../../shared/components/common/navbar/NavBar";
+import Layout from "../Layout";
 
 const Home = () => {
   return (
-    <>
-      <Navbar />
+    <Layout>
       <SearchBar />
       <section className="aboutHome">
         <div className="container flexSB">
@@ -21,7 +20,7 @@ const Home = () => {
           </div>
         </div>
       </section>
-    </>
+    </Layout>
   );
 };
 
