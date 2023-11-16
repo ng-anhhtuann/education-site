@@ -7,7 +7,8 @@ const AuthService = {
         console.log({ res });
         if (res.data.status === 200) {
           const id = res.data.data.id;
-          setHeadersAndStorage(id);
+          const userData = JSON.stringify(res.data.data);
+          setHeadersAndStorage(id, userData);
         }
         return res;
       })
@@ -20,11 +21,12 @@ const AuthService = {
   register: (e) => {
     return API.post("user/edit", e)
       .then((res) => {
-        console.log({e})
+        console.log({ e });
         console.log({ res });
         if (res.data.status === 200) {
           const id = res.data.data.id;
-          setHeadersAndStorage(id);
+          const userData = JSON.stringify(res.data.data);
+          setHeadersAndStorage(id, userData);
         }
         return res;
       })
@@ -35,8 +37,9 @@ const AuthService = {
   },
 };
 
-const setHeadersAndStorage = (id) => {
+const setHeadersAndStorage = (id, userData) => {
   sessionStorage.setItem("ID", id); // Set userId in session storage
+  sessionStorage.setItem("USER_DATA", userData);
 };
 
 export default AuthService;

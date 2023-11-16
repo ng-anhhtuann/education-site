@@ -1,19 +1,17 @@
 import React from "react";
 import Heading from "../../shared/components/common/heading/Heading";
-import "./main.css";
 import SearchBar from "./SearchBar";
-import PrimarySearchAppBar from "./NavBar";
+import Layout from "../Layout";
 
 const Home = () => {
   return (
-    <>
-      <PrimarySearchAppBar />
+    <Layout>
       <SearchBar />
       <section className="aboutHome">
         <div className="container flexSB">
-          {/* <div className="left row">
+          <div className="left row">
             <img src="./images/about.webp" alt="" />
-          </div> */}
+          </div>
           <div className="right row">
             <Heading
               subtitle="LEARN CODE"
@@ -22,7 +20,7 @@ const Home = () => {
           </div>
         </div>
       </section>
-    </>
+    </Layout>
   );
 };
 
