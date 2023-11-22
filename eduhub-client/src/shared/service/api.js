@@ -2,7 +2,7 @@ import axios from 'axios';
 
 // Create an instance of axios with the desired configuration
 const API = axios.create({
-    baseURL: 'https://eduhubserver.azurewebsites.net/',
+    baseURL: 'https://eduhub.fly.dev/',
     headers: {
         Accept: 'application/json',
     },
