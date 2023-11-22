@@ -1,12 +1,10 @@
 import React from "react";
 import Heading from "../../shared/components/common/heading/Heading";
-import SearchBar from "./SearchBar";
 import Layout from "../Layout";
 
 const Home = () => {
   return (
     <Layout>
-      <SearchBar />
       <section className="aboutHome">
         <div className="container flexSB">
           <div className="left row">
