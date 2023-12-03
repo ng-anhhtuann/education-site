@@ -1,20 +1,18 @@
 import React from "react";
-import Heading from "../../shared/components/common/heading/Heading";
 import Layout from "../Layout";
+import "./main.css"
+import SearchSpace from "../../shared/components/common/search/SearchSpace";
 
 const Home = () => {
   return (
     <Layout>
-      <section className="aboutHome">
-        <div className="container flexSB">
-          <div className="left row">
-            <img src="./images/about.webp" alt="" />
+      <section className="about">
+        <div className="contain">
+          <div className="searchBar">
+            <SearchSpace/>
           </div>
-          <div className="right row">
-            <Heading
-              subtitle="LEARN CODE"
-              title="ONLINE CODE LEARNING AND EVERYTHING"
-            />
+          <div className="searchRes">
+
           </div>
         </div>
       </section>
