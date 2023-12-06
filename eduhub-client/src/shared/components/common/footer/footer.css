@@ -11,7 +11,6 @@
     color: #fff;
     font-size: 30px;
     font-weight: 500;
-    margin-bottom: 15px;
   }
   .newletter .right {
     display: flex;
@@ -53,7 +52,6 @@ footer {
 .footer-logo span {
   font-size: 14px;
   color: #777;
-  margin-bottom: 10px;
 }
 
 .footer-description p {

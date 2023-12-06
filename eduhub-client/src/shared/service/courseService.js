@@ -3,7 +3,7 @@ import API from './api';
 const CourseService = {
     searchCourseByCondition: (e) => {
         return API.post('course/list', e)
-            .then(({ res }) => {
+            .then((res) => {
                 console.log({res});
                 return res;
             })

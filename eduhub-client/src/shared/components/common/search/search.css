@@ -11,6 +11,13 @@
     text-align: center;
 }
 
+.left-section p{
+    margin: 20px 20px;
+    line-height: 40px;
+    font-size: 30px;
+    font-weight: bold;
+}
+
 input[type="text"] {
     width: 100%;
     padding: 10px;
@@ -20,11 +27,38 @@ input[type="text"] {
     border-color: black;
 }
 
+.input-row-flex {
+    margin-bottom: 15px;
+    flex-direction: row;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.input-row-flex p{
+    line-height: 12px;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.input-row-flex input{
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+.input-row p{
+    margin-top: 20px;
+    line-height: 12px;
+    font-size: 12px;
+    font-weight: bold;
+}
+
 .input-row {
     margin-bottom: 15px;
 }
 
 .confirm {
+    margin: 20px 0;
     width: 100%;
     padding: 15px;
     background-color: #1eb2a6;

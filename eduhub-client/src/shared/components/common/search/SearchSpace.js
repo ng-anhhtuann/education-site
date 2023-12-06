@@ -1,18 +1,15 @@
 import React, { useState } from "react";
 import "./search.css";
-import Slider from "react-slick/lib/slider";
-import ReactSlider from "react-slider";
+import CourseService from "../../../service/courseService";
 
 const SearchSpace = () => {
   const [textInput, setTextInput] = useState("");
   const [tags, setTags] = useState([]);
   const [tagInput, setTagInput] = useState("");
   const [showTagInput, setShowTagInput] = useState(false);
-  const [rangeValues, setRangeValues] = useState([0, 1000]);
+  const [min, setMin] = useState(0);
+  const [max, setMax] = useState(500);
 
-  const handleSliderChange = (newValues) => {
-    setRangeValues(newValues);
-  };
   const handleTagInput = (e) => {
     setTagInput(e.target.value);
   };
@@ -29,12 +26,28 @@ const SearchSpace = () => {
     setTags(updatedTags);
   };
 
-  const handleSearch = () => {
-    console.log("Search clicked:", textInput, rangeValues, tags);
+  const handleSearch = (e) => {
+    e.preventDefault();
+    const searchBody = {
+        page : 1,
+        pageSize: 6,
+        searchType: "FIELD",
+        params : {
+            min_price : Number(min),
+            max_price : Number(max),
+            title : textInput,
+            tag_list : tags
+        }
+    }
+
+    CourseService.searchCourseByCondition(searchBody).then((res) => {
+        console.log({searchBody})
+    })
   };
 
   return (
     <div className="left-section">
+        <p>Search something...</p>
       <div className="input-row">
         <input
           type="text"
@@ -43,36 +56,34 @@ const SearchSpace = () => {
           placeholder="Title..."
         />
       </div>
-      <ReactSlider
-        thumbClassName="example-thumb"
-        trackClassName="example-track"
-        defaultValue={[0, 1000]}
-        ariaLabel={["Lower thumb", "Upper thumb"]}
-        ariaValuetext={(state) => `Thumb value ${state.valueNow}`}
-        renderThumb={(props, state) => <div {...props}>{state.valueNow}</div>}
-        pearling
-        onAfterChange={handleSliderChange}
-        minDistance={10}
-      />
-      {/* <Slider
-        min={0}
-        max={1000}
-        defaultValue={[0, 1000]}
-        value={rangeValues}
-        onChange={handleSliderChange}
-      /> */}
-      <div className="input-row">
+      <div className="input-row-flex">
+        <p>Min</p>
         <input
           type="range"
           min={0}
-          max={1000}
-          value={rangeValues}
+          max={499}
+          value={min}
           onChange={(e) =>
-            setRangeValues(e.target.value.split(",").map(Number))
+            setMin(e.target.value)
           }
         />
+        <p>{min}</p>
+      </div>
+      <div className="input-row-flex">
+        <p>Max</p>
+        <input
+          type="range"
+          min={500}
+          max={1000}
+          value={max}
+          onChange={(e) =>
+            setMax(e.target.value)
+          }
+        />
+        <p>{max}</p>
       </div>
       <div className="input-row">
+      <p>Tags related</p>
         {tags.map((tag, index) => (
           <button
             key={index}

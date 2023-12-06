@@ -12,7 +12,7 @@ const Home = () => {
             <SearchSpace/>
           </div>
           <div className="searchRes">
-
+            
           </div>
         </div>
       </section>

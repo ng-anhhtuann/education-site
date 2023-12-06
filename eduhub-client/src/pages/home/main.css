@@ -54,18 +54,26 @@
 }
 
 .contain {
-  background-color: brown;
   display: flex;
+  margin-top: 10px;
   flex-direction: row;
 }
 
 .searchBar {
   background-color: rgb(252, 255, 247);
-  padding-left: 10px;
-  padding-right: 10px;
-  width: 15%;
+  padding: 10px;
+  width: 20%;
+  height: 50vh;
+  margin-left: 5px;
+  border-radius: 20px;
+  border: 1px solid black;
 }
 
 .searchRes {
-  background-color: #999999;
+  background-color: rgb(252, 255, 247);
+  margin-left: 5px;
+  width: 80%;
+  border-radius: 20px;
+  border: 1px solid black;
+  height: 90vh;
 }
