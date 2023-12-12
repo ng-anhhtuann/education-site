@@ -141,7 +141,6 @@ public class UserServiceImpl implements IUserService {
         if (userOptional.isEmpty()) {
             throw new Exception(CommonConstant.USER_NOT_FOUND);
         }
-        log.info(userOptional.get().toString());
         return mapper.map(userOptional.get(), SignUpDto.class);
     }
 

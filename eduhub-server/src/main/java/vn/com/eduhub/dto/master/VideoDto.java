@@ -20,6 +20,7 @@ public class VideoDto {
     private String name;
     private String url;
     private String courseId;
+    private String courseName;
     private String description;
     private Date updatedDate;
     private Date createdDate;

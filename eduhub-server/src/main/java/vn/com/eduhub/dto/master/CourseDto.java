@@ -18,6 +18,7 @@ public class CourseDto {
     private List<String> tagList;
     private Long studentCount;
     private String teacherId;
+    private String teacherName;
     private String description;
     private String thumbnailUrl;
     private Date updatedDate;

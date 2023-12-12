@@ -48,7 +48,7 @@ public class VideoRestImpl extends AbstractRest implements IVideoRest {
     public BaseRes list(CommonSearchReq searchDto, HttpServletRequest req, HttpServletResponse res) {
         long start = System.currentTimeMillis();
         try {
-            return this.successHandler.handlerSuccess(this.videoService.getList(searchDto), start);
+            return this.successHandler.handlerSuccess(this.videoService.search(searchDto), start);
         } catch (Exception ex) {
             ex.printStackTrace();
             return this.errorHandler.handlerException(ex, req, null, start);

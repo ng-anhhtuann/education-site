@@ -52,7 +52,7 @@ public class CourseRestImpl extends AbstractRest implements ICourseRest {
     public BaseRes list(CommonSearchReq searchDto, HttpServletRequest req, HttpServletResponse res) {
         long start = System.currentTimeMillis();
         try {
-            return this.successHandler.handlerSuccess(this.courseService.getList(searchDto), start);
+            return this.successHandler.handlerSuccess(this.courseService.search(searchDto), start);
         } catch (Exception ex) {
             ex.printStackTrace();
             return this.errorHandler.handlerException(ex, req, null, start);
