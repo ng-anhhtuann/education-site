@@ -4,12 +4,15 @@ const CourseService = {
     searchCourseByCondition: (e) => {
         return API.post('course/list', e)
             .then((res) => {
-                console.log({res});
+                // console.log(res)
                 return res;
             })
+            // .then(r => {
+            //     return r.data
+            // })
             .catch((err) => {
                 console.log(err);
-                throw err.response.data;
+                throw err
             });
     },
 
@@ -27,14 +30,13 @@ const CourseService = {
     },
 
     getCourseById: (id) => {
-        return API.get(`course/detail/${id}`)
-            .then(({ res }) => {
+        return API.get(`course/detail/` + id)
+            .then((res) => {
                 console.log({res});
                 return res;
             })
             .catch((err) => {
                 console.log(err);
-                throw err.response.data;
             });
     },
 

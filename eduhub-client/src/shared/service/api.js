@@ -13,6 +13,9 @@ API.interceptors.response.use(
     (res) => {
         return res;
     },
+    // (r) => {
+    //     return r.toJson()
+    // },
     (err) => {
         throw err;
     },

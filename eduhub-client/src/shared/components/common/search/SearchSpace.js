@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import "./search.css";
 import CourseService from "../../../service/courseService";
+import eventEmitter from "../../../utils/emitter";
 
 const SearchSpace = () => {
   const [textInput, setTextInput] = useState("");
@@ -41,7 +42,14 @@ const SearchSpace = () => {
     }
 
     CourseService.searchCourseByCondition(searchBody).then((res) => {
-        console.log({searchBody})
+      sessionStorage.setItem("SEARCH_COURSE", JSON.stringify(searchBody) || {})
+      sessionStorage.setItem("SEARCH_RESULT_LIST", JSON.stringify(res.data.data.datas) || [])
+      sessionStorage.setItem("SEARCH_RESULT_COUNT", res.data.data.totalData || 0)
+
+      eventEmitter.emit("LIST_DATA", JSON.stringify(res.data.data.datas) || []);
+      eventEmitter.emit("SEARCH_BODY", JSON.stringify(searchBody) || {});
+      eventEmitter.emit("DATA_COUNT", res.data.data.totalData || 0);
+      
     })
   };
 

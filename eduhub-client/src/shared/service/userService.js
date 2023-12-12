@@ -21,8 +21,6 @@ const UserService = {
   getUserById: (id) => {
     return API.get(`user/detail/${id}`)
       .then((res) => {
-        console.log("call api get detail");
-        console.log(res);
         return res;
       })
       .catch((err) => {
