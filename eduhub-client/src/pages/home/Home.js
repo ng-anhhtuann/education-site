@@ -36,16 +36,6 @@ const Home = () => {
 
   useEffect(() => {
     CourseService.searchCourseByCondition(search).then((res) => {
-      sessionStorage.setItem("SEARCH_COURSE", JSON.stringify(search));
-      sessionStorage.setItem(
-        "SEARCH_RESULT_LIST",
-        JSON.stringify(res.data.data.datas) || []
-      );
-      sessionStorage.setItem(
-        "SEARCH_RESULT_COUNT",
-        res.data.data.totalData || 0
-      );
-
       setListRes(JSON.parse(sessionStorage.getItem("SEARCH_RESULT_LIST")));
       setCount(JSON.parse(sessionStorage.getItem("SEARCH_RESULT_COUNT")));
     });
@@ -69,13 +59,13 @@ const Home = () => {
       />
     ));
 
-    const emitCourse = (id) => {
-      sessionStorage.setItem("COURSE_CLICK", id);
-      sessionStorage.removeItem("SEARCH_COURSE")
-      sessionStorage.removeItem("SEARCH_RESULT_LIST")
-      sessionStorage.removeItem("SEARCH_RESULT_COUNT")
-      navigate("/course")
-    }
+  const emitCourse = (id) => {
+    sessionStorage.setItem("COURSE_CLICK", id);
+    sessionStorage.removeItem("SEARCH_COURSE");
+    sessionStorage.removeItem("SEARCH_RESULT_LIST");
+    sessionStorage.removeItem("SEARCH_RESULT_COUNT");
+    navigate("/course");
+  };
 
   return (
     <Layout>
