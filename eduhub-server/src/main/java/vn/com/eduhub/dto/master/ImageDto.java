@@ -16,6 +16,7 @@ public class ImageDto {
     private Boolean isAvatar;
     private String url;
     private String ownerId;
+    private String ownerName;
     private Date updatedDate;
     private Date createdDate;
 }

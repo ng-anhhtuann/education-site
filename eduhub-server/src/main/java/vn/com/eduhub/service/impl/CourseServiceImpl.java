@@ -4,7 +4,6 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 import vn.com.eduhub.controller.req.CommonSearchReq;
@@ -13,9 +12,11 @@ import vn.com.eduhub.dto.res.ObjectDataRes;
 import vn.com.eduhub.entity.Course;
 import vn.com.eduhub.repository.CourseRepository;
 import vn.com.eduhub.service.ICourseService;
+import vn.com.eduhub.service.IUserService;
 import vn.com.eduhub.utils.CommonConstant;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class CourseServiceImpl implements ICourseService {
@@ -28,6 +29,9 @@ public class CourseServiceImpl implements ICourseService {
     @Autowired
     CourseRepository courseRepository;
 
+    @Autowired
+    IUserService userService;
+
     /**
      * Mô tả: id : id của khoá học cần cập nhật (nếu có id truyền vào khác null) price: giá tiền mua khoá học title : tên/tiêu đề course
      * tagList : thẻ từ khoá liên quan đến khoá học teacherId : id user truyền vào tương ứng người tạo khoá học description : mô tả khoá học
@@ -36,7 +40,7 @@ public class CourseServiceImpl implements ICourseService {
      * Khi tạo mới course thì chỉ cho phép tạo mới theo các field: price, title, tagList, teacherId, description, thumbnailUrl
      * <p>
      * Khi cập nhật khoá học chỉ cho phép cập nhật theo các field: price, title, tagList, description, thumbnailUrl
-     * 
+     *
      * @throws Exception
      */
     @Override
@@ -65,16 +69,16 @@ public class CourseServiceImpl implements ICourseService {
                 if (dto.getTagList() != null)
                     course.setTagList(dto.getTagList());
                 if (dto.getDescription() != null || !dto.getDescription().trim().isEmpty()) {
-                    course.setDescription(dto.getDescription());}
-                else {
+                    course.setDescription(dto.getDescription());
+                } else {
                     throw new Exception(CommonConstant.EMPTY_DESCRIPTION);
                 }
                 if (dto.getThumbnailUrl() != null || !dto.getThumbnailUrl().trim().isEmpty()) {
-                    course.setThumbnailUrl(dto.getThumbnailUrl());}
-                else {
+                    course.setThumbnailUrl(dto.getThumbnailUrl());
+                } else {
                     throw new Exception(CommonConstant.PROCESS_FAIL);
                 }
-                    courseRepository.save(course);
+                courseRepository.save(course);
                 return course;
             } else {
                 throw new Exception(CommonConstant.COURSE_NOT_FOUND);
@@ -82,17 +86,22 @@ public class CourseServiceImpl implements ICourseService {
         }
     }
 
+    @Override
+    public ObjectDataRes<Course> getList(CommonSearchReq req) {
+        return null;
+    }
+
     /**
      * @flow Search field được cho phép ở course là: + min_price là cận dưới của price + max_price là cận trên của price + title + tag_list
-     *       (mảng các tag topic liên quan đến khóa học) Datatype của các field search đều là String Dynamic search lúc này kiểm tra chuỗi
-     *       có chứa chuỗi con hay không. Nếu page = 0 thì là lấy hết record theo trạng thái search Nếu searchType = "ALL" thì sẽ là search
-     *       tất cả mặc kệ các params Nếu searchType = "FIELD" thì sẽ là search theo params
+     * (mảng các tag topic liên quan đến khóa học) Datatype của các field search đều là String Dynamic search lúc này kiểm tra chuỗi
+     * có chứa chuỗi con hay không. Nếu page = 0 thì là lấy hết record theo trạng thái search Nếu searchType = "ALL" thì sẽ là search
+     * tất cả mặc kệ các params Nếu searchType = "FIELD" thì sẽ là search theo params
      * @default Sort by date created
      */
     @Override
-    public ObjectDataRes<Course> getList(CommonSearchReq req) {
+    public ObjectDataRes<CourseDto> search(CommonSearchReq req) {
         List<Course> listData = new ArrayList<>();
-
+        List<CourseDto> courseDtoList;
         Query query = new Query();
 
         query.with(Sort.by(Sort.Order.desc("created_date")));
@@ -113,27 +122,28 @@ public class CourseServiceImpl implements ICourseService {
             listData = mongoTemplate.find(query, Course.class);
         }
         if (req.getSearchType().equals("FIELD") && req.getParams() != null) {
-            Criteria criteria = new Criteria();
-            for (Map.Entry<String, Object> entry : req.getParams().entrySet()) {
-                String key = entry.getKey();
-                Object value = entry.getValue();
-
-                if ("min_price".equals(key) && value instanceof Long) {
-                    criteria.andOperator(Criteria.where("price").gte(value));
-                } else if ("max_price".equals(key) && value instanceof Long) {
-                    criteria.andOperator(Criteria.where("price").lte(value));
-                } else if ("tag_list".equals(key) && value instanceof String[]) {
-                    criteria.andOperator(Criteria.where(key).in(value));
-                } else if (value instanceof String) {
-                    criteria.andOperator(Criteria.where(key).regex(String.valueOf(value), "i"));
-                }
-            }
-
-            query.addCriteria(criteria);
-            listData = mongoTemplate.find(query, Course.class);
+            listData = courseRepository.listCourseByCondition((Integer) req.getParams().get("min_price"), (Integer) req.getParams().get("max_price")
+                , (ArrayList<String>) req.getParams().get("tag_list"), (String) req.getParams().get("title"));
         }
 
-        return new ObjectDataRes<>(listData.size(), listData);
+        courseDtoList = listData.stream()
+            .map(course -> {
+                CourseDto courseDto = mapper.map(course, CourseDto.class);
+                try {
+                    courseDto.setTeacherName(userService.detail(course.getTeacherId()).getUserName());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    courseDto.setTeacherName("UNKNOWN");
+                }
+                return courseDto;
+            })
+            .collect(Collectors.toList());
+
+        query.skip(0);
+        query.limit(0);
+        int size = mongoTemplate.find(query, Course.class).size();
+
+        return new ObjectDataRes<>(size, courseDtoList);
     }
 
     @Override

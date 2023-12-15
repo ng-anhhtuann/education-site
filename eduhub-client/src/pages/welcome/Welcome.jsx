@@ -1,6 +1,6 @@
 import React from "react"
 import Heading from "../../shared/components/common/heading/Heading"
-import "./home.css"
+import "./welcome.css"
 import Header from "../../shared/components/common/header/Header"
 
 const Welcome = () => {

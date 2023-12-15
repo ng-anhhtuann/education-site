@@ -10,6 +10,8 @@ import Welcome from "./pages/welcome/Welcome";
 import Login from "./pages/login/login";
 import Register from "./pages/register/register";
 import Home from "./pages/home/Home";
+import CoursePage from "./pages/course/CoursePage";
+import Profile from "./pages/profile/Profile";
 
 function App() {
   return (
@@ -21,6 +23,8 @@ function App() {
           <Route exact path="/contact" element={<Contact />} />
           <Route exact path="/login" element={<Login />} />
           <Route exact path="/register" element={<Register />} />
+          <Route exact path="/course" element={<CoursePage/>} />
+          <Route exact path="/profile" element={<Profile/>} />
         </Switch>
         <Footer />
       </div>

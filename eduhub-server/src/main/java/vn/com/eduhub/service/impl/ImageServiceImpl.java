@@ -16,10 +16,13 @@ import vn.com.eduhub.entity.User;
 import vn.com.eduhub.repository.CourseRepository;
 import vn.com.eduhub.repository.ImageRepository;
 import vn.com.eduhub.repository.UserRepository;
+import vn.com.eduhub.service.ICourseService;
 import vn.com.eduhub.service.IImageService;
+import vn.com.eduhub.service.IUserService;
 import vn.com.eduhub.utils.CommonConstant;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class ImageServiceImpl implements IImageService {
@@ -38,6 +41,12 @@ public class ImageServiceImpl implements IImageService {
     @Autowired
     CourseRepository courseRepository;
 
+    @Autowired
+    ICourseService courseService;
+
+    @Autowired
+    IUserService userService;
+
     /**
      * Thêm mới hoặc chỉnh sửa
      * Chỉnh sửa chỉ theo các field name và url
@@ -46,7 +55,7 @@ public class ImageServiceImpl implements IImageService {
     public Image edit(ImageDto dto) throws Exception {
         if (dto.getId() == null || dto.getId().isEmpty() || dto.getId().isBlank()) {
             Image img = mapper.map(dto, Image.class);
-            if (img.getIsAvatar()){
+            if (img.getIsAvatar()) {
                 Optional<User> userOptional = userRepository.findById(img.getOwnerId());
                 if (userOptional.isEmpty())
                     throw new Exception(CommonConstant.USER_NOT_FOUND);
@@ -82,7 +91,36 @@ public class ImageServiceImpl implements IImageService {
      */
     @Override
     public ObjectDataRes<Image> getList(CommonSearchReq req) {
+        return null;
+    }
+
+    @Override
+    public ImageDto detail(String id) throws Exception {
+        Optional<Image> imageOptional = imageRepository.findById(id);
+        if (imageOptional.isEmpty()) {
+            throw new Exception(CommonConstant.FILE_NOT_FOUND);
+        }
+        return mapper.map(imageOptional.get(), ImageDto.class);
+    }
+
+    @Override
+    public String delete(String id) throws Exception {
+        Optional<Image> imageOptional = imageRepository.findById(id);
+        if (imageOptional.isEmpty()) {
+            throw new Exception(CommonConstant.FILE_NOT_FOUND);
+        }
+        try {
+            imageRepository.deleteById(id);
+            return id;
+        } catch (Exception ex) {
+            throw new Exception(CommonConstant.PROCESS_FAIL);
+        }
+    }
+
+    @Override
+    public ObjectDataRes<ImageDto> search(CommonSearchReq req) {
         List<Image> listData = new ArrayList<>();
+        List<ImageDto> dtoList;
 
         Query query = new Query();
 
@@ -121,30 +159,19 @@ public class ImageServiceImpl implements IImageService {
             }
         }
 
-        return new ObjectDataRes<>(listData.size(), listData);
-    }
+        dtoList = listData.stream()
+            .map(image -> {
+                ImageDto imageDto = mapper.map(image, ImageDto.class);
+                try {
+                    imageDto.setOwnerName(image.getIsAvatar() ? userService.detail(image.getOwnerId()).getUserName() : courseService.detail(image.getOwnerId()).getTeacherName());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    imageDto.setOwnerName("UNKNOWN");
+                }
+                return imageDto;
+            })
+            .collect(Collectors.toList());
 
-    @Override
-    public ImageDto detail(String id) throws Exception {
-        Optional<Image> imageOptional = imageRepository.findById(id);
-        if (imageOptional.isEmpty()) {
-            throw new Exception(CommonConstant.FILE_NOT_FOUND);
-        }
-        return mapper.map(imageOptional.get(), ImageDto.class);
+        return new ObjectDataRes<>(dtoList.size(), dtoList);
     }
-
-    @Override
-    public String delete(String id) throws Exception {
-        Optional<Image> imageOptional = imageRepository.findById(id);
-        if (imageOptional.isEmpty()) {
-            throw new Exception(CommonConstant.FILE_NOT_FOUND);
-        }
-        try {
-            imageRepository.deleteById(id);
-            return id;
-        } catch (Exception ex) {
-            throw new Exception(CommonConstant.PROCESS_FAIL);
-        }
-    }
-
 }
