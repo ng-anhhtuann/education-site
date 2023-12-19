@@ -1,0 +1,18 @@
+import React from "react";
+import "./video.css";
+
+const VideoItem = ({ video, onClick }) => {
+  return (
+    <div className="video-container" onClick={onClick}>
+      <div className="video-parent">
+        <img src='./player.png' alt="" />
+      </div>
+      <div className="text-info-container">
+        <h1>{video.title}</h1>
+        <h2>{video.description}</h2>
+      </div>
+    </div>
+  );
+};
+
+export default VideoItem;

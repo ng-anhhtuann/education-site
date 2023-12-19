@@ -1,0 +1,50 @@
+.video-container {
+    display: flex;
+    justify-content: space-evenly;
+    flex-direction: column;
+    margin: 10px 10px 5px;
+    background-color: white;
+    max-height: 300px;
+    width: 30%;
+    border-radius: 20px;
+    border: 2px solid black;
+    padding: 10px;
+    transition: background-color 0.3s ease;
+    cursor: pointer;
+}
+
+.video-container:hover {
+    background-color: lightblue;
+}
+
+.video-container h1 {
+    font-size: 1.2em;
+}
+
+.video-container h2 {
+    font-size: 1em;
+    font-weight: lighter;
+    color: darkgray;
+}
+
+.text-info-container {
+    height: 40%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.video-parent {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 60%;
+    overflow: hidden;
+}
+
+.video-parent img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    display: block;
+}
