@@ -1,6 +1,6 @@
 import React from "react";
 import "./video.css";
-import thumbnail from "./player.png"
+import thumbnail from "./player.webp"
 
 const VideoItem = ({ video, onClick }) => {
   return (

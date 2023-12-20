@@ -4,7 +4,6 @@ import {
   Routes as Switch,
   Route,
 } from "react-router-dom";
-import Contact from "./pages/contact/Contact";
 import Footer from "./shared/components/common/footer/Footer";
 import Welcome from "./pages/welcome/Welcome";
 import Login from "./pages/login/login";
@@ -21,7 +20,6 @@ function App() {
         <Switch>
           <Route exact path="/" element={<Welcome />} />
           <Route exact path="/home" element={<Home />} />
-          <Route exact path="/contact" element={<Contact />} />
           <Route exact path="/login" element={<Login />} />
           <Route exact path="/register" element={<Register />} />
           <Route exact path="/course" element={<CoursePage/>} />
