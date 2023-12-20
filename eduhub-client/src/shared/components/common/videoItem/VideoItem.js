@@ -1,11 +1,12 @@
 import React from "react";
 import "./video.css";
+import thumbnail from "./player.png"
 
 const VideoItem = ({ video, onClick }) => {
   return (
     <div className="video-container" onClick={onClick}>
       <div className="video-parent">
-        <img src='./player.png' alt="" />
+        <img src={thumbnail} alt="" />
       </div>
       <div className="text-info-container">
         <h1>{video.title}</h1>

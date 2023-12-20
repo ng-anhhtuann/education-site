@@ -6,8 +6,10 @@ import CourseItem from "../../shared/components/common/courseItem/CourseItem";
 import VideoItem from "../../shared/components/common/videoItem/VideoItem";
 import Pagination from "@mui/material/Pagination";
 import VideoService from "../../shared/service/videoService";
+import { useNavigate } from "react-router-dom";
 
 const CoursePage = () => {
+  const navigate = useNavigate();
   const [id, setId] = useState("");
   const [course, setCourse] = useState({});
   const [isLoading, setIsLoading] = useState(true);
@@ -28,11 +30,11 @@ const CoursePage = () => {
       setId(courseId);
 
       try {
-        const response = await CourseService.getCourseById(courseId);
+        await CourseService.getCourseById(courseId);
         setCourse(JSON.parse(sessionStorage.getItem("CURRENT_COURSE")));
         setIsLoading(false);
         search.params.course_id = courseId;
-        const videoResponse = await VideoService.searchVideoByCondition(search);
+        await VideoService.searchVideoByCondition(search);
         setVideoList(
           JSON.parse(sessionStorage.getItem("VIDEO_LIST_BY_COURSE_ID"))
         );
@@ -47,10 +49,16 @@ const CoursePage = () => {
 
     fetchCourse();
   }, []);
+  
+  const callGetDetailVideo = (id) => {
+    console.log("CLICK")
+    VideoService.getVideoById(id);
+    navigate("/video");
+  }
 
   const renderedVideoItems = videoList
     .slice(0, 6)
-    .map((data, index) => <VideoItem key={index} video={data} />);
+    .map((data, index) => <VideoItem key={index} video={data} onClick={() => callGetDetailVideo(data.id)}/>);
 
   const calculateTotalPages = (totalData, pageSize) => {
     return Math.ceil(totalData / pageSize);

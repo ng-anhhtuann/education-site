@@ -1,0 +1,17 @@
+.videoList {
+    display: flex;
+    margin-top: 10px;
+    height: 90vh;
+    flex-direction: row;
+  }
+  
+  .videoPlayer {
+    background-color: white;
+    margin-left: 10px;
+    width: 80%;
+    border-radius: 20px;
+    border: 1px solid black;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+  }
