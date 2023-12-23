@@ -4,7 +4,6 @@ import {
   Routes as Switch,
   Route,
 } from "react-router-dom";
-import Contact from "./pages/contact/Contact";
 import Footer from "./shared/components/common/footer/Footer";
 import Welcome from "./pages/welcome/Welcome";
 import Login from "./pages/login/login";
@@ -12,6 +11,7 @@ import Register from "./pages/register/register";
 import Home from "./pages/home/Home";
 import CoursePage from "./pages/course/CoursePage";
 import Profile from "./pages/profile/Profile";
+import VideoPage from "./pages/video/VideoPage";
 
 function App() {
   return (
@@ -20,11 +20,11 @@ function App() {
         <Switch>
           <Route exact path="/" element={<Welcome />} />
           <Route exact path="/home" element={<Home />} />
-          <Route exact path="/contact" element={<Contact />} />
           <Route exact path="/login" element={<Login />} />
           <Route exact path="/register" element={<Register />} />
           <Route exact path="/course" element={<CoursePage/>} />
           <Route exact path="/profile" element={<Profile/>} />
+          <Route exact path="/video" element={<VideoPage/>} />
         </Switch>
         <Footer />
       </div>
