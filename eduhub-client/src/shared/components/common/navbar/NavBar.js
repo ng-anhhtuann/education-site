@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 import { IoIosNotificationsOutline, IoIosAddCircle } from "react-icons/io";
 import "./navbar.css";
+import { useNavigate } from "react-router-dom"
 
 const Navbar = ({ userData }) => {
+  const navigate = useNavigate()
   const [notificationCount, setNotificationCount] = useState(0);
 
   // Function to simulate receiving a new notification
@@ -10,10 +12,14 @@ const Navbar = ({ userData }) => {
     setNotificationCount(notificationCount + 1);
   };
 
+  const toHome = () => {
+    navigate("/home")
+  }
+
   return (
     <nav id="navbar" className="navbar">
       <div className="navbar-container">
-        <h2 className="navbar-brand">EduHub</h2>
+        <h2 className="navbar-brand" onClick={() => toHome()}>EduHub</h2>
         <div className="navbar-menu">
           <div className="notification-badge" onClick={receiveNotification}>
             <IoIosNotificationsOutline

@@ -9,13 +9,15 @@
     border-radius: 20px;
     border: 2px solid black;
     padding: 10px;
-    transition: background-color 0.3s ease; /* Add transition for smooth effect */
+    transition: background-color 0.3s ease;
+    /* Add transition for smooth effect */
     cursor: pointer;
 }
 
 .search-container:hover {
-    background-color: lightblue; /* Change background color on hover */
-  }
+    background-color: lightblue;
+    /* Change background color on hover */
+}
 
 .search-container h1 {
     font-size: 1.2em;
@@ -27,7 +29,7 @@
     color: darkgray;
 }
 
-.text-info-container{
+.text-info-container {
     height: 40%;
     display: flex;
     flex-direction: column;
@@ -40,15 +42,15 @@
     align-items: center;
     height: 60%;
     overflow: hidden;
-  }
-  
-  .image-container img {
+}
+
+.image-container img {
     max-width: 100%;
     max-height: 100%;
     object-fit: contain;
     display: block;
-  }
-  
+}
+
 
 .flex-row {
     display: flex;

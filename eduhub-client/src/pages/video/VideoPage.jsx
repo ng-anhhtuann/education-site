@@ -1,34 +1,80 @@
 import React, { useState, useEffect } from "react";
 import Layout from "../Layout";
-import CourseItem from "../../shared/components/common/courseItem/CourseItem";
 import "./video.css";
+import ReactPlayer from "react-player";
+import MiniVideoItem from "../../shared/components/common/miniVideoItem/miniVideo";
 
 const VideoPage = () => {
-    const [course, setCourse] = useState({})
-    const [currentVideo, setCurrentVideo] = useState({});
-    const [videoList, setVideoList] = useState([]);
+  const [id, setId] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
+  const [currentVideo, setCurrentVideo] = useState({});
+  const [videoList, setVideoList] = useState([]);
 
-    useEffect(() => {
-        const fetchVideo = () => {
-            setCourse(JSON.parse(sessionStorage.getItem("CURRENT_COURSE")));
+  useEffect(() => {
+    setTimeout(() => {
+      const storedCurrentVideo = JSON.parse(
+        sessionStorage.getItem("CURRENT_VIDEO")
+      );
+      setCurrentVideo(storedCurrentVideo);
+      setId(storedCurrentVideo.id);
 
-            setCurrentVideo(JSON.parse(sessionStorage.getItem("CURRENT_VIDEO")));
+      const storedVideoList = JSON.parse(
+        sessionStorage.getItem("VIDEO_LIST_BY_COURSE_ID")
+      );
+      setVideoList(storedVideoList);
+      setIsLoading(false);
+    }, 1000);
+  }, []);
 
-            setVideoList(JSON.parse(sessionStorage.getItem("VIDEO_LIST_BY_COURSE_ID")));
-          };
-          fetchVideo();
-    }, [])
+  function formatDate(unixTime) {
+    const date = new Date(unixTime);
+    const options = {
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+    };
+    return date.toLocaleDateString("en-US", options);
+  }
+
+  const videoClick = (data) => {
+    setCurrentVideo(data);
+    setId(data.id);
+    sessionStorage.setItem("CURRENT_VIDEO", JSON.stringify(data));
+  };
 
   return (
     <Layout>
       <section className="about">
         <div className="videoList">
-        {course === null ?  <p>Loading...</p> : <CourseItem data={course} />}
+          <div className="videoListContainer">
+            {isLoading ? (
+              <p>Loading...</p>
+            ) : (
+              videoList.map((data) => (
+                <MiniVideoItem
+                  key={data.id}
+                  video={data}
+                  onChoose={data.id === id}
+                  onClick={() => videoClick(data)}
+                />
+              ))
+            )}
+          </div>
           <div className="videoPlayer">
-            <video controls autoPlay width={"80%"} height={"80%"}>
-              <source src={currentVideo.url} type="video/mp4" />
+            <ReactPlayer
+              url={currentVideo.url}
+              controls
+              width="100%"
+              height="80%"
+            >
               Your browser does not support the video tag.
-            </video>
+            </ReactPlayer>
+            <h1>{currentVideo.title}</h1>
+            <h2>{currentVideo.description}</h2>
+            <h3>Created at: {formatDate(currentVideo.createdDate)}</h3>
           </div>
         </div>
       </section>
