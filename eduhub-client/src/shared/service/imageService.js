@@ -1,17 +1,17 @@
 import { API } from "./api";
 
-const VideoService = {
-  searchVideoByCondition: (e) => {
-    return API.post("video/list", e)
+const ImageService = {
+  searchImageByCondition: (e) => {
+    return API.post("image/list", e)
       .then((res) => {
         if (res.data.status === 200) {
-          sessionStorage.setItem("SEARCH_VIDEO", JSON.stringify(e));
+          sessionStorage.setItem("SEARCH_IMAGE", JSON.stringify(e));
           sessionStorage.setItem(
-            "VIDEO_LIST_BY_COURSE_ID",
+            "IMAGE_LIST_BY_OWNER_ID",
             JSON.stringify(res.data.data.datas) || []
           );
           sessionStorage.setItem(
-            "VIDEO_COUNT_BY_COURSE_ID",
+            "IMAGE_COUNT_BY_OWNER_ID",
             res.data.data.totalData || 0
           );
         }
@@ -23,8 +23,8 @@ const VideoService = {
       });
   },
 
-  createOrUpdateVideo: (e) => {
-    return API.post("video/edit", e)
+  createOrUpdateImage: (e) => {
+    return API.post("image/edit", e)
       .then(({ res }) => {
         console.log({ res });
         setStorage(res.data.id);
@@ -36,13 +36,13 @@ const VideoService = {
       });
   },
 
-  getVideoById: (id) => {
-    return API.get(`video/detail/${id}`)
+  getImageById: (id) => {
+    return API.get(`image/detail/${id}`)
       .then((res) => {
-        console.log(res);
+        console.log(res)
         if (res.data.status === 200) {
-          const video = JSON.stringify(res.data.data);
-          setStorage(video);
+          const img = JSON.stringify(res.data.data);
+          setStorage(img);
         }
         return res;
       })
@@ -54,7 +54,7 @@ const VideoService = {
 };
 
 const setStorage = (data) => {
-  sessionStorage.setItem("CURRENT_VIDEO", data); // Set current video in-state in session storage
+  sessionStorage.setItem("CURRENT_IMAGE", data);
 };
 
-export default VideoService;
+export default ImageService;

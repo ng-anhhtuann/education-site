@@ -12,6 +12,7 @@ import Home from "./pages/home/Home";
 import CoursePage from "./pages/course/CoursePage";
 import Profile from "./pages/profile/Profile";
 import VideoPage from "./pages/video/VideoPage";
+import CourseAddPage from "./pages/createCourse/CourseAdd";
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
           <Route exact path="/course" element={<CoursePage/>} />
           <Route exact path="/profile" element={<Profile/>} />
           <Route exact path="/video" element={<VideoPage/>} />
+          <Route exact path="/course/create" element={<CourseAddPage/>} />
         </Switch>
         <Footer />
       </div>

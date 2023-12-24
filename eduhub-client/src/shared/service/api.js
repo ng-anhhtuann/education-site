@@ -1,24 +1,37 @@
-import axios from 'axios';
+import axios from "axios";
 
-// Create an instance of axios with the desired configuration
 const API = axios.create({
-    baseURL: 'https://eduhub.fly.dev/',
-    headers: {
-        Accept: 'application/json',
-    },
+  baseURL: "https://eduhub.fly.dev/",
+  headers: {
+    Accept: "application/json",
+  },
 });
 
-// Add a response interceptor
+const FileAPI = axios.create({
+  baseURL: "https://eduhub.fly.dev/",
+  headers: {
+    Accept: "application/json",
+    "Content-Type": "multipart/form-data",
+  },
+});
+
+// Add response interceptors for both instances if needed
 API.interceptors.response.use(
-    (res) => {
-        return res;
-    },
-    // (r) => {
-    //     return r.toJson()
-    // },
-    (err) => {
-        throw err;
-    },
+  (res) => {
+    return res;
+  },
+  (err) => {
+    throw err;
+  }
 );
 
-export default API;
+FileAPI.interceptors.response.use(
+  (res) => {
+    return res;
+  },
+  (err) => {
+    throw err;
+  }
+);
+
+export { API, FileAPI };

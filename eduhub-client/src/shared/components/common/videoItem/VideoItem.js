@@ -8,7 +8,7 @@ const VideoItem = ({ video, onClick }) => {
       <div className="video-parent">
         <img src={thumbnail} alt="" />
       </div>
-      <div className="text-info-container">
+      <div className="video-text-container">
         <h1>{video.title}</h1>
         <h2>{video.description}</h2>
       </div>
