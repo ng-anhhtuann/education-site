@@ -27,8 +27,9 @@
     color: darkgray;
 }
 
-.text-info-container {
-    height: 40%;
+.video-text-container {
+    margin-top: 20px;
+    height: 30%;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
