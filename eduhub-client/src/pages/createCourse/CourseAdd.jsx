@@ -1,12 +1,14 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useMemo } from "react";
 import Layout from "../Layout";
+import { FileAPI } from "../../shared/service/api";
 import "./courseAdd.css";
 import Toast from "../../shared/components/Toast";
+import FileService from "../../shared/service/fileService";
 
 const CourseAddPage = () => {
-    const [isNotify, setIsNotify] = useState(false);
-    const [textNotify, setTextNotify] = useState("");
-    const [typeNotify, setTypeNotify] = useState("");
+  const [isNotify, setIsNotify] = useState(false);
+  const [textNotify, setTextNotify] = useState("");
+  const [typeNotify, setTypeNotify] = useState("");
 
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -14,6 +16,43 @@ const CourseAddPage = () => {
   const [tagInput, setTagInput] = useState("");
   const [showTagInput, setShowTagInput] = useState(false);
   const [price, setPrice] = useState(59);
+
+  const [imageFile, setImageFile] = useState(null);
+  const [imageUrl, setImageUrl] = useState(
+    "https://firebasestorage.googleapis.com/v0/b/edu-hub-3772f.appspot.com/o/thumbnail.png?alt=media"
+  );
+
+  const handleChangeFile = (e) => {
+    const reader = new FileReader();
+    reader.onload = function (event) {
+      setImageUrl(event.target.result);
+      if (e.target.files && e.target.files[0]) {
+        setImageFile(e.target.files[0]);
+      } else {
+        const file = new File([event.target.result], "thumbnail.png", {
+          type: "image/png",
+        });
+        setImageFile(file);
+      }
+    };
+    reader.readAsDataURL(e.target.files[0]);
+
+    if (e.target.files && e.target.files[0]) {
+    }
+  };
+
+  const uploadImageToFirebase = () => {
+    
+    if (imageFile) {
+      FileService.uploadImage(imageFile)
+        .then((response) => {
+          console.log(response);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
+  };
 
   const handleTagInput = (e) => {
     setTagInput(e.target.value);
@@ -33,9 +72,8 @@ const CourseAddPage = () => {
 
   const handleConfirm = (e) => {
     e.preventDefault();
-    
-    console.log("confirm")
 
+    console.log("confirm");
   };
 
   if (isNotify) {
@@ -53,7 +91,7 @@ const CourseAddPage = () => {
       <div className="course-add-container">
         {toast}
         <div className="add-container">
-          <p>Create a course ✨</p>
+          <p className="add-container-greet">Create a course ✨</p>
           <div className="course-title">
             <input
               type="text"
@@ -111,8 +149,26 @@ const CourseAddPage = () => {
               placeholder="Description here..."
             />
           </div>
+          <div className="course-image">
+            <p>Upload thumbnail:</p>
+            <div>
+              <img
+                src={imageUrl}
+                onClick={(e) => document.getElementById("fileID").click()}
+                alt=""
+                className="thumbnail-image"
+              />
+              <input
+                type="file"
+                id="fileID"
+                onChange={handleChangeFile}
+                style={{ display: "none" }}
+                accept="image/*"
+              />
+            </div>
+          </div>
           <div className="input-row">
-            <button className="confirm" onClick={handleConfirm}>
+            <button className="confirm" onClick={uploadImageToFirebase}>
               Confirm
             </button>
           </div>
