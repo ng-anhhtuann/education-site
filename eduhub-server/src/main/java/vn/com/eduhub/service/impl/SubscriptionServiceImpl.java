@@ -41,10 +41,9 @@ public class SubscriptionServiceImpl implements ISubscriptionService {
     @Autowired
     SubscriptionRepository subscriptionRepository;
 
-	/**
-	 * Add subscription with validate data
-	 * Not edit
-	 */
+    /**
+     * Add subscription with validate data Not edit
+     */
     @Override
     public Subscription edit(SubscriptionDto dto) throws Exception {
         Optional<Course> courseOptional = courseRepository.findById(dto.getCourseId());
@@ -75,9 +74,9 @@ public class SubscriptionServiceImpl implements ISubscriptionService {
         return subscription;
     }
 
-	/**
-	 * Search by student_id and course_id
-	 */
+    /**
+     * Search by student_id and course_id
+     */
     @Override
     public ObjectDataRes<Subscription> getList(CommonSearchReq req) {
         List<Subscription> listData = new ArrayList<>();

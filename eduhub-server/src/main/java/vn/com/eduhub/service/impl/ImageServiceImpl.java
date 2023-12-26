@@ -48,8 +48,7 @@ public class ImageServiceImpl implements IImageService {
     IUserService userService;
 
     /**
-     * Thêm mới hoặc chỉnh sửa
-     * Chỉnh sửa chỉ theo các field name và url
+     * Thêm mới hoặc chỉnh sửa Chỉnh sửa chỉ theo các field name và url
      */
     @Override
     public Image edit(ImageDto dto) throws Exception {
@@ -100,7 +99,16 @@ public class ImageServiceImpl implements IImageService {
         if (imageOptional.isEmpty()) {
             throw new Exception(CommonConstant.FILE_NOT_FOUND);
         }
-        return mapper.map(imageOptional.get(), ImageDto.class);
+        Image image = imageOptional.get();
+        ImageDto imageDto = mapper.map(image, ImageDto.class);
+        try {
+            imageDto.setOwnerName(image.getIsAvatar() ? userService.detail(image.getOwnerId()).getUserName()
+                    : courseService.detail(image.getOwnerId()).getTeacherName());
+        } catch (Exception e) {
+            e.printStackTrace();
+            imageDto.setOwnerName("UNKNOWN");
+        }
+        return imageDto;
     }
 
     @Override
@@ -132,8 +140,7 @@ public class ImageServiceImpl implements IImageService {
         }
 
         /**
-         * Limit the number of returned documents to limit.
-         * A zero or negative value is considered as unlimited.
+         * Limit the number of returned documents to limit. A zero or negative value is considered as unlimited.
          */
         if ((req.getPage() != null && req.getPage() == 0) || (req.getPageSize() == null && req.getPage() == null)) {
             query.limit(0);
@@ -159,18 +166,17 @@ public class ImageServiceImpl implements IImageService {
             }
         }
 
-        dtoList = listData.stream()
-            .map(image -> {
-                ImageDto imageDto = mapper.map(image, ImageDto.class);
-                try {
-                    imageDto.setOwnerName(image.getIsAvatar() ? userService.detail(image.getOwnerId()).getUserName() : courseService.detail(image.getOwnerId()).getTeacherName());
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    imageDto.setOwnerName("UNKNOWN");
-                }
-                return imageDto;
-            })
-            .collect(Collectors.toList());
+        dtoList = listData.stream().map(image -> {
+            ImageDto imageDto = mapper.map(image, ImageDto.class);
+            try {
+                imageDto.setOwnerName(image.getIsAvatar() ? userService.detail(image.getOwnerId()).getUserName()
+                        : courseService.detail(image.getOwnerId()).getTeacherName());
+            } catch (Exception e) {
+                e.printStackTrace();
+                imageDto.setOwnerName("UNKNOWN");
+            }
+            return imageDto;
+        }).collect(Collectors.toList());
 
         return new ObjectDataRes<>(dtoList.size(), dtoList);
     }

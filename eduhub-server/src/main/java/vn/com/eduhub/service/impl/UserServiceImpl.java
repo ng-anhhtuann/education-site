@@ -64,7 +64,7 @@ public class UserServiceImpl implements IUserService {
                 } else {
                     throw new Exception(CommonConstant.EMPTY_PASSWORD);
                 }
-                
+
                 if (dto.getAvatarUrl() != null || !dto.getPassword().trim().isEmpty()) {
                     user.setAvatarUrl(dto.getAvatarUrl());
                 } else {
