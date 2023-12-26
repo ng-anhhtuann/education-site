@@ -1,10 +1,17 @@
 import { FileAPI, API } from "./api";
 
 const FileService = {
-  uploadImage: (e) => {
-    return FileAPI.post("file/upload-image", e)
+  uploadImage: (file) => {
+    const formData = new FormData();
+    formData.append("image", file);
+    formData.append("file", file);
+
+    return FileAPI.post("file/upload-image?image", formData)
       .then((res) => {
-        console.log(res);
+        if (res.data.status === 200) {
+          const fileName = res.data.data.fileName;
+          setStorage(fileName)
+        }
         return res;
       })
       .catch((err) => {
@@ -13,10 +20,17 @@ const FileService = {
       });
   },
 
-  uploadVideo: (e) => {
-    return FileAPI.post("file/upload-video", e)
+  uploadVideo: (file) => {
+    const formData = new FormData();
+    formData.append("video", file);
+    formData.append("file", file);
+
+    return FileAPI.post("file/upload-video?video", formData)
       .then((res) => {
-        console.log(res);
+        if (res.data.status === 200) {
+          const fileName = res.data.data.fileName;
+          setStorage(fileName)
+        }
         return res;
       })
       .catch((err) => {
@@ -40,6 +54,10 @@ const FileService = {
         throw err;
       });
   },
+};
+
+const setStorage = (fileName) => {
+  sessionStorage.setItem("CURRENT_FILE_NAME", fileName);
 };
 
 export default FileService;

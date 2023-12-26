@@ -93,9 +93,9 @@ public class CourseServiceImpl implements ICourseService {
 
     /**
      * @flow Search field được cho phép ở course là: + min_price là cận dưới của price + max_price là cận trên của price + title + tag_list
-     * (mảng các tag topic liên quan đến khóa học) Datatype của các field search đều là String Dynamic search lúc này kiểm tra chuỗi
-     * có chứa chuỗi con hay không. Nếu page = 0 thì là lấy hết record theo trạng thái search Nếu searchType = "ALL" thì sẽ là search
-     * tất cả mặc kệ các params Nếu searchType = "FIELD" thì sẽ là search theo params
+     *       (mảng các tag topic liên quan đến khóa học) Datatype của các field search đều là String Dynamic search lúc này kiểm tra chuỗi
+     *       có chứa chuỗi con hay không. Nếu page = 0 thì là lấy hết record theo trạng thái search Nếu searchType = "ALL" thì sẽ là search
+     *       tất cả mặc kệ các params Nếu searchType = "FIELD" thì sẽ là search theo params
      * @default Sort by date created
      */
     @Override
@@ -122,22 +122,21 @@ public class CourseServiceImpl implements ICourseService {
             listData = mongoTemplate.find(query, Course.class);
         }
         if (req.getSearchType().equals("FIELD") && req.getParams() != null) {
-            listData = courseRepository.listCourseByCondition((Integer) req.getParams().get("min_price"), (Integer) req.getParams().get("max_price")
-                , (ArrayList<String>) req.getParams().get("tag_list"), (String) req.getParams().get("title"));
+            listData = courseRepository.listCourseByCondition((Integer) req.getParams().get("min_price"),
+                    (Integer) req.getParams().get("max_price"), (ArrayList<String>) req.getParams().get("tag_list"),
+                    (String) req.getParams().get("title"));
         }
 
-        courseDtoList = listData.stream()
-            .map(course -> {
-                CourseDto courseDto = mapper.map(course, CourseDto.class);
-                try {
-                    courseDto.setTeacherName(userService.detail(course.getTeacherId()).getUserName());
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    courseDto.setTeacherName("UNKNOWN");
-                }
-                return courseDto;
-            })
-            .collect(Collectors.toList());
+        courseDtoList = listData.stream().map(course -> {
+            CourseDto courseDto = mapper.map(course, CourseDto.class);
+            try {
+                courseDto.setTeacherName(userService.detail(course.getTeacherId()).getUserName());
+            } catch (Exception e) {
+                e.printStackTrace();
+                courseDto.setTeacherName("UNKNOWN");
+            }
+            return courseDto;
+        }).collect(Collectors.toList());
 
         query.skip(0);
         query.limit(0);
@@ -152,7 +151,15 @@ public class CourseServiceImpl implements ICourseService {
         if (courseOptional.isEmpty()) {
             throw new Exception(CommonConstant.COURSE_NOT_FOUND);
         }
-        return mapper.map(courseOptional.get(), CourseDto.class);
+        Course course = courseOptional.get();
+        CourseDto courseDto = mapper.map(course, CourseDto.class);
+        try {
+            courseDto.setTeacherName(userService.detail(course.getTeacherId()).getUserName());
+        } catch (Exception e) {
+            e.printStackTrace();
+            courseDto.setTeacherName("UNKNOWN");
+        }
+        return courseDto;
     }
 
     @Override

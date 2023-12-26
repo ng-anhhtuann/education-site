@@ -90,7 +90,15 @@ public class VideoServiceImpl implements IVideoService {
         if (videoOptional.isEmpty()) {
             throw new Exception(CommonConstant.FILE_NOT_FOUND);
         }
-        return mapper.map(videoOptional.get(), VideoDto.class);
+        Video video = videoOptional.get();
+        VideoDto videoDto = mapper.map(video, VideoDto.class);
+        try {
+            videoDto.setCourseName(courseService.detail(video.getCourseId()).getTitle());
+        } catch (Exception e) {
+            e.printStackTrace();
+            videoDto.setCourseName("UNKNOWN");
+        }
+        return videoDto;
     }
 
     @Override
@@ -152,19 +160,21 @@ public class VideoServiceImpl implements IVideoService {
             }
         }
 
-        dtoList = listData.stream()
-            .map(video -> {
-                VideoDto videoDto = mapper.map(video, VideoDto.class);
-                try {
-                    videoDto.setCourseName(courseService.detail(video.getCourseId()).getTitle());
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    videoDto.setCourseName("UNKNOWN");
-                }
-                return videoDto;
-            })
-            .collect(Collectors.toList());
+        dtoList = listData.stream().map(video -> {
+            VideoDto videoDto = mapper.map(video, VideoDto.class);
+            try {
+                videoDto.setCourseName(courseService.detail(video.getCourseId()).getTitle());
+            } catch (Exception e) {
+                e.printStackTrace();
+                videoDto.setCourseName("UNKNOWN");
+            }
+            return videoDto;
+        }).collect(Collectors.toList());
 
-        return new ObjectDataRes<>(dtoList.size(), dtoList);
+        query.skip(0);
+        query.limit(0);
+        int size = mongoTemplate.find(query, Video.class).size();
+
+        return new ObjectDataRes<>(size, dtoList);
     }
 }

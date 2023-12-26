@@ -76,14 +76,18 @@ const Home = () => {
           </div>
           <div className="searchRes">
             <div className="course-items-container">{renderedCourseItems}</div>
-            <div className="pagination-container">
-              <Pagination
-                count={calculateTotalPages(count, 6)}
-                variant="outlined"
-                shape="rounded"
-                onChange={callPageChange}
-              />
-            </div>
+            {count === 0 ? (
+              <></>
+            ) : (
+              <div className="pagination-container">
+                <Pagination
+                  count={calculateTotalPages(count, 6)}
+                  variant="outlined"
+                  shape="rounded"
+                  onChange={callPageChange}
+                />
+              </div>
+            )}
           </div>
         </div>
       </section>

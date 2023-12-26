@@ -1,12 +1,17 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useMemo } from "react";
 import Layout from "../Layout";
 import "./courseAdd.css";
 import Toast from "../../shared/components/Toast";
+import FileService from "../../shared/service/fileService";
+import CourseService from "../../shared/service/courseService";
+import ImageService from "../../shared/service/imageService";
+import { useNavigate } from "react-router-dom";
 
 const CourseAddPage = () => {
-    const [isNotify, setIsNotify] = useState(false);
-    const [textNotify, setTextNotify] = useState("");
-    const [typeNotify, setTypeNotify] = useState("");
+  const navigate = useNavigate();
+  const [isNotify, setIsNotify] = useState(false);
+  const [textNotify, setTextNotify] = useState("");
+  const [typeNotify, setTypeNotify] = useState("");
 
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -14,6 +19,22 @@ const CourseAddPage = () => {
   const [tagInput, setTagInput] = useState("");
   const [showTagInput, setShowTagInput] = useState(false);
   const [price, setPrice] = useState(59);
+
+  const [imageFile, setImageFile] = useState(null);
+  const [imageUrl, setImageUrl] = useState(
+    "https://firebasestorage.googleapis.com/v0/b/edu-hub-3772f.appspot.com/o/thumbnail.png?alt=media"
+  );
+
+  const handleChangeFile = (e) => {
+    const reader = new FileReader();
+    reader.onload = function (event) {
+      if (e.target.files && e.target.files[0]) {
+        setImageFile(e.target.files[0]);
+        setImageUrl(event.target.result || imageUrl);
+      }
+    };
+    reader.readAsDataURL(e.target.files[0]);
+  };
 
   const handleTagInput = (e) => {
     setTagInput(e.target.value);
@@ -33,14 +54,87 @@ const CourseAddPage = () => {
 
   const handleConfirm = (e) => {
     e.preventDefault();
-    
-    console.log("confirm")
 
+    if (imageFile) {
+      FileService.uploadImage(imageFile)
+        .then((res) => {
+          if (res.data.status !== 200) {
+            setTypeNotify("error");
+            setTextNotify(res.data.errors || "Something went wrong");
+            setIsNotify(true);
+            return;
+          }
+
+          setImageUrl(res.data.data.fileUrl);
+          const req = {
+            price,
+            title,
+            tagList: tags,
+            studentCount: 0,
+            teacherId: sessionStorage.getItem("ID"),
+            description,
+            thumbnailUrl: res.data.data.fileUrl,
+          };
+
+          const imgReq = {
+            name: res.data.data.fileName,
+            isAvatar: false,
+            url: res.data.data.fileUrl,
+            ownerId: sessionStorage.getItem("COURSE_CLICK"),
+          };
+
+          CourseService.createOrUpdateCourse(req)
+            .then((response) => {
+              if (response.data.status !== 200) {
+                setTypeNotify("error");
+                setTextNotify(response.data.errors || "Something went wrong");
+                setIsNotify(true);
+                return;
+              }
+
+              imgReq.ownerId = sessionStorage.getItem("COURSE_CLICK");
+
+              ImageService.createOrUpdateImage(imgReq).then((imgRes) => {
+                
+                if (imgRes.data.status !== 200) {
+                  setTypeNotify("error");
+                  setTextNotify(imgRes.data.errors || "Something went wrong");
+                  setIsNotify(true);
+                  return;
+                }
+
+                setTypeNotify("success");
+                setTextNotify("Created successfully!");
+                setIsNotify(true);
+              });
+
+              navigate("/course/create/add-video");
+            })
+            .catch((err) => {
+              setTypeNotify("error");
+              setTextNotify("Something went wrong while creating the course");
+              setIsNotify(true);
+            });
+
+        })
+        .catch((err) => {
+          setTypeNotify("error");
+          setTextNotify("Something went wrong while uploading the image");
+          setIsNotify(true);
+        });
+    } else {
+      setTypeNotify("error");
+      setTextNotify(
+        "Course requires thumbnail, please upload image as course's thumbnail"
+      );
+      setIsNotify(true);
+    }
   };
 
   if (isNotify) {
     setTimeout(() => {
       setIsNotify(false);
+      setTextNotify("");
     }, 2000);
   }
 
@@ -53,7 +147,7 @@ const CourseAddPage = () => {
       <div className="course-add-container">
         {toast}
         <div className="add-container">
-          <p>Create a course ✨</p>
+          <p className="add-container-greet">Create a course ✨</p>
           <div className="course-title">
             <input
               type="text"
@@ -110,6 +204,24 @@ const CourseAddPage = () => {
               onChange={(e) => setDescription(e.target.value)}
               placeholder="Description here..."
             />
+          </div>
+          <div className="course-image">
+            <p>Upload thumbnail:</p>
+            <div>
+              <img
+                src={imageUrl}
+                onClick={(e) => document.getElementById("fileID").click()}
+                alt=""
+                className="thumbnail-image"
+              />
+              <input
+                type="file"
+                id="fileID"
+                onChange={handleChangeFile}
+                style={{ display: "none" }}
+                accept="image/*"
+              />
+            </div>
           </div>
           <div className="input-row">
             <button className="confirm" onClick={handleConfirm}>

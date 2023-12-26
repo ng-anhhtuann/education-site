@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from "react";
 import Layout from "../Layout";
-import "./course.css";
+import "./videopage.css";
 import CourseService from "../../shared/service/courseService";
 import CourseItem from "../../shared/components/common/courseItem/CourseItem";
 import VideoItem from "../../shared/components/common/videoItem/VideoItem";
 import Pagination from "@mui/material/Pagination";
 import VideoService from "../../shared/service/videoService";
 import { useNavigate } from "react-router-dom";
+import AddVideoItem from "../../shared/components/common/addVideoItem/addVideoItem";
 
-const CoursePage = () => {
+const AddVideoCoursePage = () => {
   const navigate = useNavigate();
   const [id, setId] = useState("");
   const [course, setCourse] = useState({});
@@ -17,12 +18,23 @@ const CoursePage = () => {
   const [count, setCount] = useState(0);
   const [search, setSearch] = useState({
     page: 1,
-    pageSize: 6,
+    pageSize: 5,
     searchType: "FIELD",
     params: {
       course_id: id,
     },
   });
+
+  useEffect(() => {
+    VideoService.searchVideoByCondition(search).then((res) => {
+        setVideoList(
+          JSON.parse(sessionStorage.getItem("VIDEO_LIST_BY_COURSE_ID"))
+        );
+        setCount(
+          JSON.parse(sessionStorage.getItem("VIDEO_COUNT_BY_COURSE_ID"))
+        );
+    });
+  }, [search]);
 
   useEffect(() => {
     const fetchCourse = async () => {
@@ -52,14 +64,20 @@ const CoursePage = () => {
   }, []);
 
   const callGetDetailVideo = (id) => {
-    console.log("CLICK")
+    console.log("CLICK");
     VideoService.getVideoById(id);
     navigate("/video");
-  }
+  };
 
   const renderedVideoItems = videoList
-    .slice(0, 6)
-    .map((data, index) => <VideoItem key={index} video={data} onClick={() => callGetDetailVideo(data.id)} />);
+    .slice(0, 5)
+    .map((data, index) => (
+      <VideoItem
+        key={index}
+        video={data}
+        onClick={() => callGetDetailVideo(data.id)}
+      />
+    ));
 
   const calculateTotalPages = (totalData, pageSize) => {
     return Math.ceil(totalData / pageSize);
@@ -72,20 +90,25 @@ const CoursePage = () => {
   return (
     <Layout>
       <section className="about">
-        <div className="contain">
+        <div className="video-add-contain">
           {isLoading ? <p>Loading...</p> : <CourseItem data={course} />}
-          <div className="searchRes">
-            <div className="course-items-container">{renderedVideoItems}</div>
-            {count === 0 ? <></> :
+          <div className="video-list-add-course">
+            <div className="video-list-add-course-render">
+              <AddVideoItem />
+              {renderedVideoItems}
+            </div>
+            {count === 0 ? (
+              <></>
+            ) : (
               <div className="pagination-container">
                 <Pagination
-                  count={calculateTotalPages(count, 6)}
+                  count={calculateTotalPages(count, 5)}
                   variant="outlined"
                   shape="rounded"
                   onChange={callPageChange}
                 />
               </div>
-            }
+            )}
           </div>
         </div>
       </section>
@@ -93,4 +116,4 @@ const CoursePage = () => {
   );
 };
 
-export default CoursePage;
+export default AddVideoCoursePage;

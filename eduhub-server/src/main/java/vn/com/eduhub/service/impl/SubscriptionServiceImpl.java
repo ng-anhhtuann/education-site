@@ -20,6 +20,7 @@ import vn.com.eduhub.dto.res.ObjectDataRes;
 import vn.com.eduhub.entity.Course;
 import vn.com.eduhub.entity.Subscription;
 import vn.com.eduhub.entity.User;
+import vn.com.eduhub.entity.Video;
 import vn.com.eduhub.repository.CourseRepository;
 import vn.com.eduhub.repository.SubscriptionRepository;
 import vn.com.eduhub.repository.UserRepository;
@@ -41,10 +42,9 @@ public class SubscriptionServiceImpl implements ISubscriptionService {
     @Autowired
     SubscriptionRepository subscriptionRepository;
 
-	/**
-	 * Add subscription with validate data
-	 * Not edit
-	 */
+    /**
+     * Add subscription with validate data Not edit
+     */
     @Override
     public Subscription edit(SubscriptionDto dto) throws Exception {
         Optional<Course> courseOptional = courseRepository.findById(dto.getCourseId());
@@ -75,9 +75,9 @@ public class SubscriptionServiceImpl implements ISubscriptionService {
         return subscription;
     }
 
-	/**
-	 * Search by student_id and course_id
-	 */
+    /**
+     * Search by student_id and course_id
+     */
     @Override
     public ObjectDataRes<Subscription> getList(CommonSearchReq req) {
         List<Subscription> listData = new ArrayList<>();
@@ -120,6 +120,10 @@ public class SubscriptionServiceImpl implements ISubscriptionService {
             }
 
         }
+
+        query.skip(0);
+        query.limit(0);
+        int size = mongoTemplate.find(query, Subscription.class).size();
 
         return new ObjectDataRes<>(listData.size(), listData);
     }
