@@ -4,7 +4,6 @@ const AuthService = {
   login: (e) => {
     return API.post("user/login", e)
       .then((res) => {
-        console.log({ res });
         if (res.data.status === 200) {
           const id = res.data.data.id;
           const userData = JSON.stringify(res.data.data);
@@ -21,8 +20,6 @@ const AuthService = {
   register: (e) => {
     return API.post("user/edit", e)
       .then((res) => {
-        console.log({ e });
-        console.log({ res });
         if (res.data.status === 200) {
           const id = res.data.data.id;
           const userData = JSON.stringify(res.data.data);

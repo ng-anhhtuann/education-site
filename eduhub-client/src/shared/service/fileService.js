@@ -8,7 +8,10 @@ const FileService = {
 
     return FileAPI.post("file/upload-image?image", formData)
       .then((res) => {
-        console.log(res);
+        if (res.data.status === 200) {
+          const fileName = res.data.data.fileName;
+          setStorage(fileName)
+        }
         return res;
       })
       .catch((err) => {
@@ -44,6 +47,10 @@ const FileService = {
         throw err;
       });
   },
+};
+
+const setStorage = (fileName) => {
+  sessionStorage.setItem("CURRENT_FILE_NAME", fileName);
 };
 
 export default FileService;

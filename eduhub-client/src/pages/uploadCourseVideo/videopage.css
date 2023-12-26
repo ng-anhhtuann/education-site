@@ -1,0 +1,30 @@
+.video-add-contain {
+    display: flex;
+    margin-top: 10px;
+    height: 90vh;
+    flex-direction: row;
+  }
+  
+  .video-list-add-course {
+    background-color: white;
+    margin-left: 10px;
+    width: 80%;
+    border-radius: 20px;
+    border: 1px solid black;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .video-list-add-course-render {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+  
+  .pagination-container {
+    position: absolute;
+    bottom: 10px;
+    left: 55%;
+  }

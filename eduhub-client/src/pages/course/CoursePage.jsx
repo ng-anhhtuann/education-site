@@ -48,9 +48,9 @@ const CoursePage = () => {
     };
 
     fetchCourse();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  
+
   const callGetDetailVideo = (id) => {
     console.log("CLICK")
     VideoService.getVideoById(id);
@@ -59,7 +59,7 @@ const CoursePage = () => {
 
   const renderedVideoItems = videoList
     .slice(0, 6)
-    .map((data, index) => <VideoItem key={index} video={data} onClick={() => callGetDetailVideo(data.id)}/>);
+    .map((data, index) => <VideoItem key={index} video={data} onClick={() => callGetDetailVideo(data.id)} />);
 
   const calculateTotalPages = (totalData, pageSize) => {
     return Math.ceil(totalData / pageSize);
@@ -76,14 +76,16 @@ const CoursePage = () => {
           {isLoading ? <p>Loading...</p> : <CourseItem data={course} />}
           <div className="searchRes">
             <div className="course-items-container">{renderedVideoItems}</div>
-            <div className="pagination-container">
-              <Pagination
-                count={calculateTotalPages(count, 6)}
-                variant="outlined"
-                shape="rounded"
-                onChange={callPageChange}
-              />
-            </div>
+            {count === 0 ? <></> :
+              <div className="pagination-container">
+                <Pagination
+                  count={calculateTotalPages(count, 6)}
+                  variant="outlined"
+                  shape="rounded"
+                  onChange={callPageChange}
+                />
+              </div>
+            }
           </div>
         </div>
       </section>

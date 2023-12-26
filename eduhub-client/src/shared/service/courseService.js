@@ -25,21 +25,24 @@ const CourseService = {
 
   createOrUpdateCourse: (e) => {
     return API.post("course/edit", e)
-      .then(({ res }) => {
-        console.log({ res });
-        setStorage(res.data.id);
-        return res;
-      })
-      .catch((err) => {
-        console.log(err);
-        throw err.response.data;
-      });
+    .then((res) => {
+      if (res.data.status === 200) {
+        const id = JSON.stringify(res.data.data.id)
+        const course = JSON.stringify(res.data.data);
+        sessionStorage.setItem("COURSE_CLICK", id);
+        setStorage(course);
+      }
+      return res;
+    })
+    .catch((err) => {
+      console.log(err);
+      throw err;
+    });
   },
 
   getCourseById: (id) => {
     return API.get(`course/detail/${id}`)
       .then((res) => {
-        console.log(res)
         if (res.data.status === 200) {
           const course = JSON.stringify(res.data.data);
           setStorage(course);

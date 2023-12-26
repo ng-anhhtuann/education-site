@@ -1,11 +1,13 @@
 import React, { useState, useMemo } from "react";
 import Layout from "../Layout";
-import { FileAPI } from "../../shared/service/api";
 import "./courseAdd.css";
 import Toast from "../../shared/components/Toast";
 import FileService from "../../shared/service/fileService";
+import CourseService from "../../shared/service/courseService";
+import { useNavigate } from "react-router-dom";
 
 const CourseAddPage = () => {
+  const navigate = useNavigate();
   const [isNotify, setIsNotify] = useState(false);
   const [textNotify, setTextNotify] = useState("");
   const [typeNotify, setTypeNotify] = useState("");
@@ -41,19 +43,6 @@ const CourseAddPage = () => {
     }
   };
 
-  const uploadImageToFirebase = () => {
-    
-    if (imageFile) {
-      FileService.uploadImage(imageFile)
-        .then((response) => {
-          console.log(response);
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    }
-  };
-
   const handleTagInput = (e) => {
     setTagInput(e.target.value);
   };
@@ -73,12 +62,69 @@ const CourseAddPage = () => {
   const handleConfirm = (e) => {
     e.preventDefault();
 
-    console.log("confirm");
+    if (imageFile) {
+      FileService.uploadImage(imageFile)
+        .then((res) => {
+          if (res.data.status !== 200) {
+            setTypeNotify("error");
+            setTextNotify(res.data.errors || "Something went wrong");
+            setIsNotify(true);
+            return;
+          }
+
+          setImageUrl(res.data.data.fileUrl);
+          const req = {
+            price,
+            title,
+            tagList: tags,
+            studentCount: 0,
+            teacherId: sessionStorage.getItem('ID'),
+            description,
+            thumbnailUrl: res.data.data.fileUrl,
+          };
+
+          CourseService.createOrUpdateCourse(req)
+            .then((res) => {
+              console.log(res)
+              if (res.data.status !== 200) {
+                setTypeNotify("error");
+                setTextNotify(res.data.errors || "Something went wrong");
+                setIsNotify(true);
+                return;
+              }
+
+              setTypeNotify("success");
+              setTextNotify("Created successfully!");
+              setIsNotify(true);
+              navigate("/course/create/add-video");
+            })
+            .catch((err) => {
+              console.error("Error creating course:", err);
+              setTypeNotify("error");
+              setTextNotify("Something went wrong while creating the course");
+              setIsNotify(true);
+            });
+
+          console.log({ req });
+        })
+        .catch((err) => {
+          console.error("Error uploading image:", err);
+          setTypeNotify("error");
+          setTextNotify("Something went wrong while uploading the image");
+          setIsNotify(true);
+        });
+    } else {
+      setTypeNotify("error");
+      setTextNotify("Course requires thumbnail, please upload image as course's thumbnail");
+      setIsNotify(true);
+    }
   };
+
 
   if (isNotify) {
     setTimeout(() => {
       setIsNotify(false);
+      setTextNotify("");
     }, 2000);
   }
 
@@ -168,7 +214,7 @@ const CourseAddPage = () => {
             </div>
           </div>
           <div className="input-row">
-            <button className="confirm" onClick={uploadImageToFirebase}>
+            <button className="confirm" onClick={handleConfirm}>
               Confirm
             </button>
           </div>
