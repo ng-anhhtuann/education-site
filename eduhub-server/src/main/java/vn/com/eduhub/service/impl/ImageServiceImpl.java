@@ -13,6 +13,7 @@ import vn.com.eduhub.dto.res.ObjectDataRes;
 import vn.com.eduhub.entity.Course;
 import vn.com.eduhub.entity.Image;
 import vn.com.eduhub.entity.User;
+import vn.com.eduhub.entity.Video;
 import vn.com.eduhub.repository.CourseRepository;
 import vn.com.eduhub.repository.ImageRepository;
 import vn.com.eduhub.repository.UserRepository;
@@ -177,6 +178,10 @@ public class ImageServiceImpl implements IImageService {
             }
             return imageDto;
         }).collect(Collectors.toList());
+
+        query.skip(0);
+        query.limit(0);
+        int size = mongoTemplate.find(query, Image.class).size();
 
         return new ObjectDataRes<>(dtoList.size(), dtoList);
     }

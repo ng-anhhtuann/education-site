@@ -14,6 +14,7 @@ import vn.com.eduhub.dto.auth.LogInDto;
 import vn.com.eduhub.dto.auth.SignUpDto;
 import vn.com.eduhub.dto.res.ObjectDataRes;
 import vn.com.eduhub.entity.User;
+import vn.com.eduhub.entity.Video;
 import vn.com.eduhub.repository.CourseRepository;
 import vn.com.eduhub.repository.SubscriptionRepository;
 import vn.com.eduhub.repository.UserRepository;
@@ -126,6 +127,10 @@ public class UserServiceImpl implements IUserService {
                 listData = mongoTemplate.find(query, User.class);
             }
         }
+
+        query.skip(0);
+        query.limit(0);
+        int size = mongoTemplate.find(query, User.class).size();
 
         return new ObjectDataRes<>(listData.size(), listData);
     }

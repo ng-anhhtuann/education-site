@@ -20,6 +20,7 @@ import vn.com.eduhub.dto.res.ObjectDataRes;
 import vn.com.eduhub.entity.Course;
 import vn.com.eduhub.entity.Subscription;
 import vn.com.eduhub.entity.User;
+import vn.com.eduhub.entity.Video;
 import vn.com.eduhub.repository.CourseRepository;
 import vn.com.eduhub.repository.SubscriptionRepository;
 import vn.com.eduhub.repository.UserRepository;
@@ -119,6 +120,10 @@ public class SubscriptionServiceImpl implements ISubscriptionService {
             }
 
         }
+
+        query.skip(0);
+        query.limit(0);
+        int size = mongoTemplate.find(query, Subscription.class).size();
 
         return new ObjectDataRes<>(listData.size(), listData);
     }

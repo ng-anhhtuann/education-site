@@ -171,6 +171,10 @@ public class VideoServiceImpl implements IVideoService {
             return videoDto;
         }).collect(Collectors.toList());
 
-        return new ObjectDataRes<>(dtoList.size(), dtoList);
+        query.skip(0);
+        query.limit(0);
+        int size = mongoTemplate.find(query, Video.class).size();
+
+        return new ObjectDataRes<>(size, dtoList);
     }
 }
