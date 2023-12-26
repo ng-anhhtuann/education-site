@@ -19,6 +19,7 @@
 .navbar-brand {
     align-self: center;
     margin: 0;
+    cursor: pointer;
 }
 
 .navbar-menu {

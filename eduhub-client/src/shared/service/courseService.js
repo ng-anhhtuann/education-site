@@ -27,7 +27,7 @@ const CourseService = {
     return API.post("course/edit", e)
     .then((res) => {
       if (res.data.status === 200) {
-        const id = JSON.stringify(res.data.data.id)
+        const id = res.data.data.id
         const course = JSON.stringify(res.data.data);
         sessionStorage.setItem("COURSE_CLICK", id);
         setStorage(course);

@@ -4,6 +4,7 @@ import "./courseAdd.css";
 import Toast from "../../shared/components/Toast";
 import FileService from "../../shared/service/fileService";
 import CourseService from "../../shared/service/courseService";
+import ImageService from "../../shared/service/imageService";
 import { useNavigate } from "react-router-dom";
 
 const CourseAddPage = () => {
@@ -27,20 +28,12 @@ const CourseAddPage = () => {
   const handleChangeFile = (e) => {
     const reader = new FileReader();
     reader.onload = function (event) {
-      setImageUrl(event.target.result);
       if (e.target.files && e.target.files[0]) {
         setImageFile(e.target.files[0]);
-      } else {
-        const file = new File([event.target.result], "thumbnail.png", {
-          type: "image/png",
-        });
-        setImageFile(file);
+        setImageUrl(event.target.result || imageUrl);
       }
     };
     reader.readAsDataURL(e.target.files[0]);
-
-    if (e.target.files && e.target.files[0]) {
-    }
   };
 
   const handleTagInput = (e) => {
@@ -78,48 +71,65 @@ const CourseAddPage = () => {
             title,
             tagList: tags,
             studentCount: 0,
-            teacherId: sessionStorage.getItem('ID'),
+            teacherId: sessionStorage.getItem("ID"),
             description,
             thumbnailUrl: res.data.data.fileUrl,
           };
 
+          const imgReq = {
+            name: res.data.data.fileName,
+            isAvatar: false,
+            url: res.data.data.fileUrl,
+            ownerId: sessionStorage.getItem("COURSE_CLICK"),
+          };
+
           CourseService.createOrUpdateCourse(req)
-            .then((res) => {
-              console.log(res)
-              if (res.data.status !== 200) {
+            .then((response) => {
+              if (response.data.status !== 200) {
                 setTypeNotify("error");
-                setTextNotify(res.data.errors || "Something went wrong");
+                setTextNotify(response.data.errors || "Something went wrong");
                 setIsNotify(true);
                 return;
               }
 
-              setTypeNotify("success");
-              setTextNotify("Created successfully!");
-              setIsNotify(true);
+              imgReq.ownerId = sessionStorage.getItem("COURSE_CLICK");
+
+              ImageService.createOrUpdateImage(imgReq).then((imgRes) => {
+                
+                if (imgRes.data.status !== 200) {
+                  setTypeNotify("error");
+                  setTextNotify(imgRes.data.errors || "Something went wrong");
+                  setIsNotify(true);
+                  return;
+                }
+
+                setTypeNotify("success");
+                setTextNotify("Created successfully!");
+                setIsNotify(true);
+              });
+
               navigate("/course/create/add-video");
             })
             .catch((err) => {
-              console.error("Error creating course:", err);
               setTypeNotify("error");
               setTextNotify("Something went wrong while creating the course");
               setIsNotify(true);
             });
 
-          console.log({ req });
         })
         .catch((err) => {
-          console.error("Error uploading image:", err);
           setTypeNotify("error");
           setTextNotify("Something went wrong while uploading the image");
           setIsNotify(true);
         });
     } else {
       setTypeNotify("error");
-      setTextNotify("Course requires thumbnail, please upload image as course's thumbnail");
+      setTextNotify(
+        "Course requires thumbnail, please upload image as course's thumbnail"
+      );
       setIsNotify(true);
     }
   };
-
 
   if (isNotify) {
     setTimeout(() => {

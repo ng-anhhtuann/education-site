@@ -25,14 +25,12 @@ const ImageService = {
 
   createOrUpdateImage: (e) => {
     return API.post("image/edit", e)
-      .then(({ res }) => {
-        console.log({ res });
-        setStorage(res.data.id);
+      .then((res) => {
         return res;
       })
       .catch((err) => {
         console.log(err);
-        throw err.response.data;
+        throw err
       });
   },
 

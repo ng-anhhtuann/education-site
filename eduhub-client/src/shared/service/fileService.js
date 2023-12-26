@@ -20,10 +20,17 @@ const FileService = {
       });
   },
 
-  uploadVideo: (e) => {
-    return FileAPI.post("file/upload-video", e)
+  uploadVideo: (file) => {
+    const formData = new FormData();
+    formData.append("video", file);
+    formData.append("file", file);
+
+    return FileAPI.post("file/upload-video?video", formData)
       .then((res) => {
-        console.log(res);
+        if (res.data.status === 200) {
+          const fileName = res.data.data.fileName;
+          setStorage(fileName)
+        }
         return res;
       })
       .catch((err) => {
