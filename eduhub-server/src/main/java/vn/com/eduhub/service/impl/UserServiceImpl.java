@@ -1,5 +1,6 @@
 package vn.com.eduhub.service.impl;
 
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
@@ -7,14 +8,12 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
-
-import lombok.extern.slf4j.Slf4j;
 import vn.com.eduhub.controller.req.CommonSearchReq;
 import vn.com.eduhub.dto.auth.LogInDto;
 import vn.com.eduhub.dto.auth.SignUpDto;
+import vn.com.eduhub.dto.master.UserDto;
 import vn.com.eduhub.dto.res.ObjectDataRes;
 import vn.com.eduhub.entity.User;
-import vn.com.eduhub.entity.Video;
 import vn.com.eduhub.repository.CourseRepository;
 import vn.com.eduhub.repository.SubscriptionRepository;
 import vn.com.eduhub.repository.UserRepository;
@@ -80,10 +79,15 @@ public class UserServiceImpl implements IUserService {
         }
     }
 
+    @Override
+    public User edit(UserDto d) throws Exception {
+        return null;
+    }
+
     /**
      * @flow Search field được cho phép ở user là user_name, email, role Datatype của các field search đều là String Dynamic search lúc này
-     *       kiểm tra chuỗi có chứa chuỗi con hay không. Nếu page = 0 thì là lấy hết record theo trạng thái search Nếu searchType = "ALL"
-     *       thì sẽ là search tất cả mặc kệ các params Nếu searchType = "FIELD" thì sẽ là search theo params
+     * kiểm tra chuỗi có chứa chuỗi con hay không. Nếu page = 0 thì là lấy hết record theo trạng thái search Nếu searchType = "ALL"
+     * thì sẽ là search tất cả mặc kệ các params Nếu searchType = "FIELD" thì sẽ là search theo params
      * @default Sort by date created
      */
     @Override
@@ -137,16 +141,16 @@ public class UserServiceImpl implements IUserService {
 
     /**
      * Lấy thông tin bằng id
-     * 
+     *
      * @throws Exception
      */
     @Override
-    public SignUpDto detail(String id) throws Exception {
+    public UserDto detail(String id) throws Exception {
         Optional<User> userOptional = userRepository.findById(id);
         if (userOptional.isEmpty()) {
             throw new Exception(CommonConstant.USER_NOT_FOUND);
         }
-        return mapper.map(userOptional.get(), SignUpDto.class);
+        return mapper.map(userOptional.get(), UserDto.class);
     }
 
     @Override
@@ -158,8 +162,8 @@ public class UserServiceImpl implements IUserService {
     public User login(LogInDto dto) throws Exception {
         Query query = new Query();
         query.addCriteria(
-                new Criteria().orOperator(Criteria.where("user_name").is(dto.getAccount()), Criteria.where("email").is(dto.getAccount()))
-                        .and("password").is(dto.getPassword()));
+            new Criteria().orOperator(Criteria.where("user_name").is(dto.getAccount()), Criteria.where("email").is(dto.getAccount()))
+                .and("password").is(dto.getPassword()));
         User user = mongoTemplate.findOne(query, User.class);
         if (user == null)
             throw new Exception(CommonConstant.AUTH_FAIL);
