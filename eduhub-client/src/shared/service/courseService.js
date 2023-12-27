@@ -4,6 +4,7 @@ const CourseService = {
   searchCourseByCondition: (e) => {
     return API.post("course/list", e)
       .then((res) => {
+        console.log(res)
         if (res.data.status === 200) {
           sessionStorage.setItem("SEARCH_COURSE", JSON.stringify(e));
           sessionStorage.setItem(

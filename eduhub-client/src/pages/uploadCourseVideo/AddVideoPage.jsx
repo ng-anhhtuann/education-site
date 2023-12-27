@@ -27,12 +27,10 @@ const AddVideoCoursePage = () => {
 
   useEffect(() => {
     VideoService.searchVideoByCondition(search).then((res) => {
-        setVideoList(
-          JSON.parse(sessionStorage.getItem("VIDEO_LIST_BY_COURSE_ID"))
-        );
-        setCount(
-          JSON.parse(sessionStorage.getItem("VIDEO_COUNT_BY_COURSE_ID"))
-        );
+      setVideoList(
+        JSON.parse(sessionStorage.getItem("VIDEO_LIST_BY_COURSE_ID"))
+      );
+      setCount(JSON.parse(sessionStorage.getItem("VIDEO_COUNT_BY_COURSE_ID")));
     });
   }, [search]);
 

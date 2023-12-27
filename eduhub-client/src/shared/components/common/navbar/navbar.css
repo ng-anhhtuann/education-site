@@ -29,7 +29,8 @@
 
 .notification-badge {
     position: relative;
-    cursor: pointer;
+    font-size: small;
+    color: black;
     margin-right: 20px;
 }
 
@@ -50,6 +51,7 @@
 .user-profile {
     display: flex;
     align-items: center;
+    cursor: pointer;
 }
 
 .avatar {

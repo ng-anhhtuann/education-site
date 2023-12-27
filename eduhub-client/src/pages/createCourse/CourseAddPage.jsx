@@ -12,7 +12,6 @@ const CourseAddPage = () => {
   const [isNotify, setIsNotify] = useState(false);
   const [textNotify, setTextNotify] = useState("");
   const [typeNotify, setTypeNotify] = useState("");
-
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [tags, setTags] = useState([]);
@@ -55,6 +54,10 @@ const CourseAddPage = () => {
   const handleConfirm = (e) => {
     e.preventDefault();
 
+    setTypeNotify("info");
+    setTextNotify("Wait for the server");
+    setIsNotify(true);
+
     if (imageFile) {
       FileService.uploadImage(imageFile)
         .then((res) => {
@@ -89,33 +92,28 @@ const CourseAddPage = () => {
                 setTypeNotify("error");
                 setTextNotify(response.data.errors || "Something went wrong");
                 setIsNotify(true);
-                return;
               }
 
               imgReq.ownerId = sessionStorage.getItem("COURSE_CLICK");
 
               ImageService.createOrUpdateImage(imgReq).then((imgRes) => {
-                
                 if (imgRes.data.status !== 200) {
                   setTypeNotify("error");
                   setTextNotify(imgRes.data.errors || "Something went wrong");
                   setIsNotify(true);
-                  return;
+                } else {
+                  setTypeNotify("success");
+                  setTextNotify("Created successfully!");
+                  setIsNotify(true);
                 }
 
-                setTypeNotify("success");
-                setTextNotify("Created successfully!");
-                setIsNotify(true);
               });
-
-              navigate("/course/create/add-video");
             })
             .catch((err) => {
               setTypeNotify("error");
               setTextNotify("Something went wrong while creating the course");
               setIsNotify(true);
             });
-
         })
         .catch((err) => {
           setTypeNotify("error");
@@ -133,8 +131,13 @@ const CourseAddPage = () => {
 
   if (isNotify) {
     setTimeout(() => {
-      setIsNotify(false);
-      setTextNotify("");
+      if (typeNotify !== "info") {
+        setIsNotify(false);
+        setTextNotify("");
+        if (typeNotify === "success") {
+          navigate("/course/create/add-video");
+        }
+      }
     }, 2000);
   }
 
@@ -154,6 +157,7 @@ const CourseAddPage = () => {
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="Title..."
+              required
             />
           </div>
           <div className="course-price">
@@ -203,6 +207,7 @@ const CourseAddPage = () => {
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               placeholder="Description here..."
+              required
             />
           </div>
           <div className="course-image">

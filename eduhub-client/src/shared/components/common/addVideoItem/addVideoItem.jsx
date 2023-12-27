@@ -9,6 +9,7 @@ const AddVideoItem = () => {
   const [isNotify, setIsNotify] = useState(false);
   const [textNotify, setTextNotify] = useState("");
   const [typeNotify, setTypeNotify] = useState("");
+  const [position, setPosition] = useState("top-center");
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [videoFile, setVideoFile] = useState(null);
@@ -30,6 +31,11 @@ const AddVideoItem = () => {
   const handleConfirm = (e) => {
     e.preventDefault();
 
+    setTypeNotify("info");
+    setTextNotify("Wait for the server");
+    setIsNotify(true);
+    setPosition("top-right");
+
     if (videoFile) {
       FileService.uploadVideo(videoFile)
         .then((res) => {
@@ -37,6 +43,7 @@ const AddVideoItem = () => {
             setTypeNotify("error");
             setTextNotify(res.data.errors || "Something went wrong");
             setIsNotify(true);
+            setPosition("top-center");
             return;
           }
           console.log(res);
@@ -56,18 +63,21 @@ const AddVideoItem = () => {
                 setTypeNotify("error");
                 setTextNotify(res.data.errors || "Something went wrong");
                 setIsNotify(true);
+                setPosition("top-center");
                 return;
+              } else {
+                setTypeNotify("success");
+                setTextNotify("Created successfully!");
+                setIsNotify(true);
+                setPosition("top-center");
               }
-
-              setTypeNotify("success");
-              setTextNotify("Created successfully!");
-              setIsNotify(true);
             })
             .catch((err) => {
               console.error("Error creating course:", err);
               setTypeNotify("error");
               setTextNotify("Something went wrong");
               setIsNotify(true);
+              setPosition("top-center");
             });
 
           console.log({ req });
@@ -77,27 +87,38 @@ const AddVideoItem = () => {
           setTypeNotify("error");
           setTextNotify("Something went wrong");
           setIsNotify(true);
+          setPosition("top-center");
         });
     } else {
       setTypeNotify("error");
       setTextNotify("Video file is required");
       setIsNotify(true);
+      setPosition("top-center");
     }
   };
 
   if (isNotify) {
     setTimeout(() => {
-      if (typeNotify === "success") {
-        window.location.reload();
+      if (typeNotify !== "info") {
+        if (typeNotify === "success") {
+          window.location.reload();
+        }
+        setIsNotify(false);
+        setTextNotify("");
       }
-      setIsNotify(false);
-      setTextNotify("");
     }, 2000);
   }
 
   const toast = useMemo(() => {
-    return <Toast isNotify={isNotify} text={textNotify} type={typeNotify} />;
-  }, [isNotify, textNotify, typeNotify]);
+    return (
+      <Toast
+        isNotify={isNotify}
+        text={textNotify}
+        type={typeNotify}
+        position={position}
+      />
+    );
+  }, [isNotify, position, textNotify, typeNotify]);
 
   return (
     <div className="add-video-container">
@@ -123,12 +144,14 @@ const AddVideoItem = () => {
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           placeholder="Title..."
+          required
         />
         <input
           type="text"
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           placeholder="Description here..."
+          required
         />
         <button className="add-video-confirm" onClick={handleConfirm}>
           Confirm

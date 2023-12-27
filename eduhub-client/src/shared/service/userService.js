@@ -21,11 +21,15 @@ const UserService = {
   getUserById: (id) => {
     return API.get(`user/detail/${id}`)
       .then((res) => {
+        if (res.data.status === 200) {
+          const userData = JSON.stringify(res.data.data);
+          setHeadersAndStorage(id, userData);
+        }
         return res;
       })
       .catch((err) => {
         console.log(err);
-        throw err.response.data;
+        throw err;
       });
   },
 };

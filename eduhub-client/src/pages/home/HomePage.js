@@ -7,10 +7,10 @@ import Pagination from "@mui/material/Pagination";
 import CourseService from "../../shared/service/courseService";
 import eventEmitter from "../../shared/utils/emitter";
 import { useNavigate } from "react-router-dom";
-
+import LoadingComponent from "../../shared/components/common/loading/loading"
 const Home = () => {
   const navigate = useNavigate();
-
+  const [load, setLoad] = useState(true)
   const [search, setSearch] = useState({
     page: 1,
     pageSize: 6,
@@ -35,10 +35,12 @@ const Home = () => {
   }, []);
 
   useEffect(() => {
+    setLoad(true)
     CourseService.searchCourseByCondition(search).then((res) => {
       setListRes(JSON.parse(sessionStorage.getItem("SEARCH_RESULT_LIST")));
       setCount(JSON.parse(sessionStorage.getItem("SEARCH_RESULT_COUNT")));
     });
+    setLoad(false)
   }, [search]);
 
   const calculateTotalPages = (totalData, pageSize) => {
@@ -75,10 +77,12 @@ const Home = () => {
             <SearchSpace />
           </div>
           <div className="searchRes">
-            <div className="course-items-container">{renderedCourseItems}</div>
-            {count === 0 ? (
-              <></>
+            {load ? (
+              <LoadingComponent />
             ) : (
+              <div className="course-items-container">{renderedCourseItems}</div>
+            )}
+            {count !== 0 && (
               <div className="pagination-container">
                 <Pagination
                   count={calculateTotalPages(count, 6)}
@@ -92,7 +96,7 @@ const Home = () => {
         </div>
       </section>
     </Layout>
-  );
+  );  
 };
 
 export default Home;

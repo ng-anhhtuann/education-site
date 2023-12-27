@@ -6,7 +6,7 @@ import Toast from "../../shared/components/Toast";
 import AuthService from "../../shared/service/authService"; // Import your AuthService
 import Header from "../../shared/components/common/header/Header";
 
-const Login = () => {
+const LoginPage = () => {
   const navigate = useNavigate();
 
   const [account, setAccount] = useState(""); // State to manage the username input
@@ -86,4 +86,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default LoginPage;
