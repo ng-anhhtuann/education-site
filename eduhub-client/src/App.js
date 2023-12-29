@@ -14,6 +14,7 @@ import Profile from "./pages/profile/Profile";
 import VideoPage from "./pages/video/VideoPage";
 import CourseAddPage from "./pages/createCourse/CourseAddPage";
 import AddVideoCoursePage from "./pages/uploadCourseVideo/AddVideoPage";
+import OwnCoursePage from "./pages/manageCourse/OwnCoursePage";
 
 function App() {
   return (
@@ -27,6 +28,7 @@ function App() {
           <Route exact path="/course" element={<CoursePage />} />
           <Route exact path="/profile" element={<Profile />} />
           <Route exact path="/video" element={<VideoPage />} />
+          <Route exact path="/course/manage" element={<OwnCoursePage />} />
           <Route exact path="/course/create" element={<CourseAddPage />} />
           <Route
             exact

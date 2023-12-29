@@ -30,6 +30,10 @@ const Navbar = ({ userData }) => {
     } else if (item === "logout") {
       sessionStorage.clear();
       navigate("/");
+    } else if (item === "courses") {
+      sessionStorage.removeItem("SEARCH_RESULT_LIST")
+      sessionStorage.removeItem("SEARCH_RESULT_COUNT")
+      navigate("/course/manage");
     }
     setAnchorEl(null);
   };
@@ -74,11 +78,15 @@ const Navbar = ({ userData }) => {
               <MenuItem onClick={() => handleItemClick("profile")}>
                 <AccountBoxIcon /> Profile
               </MenuItem>
+
+              <MenuItem onClick={() => handleItemClick("courses-bought")}>
+                <ViewListIcon /> Courses Purchased
+              </MenuItem>
               {userData.role !== "TEACHER" ? (
                 <></>
               ) : (
                 <MenuItem onClick={() => handleItemClick("courses")}>
-                  <ViewListIcon /> Courses
+                  <ViewListIcon /> Manage Courses
                 </MenuItem>
               )}
               <MenuItem onClick={() => handleItemClick("logout")}>

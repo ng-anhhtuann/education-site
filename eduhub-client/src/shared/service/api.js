@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const API = axios.create({
-  baseURL: "https://eduhub.fly.dev/",
+  baseURL: "http://localhost:8080/",
   headers: {
     Accept: "application/json",
   },
