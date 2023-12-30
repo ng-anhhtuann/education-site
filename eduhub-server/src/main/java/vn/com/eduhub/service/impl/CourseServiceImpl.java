@@ -1,9 +1,11 @@
 package vn.com.eduhub.service.impl;
 
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 import vn.com.eduhub.controller.req.CommonSearchReq;
@@ -19,6 +21,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 public class CourseServiceImpl implements ICourseService {
 
     private final ModelMapper mapper = new ModelMapper();
@@ -93,9 +96,9 @@ public class CourseServiceImpl implements ICourseService {
 
     /**
      * @flow Search field được cho phép ở course là: + min_price là cận dưới của price + max_price là cận trên của price + title + tag_list
-     *       (mảng các tag topic liên quan đến khóa học) Datatype của các field search đều là String Dynamic search lúc này kiểm tra chuỗi
-     *       có chứa chuỗi con hay không. Nếu page = 0 thì là lấy hết record theo trạng thái search Nếu searchType = "ALL" thì sẽ là search
-     *       tất cả mặc kệ các params Nếu searchType = "FIELD" thì sẽ là search theo params
+     * (mảng các tag topic liên quan đến khóa học) Datatype của các field search đều là String Dynamic search lúc này kiểm tra chuỗi
+     * có chứa chuỗi con hay không. Nếu page = 0 thì là lấy hết record theo trạng thái search Nếu searchType = "ALL" thì sẽ là search
+     * tất cả mặc kệ các params Nếu searchType = "FIELD" thì sẽ là search theo params
      * @default Sort by date created
      */
     @Override
@@ -122,9 +125,30 @@ public class CourseServiceImpl implements ICourseService {
             listData = mongoTemplate.find(query, Course.class);
         }
         if (req.getSearchType().equals("FIELD") && req.getParams() != null) {
-            listData = courseRepository.listCourseByCondition((Integer) req.getParams().get("min_price"),
-                    (Integer) req.getParams().get("max_price"), (ArrayList<String>) req.getParams().get("tag_list"),
-                    (String) req.getParams().get("title"));
+            Criteria criteria = new Criteria();
+            List<Criteria> criteriaList = new ArrayList<>();
+
+            Object minPrice = req.getParams().get("min_price");
+            Object maxPrice = req.getParams().get("max_price");
+            Object tagList = req.getParams().get("tag_list");
+            Object title = req.getParams().get("title");
+            String teacherId = (String) req.getParams().get("teacher_id");
+
+            if (minPrice == null && maxPrice == null && tagList == null && title == null) {
+                criteriaList.add(Criteria.where("teacher_id").is(teacherId));
+            } else if (minPrice != null && maxPrice != null && title != null) {
+                if (tagList instanceof ArrayList) {
+                    criteriaList.add(Criteria.where("price").gte(minPrice).lte(maxPrice));
+                    criteriaList.add(Criteria.where("tag_list").in(tagList));
+                    criteriaList.add(Criteria.where("title").regex(String.valueOf(title), "i"));
+                } else {
+                    criteriaList.add(Criteria.where("price").gte(minPrice).lte(maxPrice));
+                    criteriaList.add(Criteria.where("title").regex(String.valueOf(title), "i"));
+                }
+            }
+            criteria = new Criteria().andOperator(criteriaList.toArray(new Criteria[0]));
+            query.addCriteria(criteria);
+            listData = mongoTemplate.find(query, Course.class);
         }
 
         courseDtoList = listData.stream().map(course -> {
@@ -175,4 +199,5 @@ public class CourseServiceImpl implements ICourseService {
             throw new Exception(CommonConstant.PROCESS_FAIL);
         }
     }
+
 }
