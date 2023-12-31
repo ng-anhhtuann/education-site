@@ -1,5 +1,5 @@
 import React from "react";
-import "./course.css";
+import "./courseItem.css";
 
 const CourseItem = ({ data, onClick }) => {
   return (

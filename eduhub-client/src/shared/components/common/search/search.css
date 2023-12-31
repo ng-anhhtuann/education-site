@@ -32,18 +32,19 @@ input[type="text"] {
     flex-direction: row;
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: space-between;
 }
 
 .input-row-flex p{
     line-height: 12px;
     font-size: 12px;
     font-weight: bold;
+    margin: 20px 10px;
 }
 
 .input-row-flex input{
-    margin-left: 10px;
-    margin-right: 10px;
+    margin: 0 10px;
+    width: 60%;
 }
 
 .input-row p{

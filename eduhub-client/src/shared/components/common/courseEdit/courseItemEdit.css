@@ -1,11 +1,11 @@
-.search-container {
+.course-edit-container {
     display: flex;
     justify-content: space-evenly;
     flex-direction: column;
     margin: 10px 10px 5px;
     background-color: white;
-    max-height: 300px;
     width: 30%;
+    height: fit-content;
     border-radius: 20px;
     border: 2px solid black;
     padding: 10px;
@@ -14,24 +14,26 @@
     cursor: pointer;
 }
 
-.search-container:hover {
-    background-color: lightblue;
-    /* Change background color on hover */
-}
-
-.search-container h1 {
+.course-edit-container h1 {
     font-size: 1.2em;
 }
 
-.search-container h2 {
+.course-edit-container h2 {
     font-size: 1em;
     font-weight: lighter;
     color: darkgray;
 }
 
+.course-edit-title {
+    line-height: 40px;
+    font-size: 30px;
+    font-weight: bold;
+    text-align: center;
+}
+
 .text-info-container {
-    height: 40%;
     display: flex;
+    padding: 10px 0;
     flex-direction: column;
     justify-content: space-between;
 }
@@ -40,7 +42,6 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 60%;
     overflow: hidden;
 }
 
@@ -49,12 +50,6 @@
     max-height: 100%;
     object-fit: contain;
     display: block;
-}
-
-
-.flex-row {
-    display: flex;
-    flex-direction: row;
 }
 
 .flex-row-author {
@@ -68,7 +63,7 @@
     font-weight: lighter;
 }
 
-.tag-show {
+.tag-button {
     margin-right: 5px;
     height: fit-content;
     color: black;
@@ -77,4 +72,43 @@
     border: 1px solid #000000;
     border-radius: 20px;
     cursor: pointer;
+}
+
+.tag-button-add {
+    margin-right: 5px;
+    height: fit-content;
+    color: rgb(255, 255, 255);
+    padding: 5px 15px;
+    background-color: #000000;
+    border: 1px solid #ffffff;
+    border-radius: 20px;
+    cursor: pointer;
+}
+
+.tag-button:hover {
+    background-color: #ff0000;
+    color: #fff;
+}
+
+.course-edit-text {
+    width: 100%;
+}
+
+.course-edit-text input {
+    width: 100%;
+    border: 1px solid;
+    border-radius: 10px;
+    border-color: black;
+}
+
+.course-edit-confirm {
+    margin-top: 10px;
+    width: 100%;
+    background-color: #1eb2a6;
+    color: #fff;
+    border: none;
+    font-size: large;
+    border-radius: 10px;
+    cursor: pointer;
+    padding: 5px 5px;
 }

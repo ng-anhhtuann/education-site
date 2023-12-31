@@ -49,6 +49,17 @@ const VideoService = {
         throw err;
       });
   },
+
+  deleteVideoById: (id) => {
+    return API.delete(`video/delete/${id}`)
+      .then((res) => {
+        return res;
+      })
+      .catch((err) => {
+        console.error(err);
+        throw err;
+      });
+  },
 };
 
 const setStorage = (data) => {

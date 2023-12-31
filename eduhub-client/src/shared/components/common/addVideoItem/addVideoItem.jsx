@@ -67,7 +67,7 @@ const AddVideoItem = () => {
                 return;
               } else {
                 setTypeNotify("success");
-                setTextNotify("Created successfully!");
+                setTextNotify("Video added successfully!");
                 setIsNotify(true);
                 setPosition("top-center");
               }
@@ -126,13 +126,13 @@ const AddVideoItem = () => {
       <div className="add-video-parent">
         <img
           src={videoUrl}
-          onClick={(e) => document.getElementById("fileID").click()}
+          onClick={(e) => document.getElementById("videoID").click()}
           alt=""
           className="add-video"
         />
         <input
           type="file"
-          id="fileID"
+          id="videoID"
           onChange={handleChangeFile}
           style={{ display: "none" }}
           accept="video/*"
@@ -154,7 +154,7 @@ const AddVideoItem = () => {
           required
         />
         <button className="add-video-confirm" onClick={handleConfirm}>
-          Confirm
+          ADD VIDEO 🎥
         </button>
       </div>
     </div>

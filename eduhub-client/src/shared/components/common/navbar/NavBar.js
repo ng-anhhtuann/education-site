@@ -34,6 +34,8 @@ const Navbar = ({ userData }) => {
       sessionStorage.removeItem("SEARCH_RESULT_LIST")
       sessionStorage.removeItem("SEARCH_RESULT_COUNT")
       navigate("/course/manage");
+    } else {
+      navigate("/course/subscription");
     }
     setAnchorEl(null);
   };

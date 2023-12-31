@@ -1,0 +1,43 @@
+
+.admin-manage {
+    padding: 10px;
+    text-align: center;
+}
+
+.manage-title {
+    margin: 20px 20px;
+    line-height: 30px;
+    font-size: 25px;
+    font-weight: bold;
+}
+
+.admin-avt {
+    margin-bottom: 15px;
+    flex-direction: row;
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+}
+
+.avatar-image {
+    max-height: 150px;
+    max-width: 150px;
+    border: 1px solid;
+    border-radius: 30px;
+    border-color: black;
+    cursor: pointer;
+    position: relative;
+}
+
+.manage-info-row {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin-top: 8px;
+}
+
+.manage-info-key {
+    font-size: 18px;
+    text-align: start;
+}

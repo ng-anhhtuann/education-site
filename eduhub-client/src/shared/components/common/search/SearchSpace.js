@@ -55,7 +55,7 @@ const SearchSpace = () => {
 
   return (
     <div className="left-section">
-        <p>Search something...</p>
+        <p>SEARCH SOMETHING... 🧐</p>
       <div className="input-row">
         <input
           type="text"
@@ -65,7 +65,7 @@ const SearchSpace = () => {
         />
       </div>
       <div className="input-row-flex">
-        <p>Min</p>
+        <p>Min 🤏</p>
         <input
           type="range"
           min={0}
@@ -75,10 +75,10 @@ const SearchSpace = () => {
             setMin(e.target.value)
           }
         />
-        <p>{min}</p>
+        <p>{min} $</p>
       </div>
       <div className="input-row-flex">
-        <p>Max</p>
+        <p>MaX 🤙</p>
         <input
           type="range"
           min={500}
@@ -88,10 +88,10 @@ const SearchSpace = () => {
             setMax(e.target.value)
           }
         />
-        <p>{max}</p>
+        <p>{max} $</p>
       </div>
       <div className="input-row">
-      <p>Tags related</p>
+      <p>Tags related 🖇</p>
         {tags.map((tag, index) => (
           <button
             key={index}
@@ -122,7 +122,7 @@ const SearchSpace = () => {
       </div>
       <div className="input-row">
         <button className="confirm" onClick={handleSearch}>
-          Search
+          SEARCH 🔎
         </button>
       </div>
     </div>
