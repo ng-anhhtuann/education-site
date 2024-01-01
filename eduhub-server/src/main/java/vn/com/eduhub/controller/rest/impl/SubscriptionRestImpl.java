@@ -1,16 +1,15 @@
 package vn.com.eduhub.controller.rest.impl;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import vn.com.eduhub.constant.ApiConstant;
 import vn.com.eduhub.constant.UrlConst;
 import vn.com.eduhub.controller.req.CommonSearchReq;
@@ -46,14 +45,9 @@ public class SubscriptionRestImpl extends AbstractRest implements ISubscriptionR
     }
 
     @Override
+    @Operation(hidden = true)
     public BaseRes list(CommonSearchReq searchDto, HttpServletRequest req, HttpServletResponse res) {
-        long start = System.currentTimeMillis();
-        try {
-            return this.successHandler.handlerSuccess(this.subscriptionService.getList(searchDto), start);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            return this.errorHandler.handlerException(ex, req, null, start);
-        }
+        return null;
     }
 
     @Override
@@ -70,4 +64,25 @@ public class SubscriptionRestImpl extends AbstractRest implements ISubscriptionR
         return null;
     }
 
+    @Override
+    public BaseRes listCourse(CommonSearchReq searchDto, HttpServletRequest req, HttpServletResponse res) {
+        long start = System.currentTimeMillis();
+        try {
+            return this.successHandler.handlerSuccess(this.subscriptionService.searchCourseByUser(searchDto), start);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return this.errorHandler.handlerException(ex, req, null, start);
+        }
+    }
+
+    @Override
+    public BaseRes listUser(CommonSearchReq searchDto, HttpServletRequest req, HttpServletResponse res) {
+        long start = System.currentTimeMillis();
+        try {
+            return this.successHandler.handlerSuccess(this.subscriptionService.searchStudentByCourse(searchDto), start);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return this.errorHandler.handlerException(ex, req, null, start);
+        }
+    }
 }
