@@ -1,16 +1,14 @@
 import React, { useState, useEffect } from "react";
 import Layout from "../Layout";
-import "./videopage.css";
+import "./courseEdit.css";
 import CourseService from "../../shared/service/courseService";
-import CourseItem from "../../shared/components/common/courseItem/CourseItem";
-import VideoItem from "../../shared/components/common/videoItem/VideoItem";
 import Pagination from "@mui/material/Pagination";
 import VideoService from "../../shared/service/videoService";
-import { useNavigate } from "react-router-dom";
 import AddVideoItem from "../../shared/components/common/addVideoItem/addVideoItem";
+import CourseItemEdit from "../../shared/components/common/courseEdit/CourseItemEdit";
+import VideoEditItem from "../../shared/components/common/videoEditItem/videoEditItem";
 
-const AddVideoCoursePage = () => {
-  const navigate = useNavigate();
+const CourseEditPage = () => {
   const [id, setId] = useState("");
   const [course, setCourse] = useState({});
   const [isLoading, setIsLoading] = useState(true);
@@ -61,21 +59,9 @@ const AddVideoCoursePage = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const callGetDetailVideo = (id) => {
-    console.log("CLICK");
-    VideoService.getVideoById(id);
-    navigate("/video");
-  };
-
   const renderedVideoItems = videoList
     .slice(0, 5)
-    .map((data, index) => (
-      <VideoItem
-        key={index}
-        video={data}
-        onClick={() => callGetDetailVideo(data.id)}
-      />
-    ));
+    .map((data, index) => <VideoEditItem key={index} video={data} />);
 
   const calculateTotalPages = (totalData, pageSize) => {
     return Math.ceil(totalData / pageSize);
@@ -89,7 +75,7 @@ const AddVideoCoursePage = () => {
     <Layout>
       <section className="about">
         <div className="video-add-contain">
-          {isLoading ? <p>Loading...</p> : <CourseItem data={course} />}
+          {isLoading ? <p>Loading...</p> : <CourseItemEdit data={course} />}
           <div className="video-list-add-course">
             <div className="video-list-add-course-render">
               <AddVideoItem />
@@ -114,4 +100,4 @@ const AddVideoCoursePage = () => {
   );
 };
 
-export default AddVideoCoursePage;
+export default CourseEditPage;

@@ -59,7 +59,7 @@
     margin-bottom: 15px;
 }
 
-.course-tags p{
+.course-tags p {
     margin-top: 20px;
     line-height: 12px;
     font-size: 12px;
@@ -92,22 +92,22 @@
     width: 100%;
     align-items: center;
     justify-content: center;
-  }
-  
-  .course-image p {
+}
+
+.course-image p {
     line-height: 12px;
     margin-right: 20px;
     font-size: 12px;
     font-weight: bold;
-  }
-  
-  .thumbnail-image {
+}
+
+.thumbnail-image {
     max-height: 150px;
     max-width: 200px;
     border: 2px solid;
     border-radius: 10px;
     border-color: black;
-  }
+}
 
 .confirm {
     margin: 20px 0;

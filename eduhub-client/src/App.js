@@ -13,8 +13,9 @@ import CoursePage from "./pages/course/CoursePage";
 import Profile from "./pages/profile/Profile";
 import VideoPage from "./pages/video/VideoPage";
 import CourseAddPage from "./pages/createCourse/CourseAddPage";
-import AddVideoCoursePage from "./pages/uploadCourseVideo/AddVideoPage";
 import OwnCoursePage from "./pages/manageCourse/OwnCoursePage";
+import CourseEditPage from "./pages/editCourse/CourseEditPage";
+import CourseSubscriptionPage from "./pages/courseSubscription/CourseSubscriptionPage";
 
 function App() {
   return (
@@ -32,8 +33,18 @@ function App() {
           <Route exact path="/course/create" element={<CourseAddPage />} />
           <Route
             exact
+            path="/course/manage/edit"
+            element={<CourseEditPage />}
+          />
+          <Route
+            exact
             path="/course/create/add-video"
-            element={<AddVideoCoursePage />}
+            element={<CourseEditPage />}
+          />
+          <Route
+            exact
+            path="/course/subscription"
+            element={<CourseSubscriptionPage />}
           />
         </Switch>
         <Footer />

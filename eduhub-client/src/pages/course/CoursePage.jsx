@@ -6,10 +6,8 @@ import CourseItem from "../../shared/components/common/courseItem/CourseItem";
 import VideoItem from "../../shared/components/common/videoItem/VideoItem";
 import Pagination from "@mui/material/Pagination";
 import VideoService from "../../shared/service/videoService";
-import { useNavigate } from "react-router-dom";
 
 const CoursePage = () => {
-  const navigate = useNavigate();
   const [id, setId] = useState("");
   const [course, setCourse] = useState({});
   const [isLoading, setIsLoading] = useState(true);
@@ -23,6 +21,15 @@ const CoursePage = () => {
       course_id: id,
     },
   });
+
+  useEffect(() => {
+    VideoService.searchVideoByCondition(search).then((res) => {
+      setVideoList(
+        JSON.parse(sessionStorage.getItem("VIDEO_LIST_BY_COURSE_ID"))
+      );
+      setCount(JSON.parse(sessionStorage.getItem("VIDEO_COUNT_BY_COURSE_ID")));
+    });
+  }, [search]);
 
   useEffect(() => {
     const fetchCourse = async () => {
@@ -51,15 +58,9 @@ const CoursePage = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const callGetDetailVideo = (id) => {
-    console.log("CLICK")
-    VideoService.getVideoById(id);
-    navigate("/video");
-  }
-
   const renderedVideoItems = videoList
     .slice(0, 6)
-    .map((data, index) => <VideoItem key={index} video={data} onClick={() => callGetDetailVideo(data.id)} />);
+    .map((data, index) => <VideoItem key={index} video={data} />);
 
   const calculateTotalPages = (totalData, pageSize) => {
     return Math.ceil(totalData / pageSize);
@@ -76,7 +77,9 @@ const CoursePage = () => {
           {isLoading ? <p>Loading...</p> : <CourseItem data={course} />}
           <div className="searchRes">
             <div className="course-items-container">{renderedVideoItems}</div>
-            {count === 0 ? <></> :
+            {count === 0 ? (
+              <></>
+            ) : (
               <div className="pagination-container">
                 <Pagination
                   count={calculateTotalPages(count, 6)}
@@ -85,7 +88,7 @@ const CoursePage = () => {
                   onChange={callPageChange}
                 />
               </div>
-            }
+            )}
           </div>
         </div>
       </section>

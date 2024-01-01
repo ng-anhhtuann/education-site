@@ -215,10 +215,10 @@ const Profile = () => {
       <div className="profile-container">
         {toast}
         <div className="profile-main">
-          <p className="profile-header">Personal Information 🖥</p>
+          <p className="profile-header">USER PROFILE 🖥</p>
           <div className="profile-avatar">
             <div>
-              <span className="tooltip-text">Click here to change avatar</span>
+              <span className="tooltip-text">Click here to change avatar 📸</span>
               <img
                 src={imageUrl}
                 onClick={(e) => document.getElementById("fileID").click()}
@@ -256,7 +256,7 @@ const Profile = () => {
           </div>
           <div className="profile-change-pwd">
             <button className="profile-change" onClick={togglePasswordHolder}>
-              Change password
+              CHANGE PASSWORD 🔐
             </button>
             {showPasswordHolder && (
               <div className="password-holder">
@@ -283,7 +283,7 @@ const Profile = () => {
               </div>
             )}
             <button className="profile-confirm" onClick={handleSubmit}>
-              UPDATE
+              UPDATE 📝
             </button>
           </div>
         </div>

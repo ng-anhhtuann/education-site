@@ -150,7 +150,7 @@ const CourseAddPage = () => {
       <div className="course-add-container">
         {toast}
         <div className="add-container">
-          <p className="add-container-greet">Create a course ✨</p>
+          <p className="add-container-greet">CREATE A COURSE ✨</p>
           <div className="course-title">
             <input
               type="text"
@@ -169,10 +169,10 @@ const CourseAddPage = () => {
               value={price}
               onChange={(e) => setPrice(e.target.value)}
             />
-            <p>{price}</p>
+            <p>{price} $</p>
           </div>
           <div className="course-tags">
-            <p>Tags related to course</p>
+            <p>Tags related to course 📎</p>
             {tags.map((tag, index) => (
               <button
                 key={index}
@@ -211,7 +211,7 @@ const CourseAddPage = () => {
             />
           </div>
           <div className="course-image">
-            <p>Upload thumbnail:</p>
+            <p>Upload thumbnail 🏞:</p>
             <div>
               <img
                 src={imageUrl}
@@ -230,7 +230,7 @@ const CourseAddPage = () => {
           </div>
           <div className="input-row">
             <button className="confirm" onClick={handleConfirm}>
-              Confirm
+              CONFIRM ⏯
             </button>
           </div>
         </div>
