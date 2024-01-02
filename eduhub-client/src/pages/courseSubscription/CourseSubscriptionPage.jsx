@@ -1,25 +1,55 @@
 import React, { useState, useEffect } from "react";
 import Layout from "../Layout";
-import "./courseSubscription.css"
+import "./courseSubscription.css";
 import SearchSpace from "../../shared/components/common/search/SearchSpace";
 import CourseItem from "../../shared/components/common/courseItem/CourseItem";
 import Pagination from "@mui/material/Pagination";
-import CourseService from "../../shared/service/courseService";
+import SubscriptionService from "../../shared/service/subscriptionService";
 import eventEmitter from "../../shared/utils/emitter";
+import UserService from "../../shared/service/userService";
 import { useNavigate } from "react-router-dom";
-import LoadingComponent from "../../shared/components/common/loading/loading"
+import LoadingComponent from "../../shared/components/common/loading/loading";
+import HeaderTitle from "../../shared/components/common/headerTitle/headerTitle";
 
 const CourseSubscriptionPage = () => {
   const navigate = useNavigate();
-  const [load, setLoad] = useState(true)
+  const [user, setUserData] = useState({});
+  const [load, setLoad] = useState(true);
   const [search, setSearch] = useState({
     page: 1,
     pageSize: 6,
-    searchType: "ALL",
-    params: {},
+    searchType: "FIELD",
+    params: {
+      student_id: sessionStorage.getItem("ID"),
+    },
   });
   const [listRes, setListRes] = useState([]);
   const [count, setCount] = useState(0);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const id = sessionStorage.getItem("ID");
+        const response = await UserService.getUserById(id);
+
+        if (response.data.status !== 200) {
+          sessionStorage.clear();
+          navigate("/login");
+        } else {
+          setUserData(response.data.data);
+          sessionStorage.setItem(
+            "USER_DATA",
+            JSON.stringify(response.data.data)
+          );
+        }
+      } catch (error) {
+        sessionStorage.clear();
+        navigate("/login");
+      }
+    };
+
+    fetchData();
+  }, [navigate]);
 
   useEffect(() => {
     eventEmitter.on("LIST_DATA", (data) => {
@@ -36,12 +66,12 @@ const CourseSubscriptionPage = () => {
   }, []);
 
   useEffect(() => {
-    setLoad(true)
-    CourseService.searchCourseByCondition(search).then((res) => {
+    setLoad(true);
+    SubscriptionService.searchCourseByCondition(search).then((res) => {
       setListRes(JSON.parse(sessionStorage.getItem("SEARCH_RESULT_LIST")));
       setCount(JSON.parse(sessionStorage.getItem("SEARCH_RESULT_COUNT")));
     });
-    setLoad(false)
+    setLoad(false);
   }, [search]);
 
   const calculateTotalPages = (totalData, pageSize) => {
@@ -52,15 +82,22 @@ const CourseSubscriptionPage = () => {
     setSearch({ ...search, page: value });
   };
 
-  const renderedCourseItems = listRes
-    .slice(0, 6)
-    .map((courseData, index) => (
-      <CourseItem
-        key={index}
-        data={courseData}
-        onClick={() => emitCourse(courseData.id)}
-      />
-    ));
+  const renderedCourseItems =
+    listRes.length === 0 ? (
+      <>
+        <p>You didn't subscribe on any course before!</p>
+      </>
+    ) : (
+      listRes
+        .slice(0, 6)
+        .map((courseData, index) => (
+          <CourseItem
+            key={index}
+            data={courseData}
+            onClick={() => emitCourse(courseData.id)}
+          />
+        ))
+    );
 
   const emitCourse = (id) => {
     sessionStorage.setItem("COURSE_CLICK", id);
@@ -75,13 +112,20 @@ const CourseSubscriptionPage = () => {
       <section className="about">
         <div className="contain">
           <div className="searchBar">
-            <SearchSpace />
+            <HeaderTitle
+              user={user}
+              count={count}
+              title={"COURSES BOUGHT 💰"}
+              sumText={"Number of courses bought:"}
+            />
           </div>
           <div className="searchRes">
             {load ? (
               <LoadingComponent />
             ) : (
-              <div className="course-items-container">{renderedCourseItems}</div>
+              <div className="course-items-container">
+                {renderedCourseItems}
+              </div>
             )}
             {count !== 0 && (
               <div className="pagination-container">
@@ -97,7 +141,7 @@ const CourseSubscriptionPage = () => {
         </div>
       </section>
     </Layout>
-  );  
+  );
 };
 
 export default CourseSubscriptionPage;
