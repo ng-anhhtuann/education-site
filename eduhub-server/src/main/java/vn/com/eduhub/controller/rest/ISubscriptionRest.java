@@ -3,6 +3,8 @@ package vn.com.eduhub.controller.rest;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import vn.com.eduhub.constant.ApiConstant;
@@ -20,5 +22,9 @@ public interface ISubscriptionRest extends CommonRest<SubscriptionReq> {
     @PostMapping(value = UrlConst.LIST + UrlConst.USER)
     @Operation(summary = ApiConstant.GET_SEARCH_LIST)
     BaseRes listUser(@RequestBody CommonSearchReq searchDto, HttpServletRequest req, HttpServletResponse res);
+
+    @GetMapping(value = UrlConst.CHECK + "/{userId}/{courseId}")
+    @Operation(summary = ApiConstant.CHECK_SUB)
+    BaseRes checkSubscription(@PathVariable("userId") String userId, @PathVariable("courseId") String courseId, HttpServletRequest req, HttpServletResponse res);
 
 }

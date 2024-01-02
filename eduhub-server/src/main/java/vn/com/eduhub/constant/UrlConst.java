@@ -14,6 +14,7 @@ public class UrlConst {
     public static final String UPLOAD_IMAGE = "/upload-image";
     public static final String UPLOAD_VIDEO = "/upload-video";
     public static final String DELETE_FILE = "/delete-file";
+    public static final String CHECK = "/check";
 
     public static final String SUBSCRIPTION = "/subscription";
     public static final String USER = "/user";

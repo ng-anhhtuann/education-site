@@ -14,6 +14,7 @@ public class ApiConstant {
     public static final String IMAGE_UPLOAD = "Upload strict Image";
     public static final String VIDEO_UPLOAD = "Upload strict Video";
     public static final String DELETE_FILE = "Delete file by file name";
+    public static final String CHECK_SUB = "Check existed subscription";
 
     public static final String SUCCESS = "Success";
     public static final String UNAUTHORIZED = "Unauthorized";

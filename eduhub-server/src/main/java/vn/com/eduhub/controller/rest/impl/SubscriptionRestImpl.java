@@ -37,7 +37,7 @@ public class SubscriptionRestImpl extends AbstractRest implements ISubscriptionR
         long start = System.currentTimeMillis();
         try {
             SubscriptionDto dto = mapper.map(request, SubscriptionDto.class);
-            return this.successHandler.handlerSuccess(this.subscriptionService.edit(dto), start);
+            return this.successHandler.handlerSuccess(this.subscriptionService.createSubscription(dto), start);
         } catch (Exception ex) {
             ex.printStackTrace();
             return this.errorHandler.handlerException(ex, req, res, start);
@@ -80,6 +80,17 @@ public class SubscriptionRestImpl extends AbstractRest implements ISubscriptionR
         long start = System.currentTimeMillis();
         try {
             return this.successHandler.handlerSuccess(this.subscriptionService.searchStudentByCourse(searchDto), start);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return this.errorHandler.handlerException(ex, req, null, start);
+        }
+    }
+
+    @Override
+    public BaseRes checkSubscription(String userId, String courseId, HttpServletRequest req, HttpServletResponse res) {
+        long start = System.currentTimeMillis();
+        try {
+            return this.successHandler.handlerSuccess(this.subscriptionService.checkSubscription(userId, courseId), start);
         } catch (Exception ex) {
             ex.printStackTrace();
             return this.errorHandler.handlerException(ex, req, null, start);

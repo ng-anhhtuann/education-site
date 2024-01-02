@@ -1,8 +1,7 @@
 package vn.com.eduhub.utils;
 
 public class CommonConstant {
-    public static final String DEFAULT_AVATAR_URL = "https://firebasestorage.googleapis.com/v0/b/edu-hub-3772f.appspot.com/o/default-avatar.png?alt=media&token=37861287-1404-4edf-b88c-5284e366506d&_gl=1*1lnrrd1*_ga*MjMyODYwNTg4LjE2Njg0MjM1Njg.*_ga_CW55HF8NVT*MTY5NzM4NjA4OS4yMi4xLjE2OTczODYwOTYuNTMuMC4w";
-
+    public static final String DEFAULT_AVATAR_URL = "https://firebasestorage.googleapis.com/v0/b/edu-hub-3772f.appspot.com/o/default-avatar.png?alt=media";
 
     public static final String EMPTY_PASSWORD = "Password is required!";
     public static final String EMPTY_DESCRIPTION = "Description is required!";
@@ -21,4 +20,6 @@ public class CommonConstant {
     public static final String DUPLICATE_SUBSCRIPTION = "Subscription existed!";
     public static final String VIDEO_INVALID = "Uploaded file is not an video.";
     public static final String IMAGE_INVALID = "Uploaded file is not an image.";
+    public static final String BALANCE_INVALID = "Your balance doesn't meet this course's price, please charge more";
+
 }
