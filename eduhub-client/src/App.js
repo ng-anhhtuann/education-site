@@ -38,11 +38,6 @@ function App() {
           />
           <Route
             exact
-            path="/course/create/add-video"
-            element={<CourseEditPage />}
-          />
-          <Route
-            exact
             path="/course/subscription"
             element={<CourseSubscriptionPage />}
           />
