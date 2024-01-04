@@ -139,7 +139,7 @@ public class CourseServiceImpl implements ICourseService {
             } else if (minPrice != null && maxPrice != null && title != null) {
                 if (tagList instanceof ArrayList) {
                     criteriaList.add(Criteria.where("price").gte(minPrice).lte(maxPrice));
-                    criteriaList.add(Criteria.where("tag_list").in(tagList));
+                    criteriaList.add(Criteria.where("tag_list").all(tagList));
                     criteriaList.add(Criteria.where("title").regex(String.valueOf(title), "i"));
                 } else {
                     criteriaList.add(Criteria.where("price").gte(minPrice).lte(maxPrice));

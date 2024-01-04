@@ -2,7 +2,6 @@ package vn.com.eduhub.config;
 
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,7 +11,6 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.SimpleMongoClientDatabaseFactory;
 
 @Configuration
-@Slf4j
 @PropertySource("classpath:application.properties")
 public class DatabaseConfig extends AbstractMongoClientConfiguration {
 
@@ -34,7 +32,6 @@ public class DatabaseConfig extends AbstractMongoClientConfiguration {
 
     @Override
     protected String getDatabaseName() {
-        log.info("=========db==" + DB_NAME + " ======================== " + URI);
         return DB_NAME;
     }
 }

@@ -135,7 +135,7 @@ const CourseAddPage = () => {
         setIsNotify(false);
         setTextNotify("");
         if (typeNotify === "success") {
-          navigate("/course/create/add-video");
+          navigate("/course/manage/edit");
         }
       }
     }, 2000);

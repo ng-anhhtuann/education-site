@@ -29,16 +29,19 @@ const SearchSpace = () => {
 
   const handleSearch = (e) => {
     e.preventDefault();
-    const searchBody = {
-        page : 1,
-        pageSize: 6,
-        searchType: "FIELD",
-        params : {
-            min_price : Number(min),
-            max_price : Number(max),
-            title : textInput,
-            tag_list : tags
-        }
+    let searchBody = {
+      page: 1,
+      pageSize: 6,
+      searchType: "FIELD",
+      params: {
+        min_price: Number(min),
+        max_price: Number(max),
+        title: textInput,
+      },
+    };
+    
+    if (tags.length > 0) {
+      searchBody.params.tag_list = tags;
     }
 
     CourseService.searchCourseByCondition(searchBody).then((res) => {

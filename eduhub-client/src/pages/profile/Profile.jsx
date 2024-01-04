@@ -66,13 +66,11 @@ const Profile = () => {
 
   if (isNotify) {
     setTimeout(() => {
-      if (typeNotify !== "info") {
-        if (typeNotify === "success") {
-          window.location.reload();
-        }
-        setIsNotify(false);
-        setTextNotify("");
+      if (typeNotify === "success") {
+        window.location.reload();
       }
+      setIsNotify(false);
+      setTextNotify("");
     }, 2000);
   }
 
@@ -161,9 +159,9 @@ const Profile = () => {
                   setIsNotify(true);
                   return;
                 } else {
-                    setTypeNotify("success");
-                    setTextNotify("Created successfully!");
-                    setIsNotify(true);
+                  setTypeNotify("success");
+                  setTextNotify("Created successfully!");
+                  setIsNotify(true);
                 }
               });
             })
@@ -179,7 +177,6 @@ const Profile = () => {
           setIsNotify(true);
         });
     } else {
-
       const req = {
         id: user.id,
         userName: user.userName,
@@ -198,7 +195,7 @@ const Profile = () => {
             setIsNotify(true);
           } else {
             setTypeNotify("success");
-            setTextNotify("Created successfully!");
+            setTextNotify("Updated successfully!");
             setIsNotify(true);
           }
         })
@@ -218,7 +215,9 @@ const Profile = () => {
           <p className="profile-header">USER PROFILE 🖥</p>
           <div className="profile-avatar">
             <div>
-              <span className="tooltip-text">Click here to change avatar 📸</span>
+              <span className="tooltip-text">
+                Click here to change avatar 📸
+              </span>
               <img
                 src={imageUrl}
                 onClick={(e) => document.getElementById("fileID").click()}
