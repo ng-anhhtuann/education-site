@@ -37,7 +37,6 @@ const ImageService = {
   getImageById: (id) => {
     return API.get(`image/detail/${id}`)
       .then((res) => {
-        console.log(res)
         if (res.data.status === 200) {
           const img = JSON.stringify(res.data.data);
           setStorage(img);

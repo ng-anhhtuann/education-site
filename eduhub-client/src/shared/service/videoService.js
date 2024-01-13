@@ -37,7 +37,6 @@ const VideoService = {
   getVideoById: (id) => {
     return API.get(`video/detail/${id}`)
       .then((res) => {
-        console.log(res);
         if (res.data.status === 200) {
           const video = JSON.stringify(res.data.data);
           setStorage(video);

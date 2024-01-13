@@ -46,7 +46,6 @@ const AddVideoItem = () => {
             setPosition("top-center");
             return;
           }
-          console.log(res);
           setVideoUrl(tick);
           const req = {
             title,
@@ -58,7 +57,6 @@ const AddVideoItem = () => {
 
           VideoService.createOrUpdateVideo(req)
             .then((res) => {
-              console.log(res);
               if (res.data.status !== 200) {
                 setTypeNotify("error");
                 setTextNotify(res.data.errors || "Something went wrong");
@@ -80,7 +78,6 @@ const AddVideoItem = () => {
               setPosition("top-center");
             });
 
-          console.log({ req });
         })
         .catch((err) => {
           console.error("Error uploading video:", err);

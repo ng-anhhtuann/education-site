@@ -64,16 +64,6 @@ const Profile = () => {
     reader.readAsDataURL(e.target.files[0]);
   };
 
-  if (isNotify) {
-    setTimeout(() => {
-      if (typeNotify === "success") {
-        window.location.reload();
-      }
-      setIsNotify(false);
-      setTextNotify("");
-    }, 2000);
-  }
-
   const toast = useMemo(() => {
     return <Toast isNotify={isNotify} text={textNotify} type={typeNotify} />;
   }, [isNotify, textNotify, typeNotify]);
@@ -107,10 +97,6 @@ const Profile = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
-    setTypeNotify("info");
-    setTextNotify("Wait for the server");
-    setIsNotify(true);
 
     if (imageFile) {
       FileService.uploadImage(imageFile)
@@ -201,11 +187,21 @@ const Profile = () => {
         })
         .catch((err) => {
           setTypeNotify("error");
-          setTextNotify("Something went wrong while creating the course");
+          setTextNotify("Something went wrong while update data");
           setIsNotify(true);
         });
     }
   };
+
+  if (isNotify) {
+    setTimeout(() => {
+      setIsNotify(false);
+      setTextNotify("");
+      if (typeNotify === "success") {
+        window.location.reload();
+      }
+    }, 2000);
+  }
 
   return (
     <Layout>

@@ -42,7 +42,6 @@ const VideoEditItem = ({ video }) => {
   const onClickDelete = (e) => {
     VideoService.deleteVideoById(video.id)
       .then((res) => {
-        console.log({res})
         if (res.data.status !== 200) {
           setTypeNotify("error");
           setTextNotify(res.data.errors || "Something went wrong");

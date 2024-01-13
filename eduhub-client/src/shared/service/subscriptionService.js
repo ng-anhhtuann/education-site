@@ -4,7 +4,6 @@ const SubscriptionService = {
   searchCourseByCondition: (e) => {
     return API.post("subscription/list/course", e)
       .then((res) => {
-        console.log(res);
         if (res.data.status === 200) {
           sessionStorage.setItem("SEARCH_COURSE", JSON.stringify(e));
           sessionStorage.setItem(
@@ -42,7 +41,6 @@ const SubscriptionService = {
   checkSubscription: (e) => {
     return API.get("subscription/check/" + e.studentId + "/" + e.courseId)
       .then((res) => {
-        console.log(res)
         return res;
       })
       .catch((err) => {
@@ -54,7 +52,6 @@ const SubscriptionService = {
   searchUserByCondition: (e) => {
     return API.post("subscription/list/user", e)
       .then((res) => {
-        console.log(res);
         if (res.data.status === 200) {
           sessionStorage.setItem("SEARCH_USER_SUBSCRIPTION", JSON.stringify(e));
           sessionStorage.setItem(
