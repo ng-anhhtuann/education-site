@@ -42,7 +42,8 @@ public class UserServiceImpl implements IUserService {
 
     /**
      * @throws Exception
-     * @flow Nếu có id thì là update Các field được phép update là avatarUrl và password Nếu không có id thì là thêm mới hoàn toàn.
+     * @flow Nếu có id thì là update Các field được phép update là
+     * avatarUrl và password Nếu không có id thì là thêm mới hoàn toàn.
      */
     @Override
     public User edit(SignUpDto dto) throws Exception {

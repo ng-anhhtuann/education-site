@@ -6,13 +6,14 @@ import CourseItem from "../../shared/components/common/courseItem/CourseItem";
 import VideoItem from "../../shared/components/common/videoItem/VideoItem";
 import Pagination from "@mui/material/Pagination";
 import VideoService from "../../shared/service/videoService";
-
+//userEffect xử lý dữ liệu khi nó có biến đổi từ param truyền vào
 const CoursePage = () => {
   const [id, setId] = useState("");
   const [course, setCourse] = useState({});
   const [isLoading, setIsLoading] = useState(true);
   const [videoList, setVideoList] = useState([]);
   const [count, setCount] = useState(0);
+  // ban đầu vào trang sẽ gọi API search lấy tất cả thông tin video của khoá học dựa theo id
   const [search, setSearch] = useState({
     page: 1,
     pageSize: 6,
@@ -21,7 +22,7 @@ const CoursePage = () => {
       course_id: id,
     },
   });
-
+// phụ thuộc search để phân trang
   useEffect(() => {
     VideoService.searchVideoByCondition(search).then((res) => {
       setVideoList(
@@ -37,10 +38,12 @@ const CoursePage = () => {
       setId(courseId);
 
       try {
+        // gọi API thông tin khoá học dựa theo id
         await CourseService.getCourseById(courseId);
         setCourse(JSON.parse(sessionStorage.getItem("CURRENT_COURSE")));
         setIsLoading(false);
         search.params.course_id = courseId;
+        // dựa vào search bên trên để gọi API lấy tất cả video từ khoá học đó
         await VideoService.searchVideoByCondition(search);
         setVideoList(
           JSON.parse(sessionStorage.getItem("VIDEO_LIST_BY_COURSE_ID"))

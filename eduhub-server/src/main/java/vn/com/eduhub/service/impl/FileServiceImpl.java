@@ -92,6 +92,14 @@ public class FileServiceImpl implements IFileService {
         return sb.toString();
     }
 
+    /**
+     * Upload file lên firebase storage
+     * @param fileName
+     * @param fileBytes
+     * @param type
+     * @return
+     * @throws IOException
+     */
     private String uploadFile(String fileName, byte[] fileBytes, String type) throws IOException {
         BlobId blobId = BlobId.of(bucketName, fileName);
         BlobInfo blobInfo = BlobInfo.newBuilder(blobId).setContentType(type).build();

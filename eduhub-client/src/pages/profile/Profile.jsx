@@ -11,6 +11,9 @@ const Profile = () => {
   const navigate = useNavigate();
   const [user, setUserData] = useState({});
 
+  // lấy id của người dùng lưu dưới session để gọi API lấy data người dùng theo ID
+  // nếu API lỗi hoặc ko có data của user thì sẽ xoá session và back lại trang đăng nhập
+  // nếu không thì sẽ hiển thị data người dùng ra màn hình
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -52,7 +55,7 @@ const Profile = () => {
     setRePassword(user.password);
     setPassword(user.password);
   }, [user.avatarUrl, user.password]);
-
+// upload hình dạng bytestream
   const handleChangeFile = (e) => {
     const reader = new FileReader();
     reader.onload = function (event) {
@@ -94,7 +97,10 @@ const Profile = () => {
     };
     return date.toLocaleDateString("en-US", options);
   }
-
+//khi nhấn submit thì nếu hình bị thay đổi thì sẽ gởi API lên firebase để lấy url của hình
+// sau đó dựa theo url tạo ra thì sẽ lấy đó để gọi API cập nhật dữ liệu người dùng
+// tương tự như cập nhật password
+// nếu có lỗi thì dựa vào toast để hiển thị popup lỗi
   const handleSubmit = (e) => {
     e.preventDefault();
 
