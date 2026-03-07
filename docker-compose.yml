@@ -1,0 +1,49 @@
+services:
+  mongodb:
+    image: mongo:7
+    container_name: eduhub-mongodb
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.runCommand({ ping: 1 })"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+
+  eduhub-server:
+    build:
+      context: ./eduhub-server
+      dockerfile: Dockerfile
+    container_name: eduhub-server
+    restart: unless-stopped
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    environment:
+      SPRING_DATA_MONGODB_URI: mongodb://mongodb:27017/educluster?directConnection=true
+      SPRING_DATA_MONGODB_DATABASE: educluster
+      FIREBASE_CLASS_PATH: /app/eduhub-key.json
+    volumes:
+      - ./eduhub-server/eduhub-key.json:/app/eduhub-key.json:ro
+    ports:
+      - "8080:8080"
+
+  eduhub-client:
+    build:
+      context: ./eduhub-client
+      dockerfile: Dockerfile
+      args:
+        REACT_APP_API_URL: http://localhost:8080/
+    container_name: eduhub-client
+    restart: unless-stopped
+    depends_on:
+      - eduhub-server
+    ports:
+      - "3000:80"
+
+volumes:
+  mongo_data:

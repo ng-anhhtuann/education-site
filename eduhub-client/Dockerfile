@@ -5,10 +5,13 @@ FROM node:lts AS build
 WORKDIR /app
 
 # Copy package.json and package-lock.json to the working directory
-COPY package.json package-lock.json ./
+COPY package*.json ./
+
+ARG REACT_APP_API_URL=http://localhost:8080/
+ENV REACT_APP_API_URL=${REACT_APP_API_URL}
 
 # Install dependencies
-RUN npm install
+RUN npm install --legacy-peer-deps
 
 # Copy the entire project files to the working directory
 COPY . .
