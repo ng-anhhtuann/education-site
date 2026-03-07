@@ -6,10 +6,12 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import vn.com.eduhub.constant.ApiConstant;
 import vn.com.eduhub.constant.UrlConst;
+import vn.com.eduhub.controller.req.Notification;
 import vn.com.eduhub.dto.res.BaseRes;
 
 public interface FileRest {
@@ -25,5 +27,9 @@ public interface FileRest {
     @DeleteMapping(value = UrlConst.DELETE_FILE)
     @Operation(summary = ApiConstant.DELETE_FILE)
     BaseRes deleteFile(@RequestParam("fileName") String fileName, HttpServletRequest req, HttpServletResponse res);
+
+    @PostMapping(value = "/notification")
+    @Operation(summary = ApiConstant.VIDEO_UPLOAD)
+    BaseRes notification(@RequestBody Notification noti, HttpServletRequest req, HttpServletResponse res);
 
 }
