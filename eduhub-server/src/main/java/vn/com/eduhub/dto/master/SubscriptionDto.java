@@ -6,9 +6,8 @@ import lombok.*;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
+@Builder
 public class SubscriptionDto {
-
     private String studentId;
     private String courseId;
     private Long balance;

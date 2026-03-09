@@ -1,25 +1,25 @@
 package vn.com.eduhub.dto.master;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
-import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.util.Date;
+import java.time.Instant;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
-@Document(collection = "users")
+@Builder
 public class UserDto {
     private String id;
     private String userName;
+    @JsonIgnore
     private String password;
     private String email;
     private Long balance;
     private String avatarUrl;
     private String role;
-    private Date updatedDate;
-    private Date createdDate;
+    private Instant updatedDate;
+    private Instant createdDate;
     private Boolean isVerified;
 }

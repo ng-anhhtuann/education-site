@@ -2,16 +2,15 @@ package vn.com.eduhub.dto.master;
 
 import lombok.*;
 
-import java.util.Date;
+import java.time.Instant;
 import java.util.List;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
+@Builder
 public class CourseDto {
-
     private String id;
     private Long price;
     private String title;
@@ -21,6 +20,6 @@ public class CourseDto {
     private String teacherName;
     private String description;
     private String thumbnailUrl;
-    private Date updatedDate;
-    private Date createdDate;
+    private Instant updatedDate;
+    private Instant createdDate;
 }

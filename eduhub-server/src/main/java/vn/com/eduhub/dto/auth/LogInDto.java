@@ -1,18 +1,16 @@
 package vn.com.eduhub.dto.auth;
 
+import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
 public class LogInDto {
-
-    /**
-     * Representing `userName` or `email` 
-     * User can use either field for logging in to their account
-     */
+    @NotBlank(message = "Account is required")
     private String account;
+
+    @NotBlank(message = "Password is required")
     private String password;
 }
