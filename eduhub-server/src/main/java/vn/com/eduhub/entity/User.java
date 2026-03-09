@@ -1,71 +1,56 @@
 package vn.com.eduhub.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
 import lombok.*;
+import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
-import java.util.Date;
+import java.time.Instant;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
+@Builder
 @Document(collection = "users")
 public class User {
 
     @Id
-    @SerializedName("id")
-    @Expose
     private String id;
 
-    @SerializedName("userName")
-    @Expose
+    @Indexed(unique = true)
     @Field("user_name")
     private String userName;
 
     @JsonIgnore
-    @SerializedName("password")
-    @Expose
     @Field("password")
     private String password;
 
-    @SerializedName("email")
-    @Expose
+    @Indexed(unique = true)
     @Field("email")
     private String email;
 
-    @SerializedName("balance")
-    @Expose
     @Field("balance")
     private Long balance;
 
-    @SerializedName("avatarUrl")
-    @Expose
     @Field("avatar_url")
     private String avatarUrl;
 
-    @SerializedName("role")
-    @Expose
     @Field("role")
     private String role;
 
-    @SerializedName("updatedDate")
-    @Expose
+    @LastModifiedDate
     @Field("updated_date")
-    private Date updatedDate;
+    private Instant updatedDate;
 
-    @SerializedName("createdDate")
-    @Expose
+    @CreatedDate
     @Field("created_date")
-    private Date createdDate;
+    private Instant createdDate;
 
-    @SerializedName("isVerified")
-    @Expose
     @Field("is_verified")
     private Boolean isVerified;
 }

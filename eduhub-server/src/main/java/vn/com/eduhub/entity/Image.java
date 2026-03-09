@@ -1,61 +1,42 @@
 package vn.com.eduhub.entity;
 
-import java.util.Date;
-
+import lombok.*;
+import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
-
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import java.time.Instant;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
+@Builder
 @Document(collection = "images")
 public class Image {
 
     @Id
-    @SerializedName("id")
-    @Expose
     private String id;
 
-    @SerializedName("name")
-    @Expose
     @Field("name")
     private String name;
 
-    @SerializedName("isAvatar")
-    @Expose
     @Field("is_avatar")
     private Boolean isAvatar;
 
-    @SerializedName("url")
-    @Expose
     @Field("url")
     private String url;
 
-    @SerializedName("ownerId")
-    @Expose
     @Field("owner_id")
     private String ownerId;
 
-    @SerializedName("updatedDate")
-    @Expose
+    @LastModifiedDate
     @Field("updated_date")
-    private Date updatedDate;
+    private Instant updatedDate;
 
-    @SerializedName("createdDate")
-    @Expose
+    @CreatedDate
     @Field("created_date")
-    private Date createdDate;
-
+    private Instant createdDate;
 }
