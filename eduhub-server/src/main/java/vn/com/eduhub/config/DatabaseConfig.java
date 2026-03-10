@@ -5,33 +5,31 @@ import com.mongodb.client.MongoClients;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.data.mongodb.config.AbstractMongoClientConfiguration;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.SimpleMongoClientDatabaseFactory;
 
 @Configuration
-@PropertySource("classpath:application.properties")
 public class DatabaseConfig extends AbstractMongoClientConfiguration {
 
     @Value("${spring.data.mongodb.uri}")
-    private String URI;
+    private String mongoUri;
 
     @Value("${spring.data.mongodb.database}")
-    private String DB_NAME;
+    private String databaseName;
 
     @Bean
     public MongoClient mongoClient() {
-        return MongoClients.create(URI);
+        return MongoClients.create(mongoUri);
     }
 
     @Bean
     public MongoTemplate mongoTemplate() {
-        return new MongoTemplate(new SimpleMongoClientDatabaseFactory(mongoClient(), DB_NAME));
+        return new MongoTemplate(new SimpleMongoClientDatabaseFactory(mongoClient(), databaseName));
     }
 
     @Override
     protected String getDatabaseName() {
-        return DB_NAME;
+        return databaseName;
     }
 }
