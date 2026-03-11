@@ -1,28 +1,40 @@
 package vn.com.eduhub.controller.req;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import lombok.*;
-import vn.com.eduhub.utils.CommonConstant;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
 public class UserAddReq {
 
-    @Schema(description = "id", example = "123-31jj-f8ura-3jsaf", required = false)
+    @Schema(description = "id (null for create, present for update)")
     private String id;
-    @Schema(description = "userName", example = "chienbinh156", required = true)
+
+    @NotBlank(message = "Username is required")
+    @Schema(description = "userName", example = "chienbinh156")
     private String userName;
-    @Schema(description = "password", example = "chienbinh156", required = true)
+
+    @NotBlank(message = "Password is required")
+    @Schema(description = "password", example = "chienbinh156")
     private String password;
-    @Schema(description = "password", example = "chienbinh156", required = true)
+
+    @NotBlank(message = "Re-typed password is required")
+    @Schema(description = "rePassword", example = "chienbinh156")
     private String rePassword;
-    @Schema(description = "email", example = "chienbinh156@gmail.com", required = true)
+
+    @NotBlank(message = "Email is required")
+    @Email(message = "Invalid email format")
+    @Schema(description = "email", example = "chienbinh156@gmail.com")
     private String email;
-    @Schema(description = "avatar", example = CommonConstant.DEFAULT_AVATAR_URL, required = false)
+
+    @Schema(description = "avatar URL")
     private String avatarUrl;
-    @Schema(description = "role", example = "TEACHER", required = true)
+
+    @NotBlank(message = "Role is required")
+    @Schema(description = "role", example = "TEACHER")
     private String role;
 }

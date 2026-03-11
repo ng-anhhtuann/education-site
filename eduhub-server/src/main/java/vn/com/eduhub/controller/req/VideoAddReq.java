@@ -1,25 +1,32 @@
 package vn.com.eduhub.controller.req;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotBlank;
 import lombok.*;
-import vn.com.eduhub.utils.CommonConstant;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
 public class VideoAddReq {
-    @Schema(description = "id", example = "123-31jj-f8ura-3jsaf", required = false)
+
+    @Schema(description = "id (null for create, present for update)")
     private String id;
-    @Schema(description = "name", example = "nameonstorage", required = false)
+
+    @Schema(description = "name on storage")
     private String name;
-    @Schema(description = "title", example = "my avatar", required = true)
+
+    @NotBlank(message = "Title is required")
+    @Schema(description = "title", example = "my video")
     private String title;
-    @Schema(description = "url", example = CommonConstant.DEFAULT_AVATAR_URL, required = true)
+
+    @NotBlank(message = "URL is required")
+    @Schema(description = "url")
     private String url;
-    @Schema(description = "course_id", example = "asd81-asi28-243a-js2", required = false)
+
+    @Schema(description = "course_id")
     private String courseId;
-    @Schema(description = "description", example = "description vd", required = false)
+
+    @Schema(description = "description")
     private String description;
 }
