@@ -1,16 +1,15 @@
 package vn.com.eduhub.service;
 
 import vn.com.eduhub.controller.req.CommonSearchReq;
-import vn.com.eduhub.dto.res.ObjectDataRes;
+import vn.com.eduhub.dto.res.PagedResponse;
 
-public interface CommonService<ENTITY, DTO> {
+public interface CommonService<DTO> {
 
-    ENTITY edit(DTO d) throws Exception;
+    DTO edit(DTO dto);
 
-    ObjectDataRes<ENTITY> getList(CommonSearchReq req);
+    PagedResponse<DTO> search(CommonSearchReq req);
 
-    DTO detail(String id) throws Exception;
+    DTO detail(String id);
 
-    String delete(String id) throws Exception;
-
+    String delete(String id);
 }

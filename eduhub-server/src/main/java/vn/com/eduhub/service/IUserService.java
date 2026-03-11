@@ -1,14 +1,20 @@
 package vn.com.eduhub.service;
 
+import vn.com.eduhub.controller.req.CommonSearchReq;
 import vn.com.eduhub.dto.auth.LogInDto;
 import vn.com.eduhub.dto.auth.SignUpDto;
 import vn.com.eduhub.dto.master.UserDto;
-import vn.com.eduhub.entity.User;
+import vn.com.eduhub.dto.res.PagedResponse;
 
-public interface IUserService extends CommonService<User, UserDto> {
+public interface IUserService {
 
-    User login(LogInDto dto) throws Exception;
+    UserDto register(SignUpDto dto);
 
-    User edit(SignUpDto dto) throws Exception;
+    UserDto update(SignUpDto dto);
 
+    UserDto login(LogInDto dto);
+
+    PagedResponse<UserDto> search(CommonSearchReq req);
+
+    UserDto detail(String id);
 }
