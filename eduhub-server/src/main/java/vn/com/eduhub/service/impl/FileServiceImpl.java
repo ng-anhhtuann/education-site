@@ -2,29 +2,35 @@ package vn.com.eduhub.service.impl;
 
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.storage.*;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.core.io.ClassPathResource;
 import vn.com.eduhub.dto.master.FileDto;
+import vn.com.eduhub.exception.BusinessException;
+import vn.com.eduhub.exception.ValidationException;
 import vn.com.eduhub.service.IFileService;
 import vn.com.eduhub.utils.CommonConstant;
 
-import java.nio.charset.StandardCharsets;
 import java.io.IOException;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Objects;
+import java.util.Set;
 
 @Service
-@PropertySource("classpath:application.properties")
+@Slf4j
 public class FileServiceImpl implements IFileService {
+
+    private static final Set<String> IMAGE_EXTENSIONS = Set.of(".jpeg", ".jpg", ".jpe", ".png", ".gif", ".svg");
+    private static final Set<String> VIDEO_EXTENSIONS = Set.of(".mp4", ".mov", ".avi", ".wmv");
 
     @Value("${firebase.bucket-name}")
     private String bucketName;
 
     @Value("${firebase.key-name}")
-    private String path;
+    private String keyName;
 
     @Value("${firebase.download-url}")
     private String downloadUrl;
@@ -32,97 +38,63 @@ public class FileServiceImpl implements IFileService {
     @Value("${firebase.app-name}")
     private String appName;
 
-    private final String IMAGE = "image";
-
-    private final String VIDEO = "video";
-
     @Override
-    public FileDto uploadImage(MultipartFile multipartFile) throws Exception {
-        String fileName = generateUniqueFileName(multipartFile.getOriginalFilename());
-        if (!isImageFile(Objects.requireNonNull(multipartFile.getOriginalFilename())))
-            throw new Exception(CommonConstant.IMAGE_INVALID);
-
-        try {
-            byte[] fileBytes = multipartFile.getBytes();
-            String url = this.uploadFile(fileName, fileBytes, IMAGE);
-            return new FileDto(fileName, url);
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new Exception(CommonConstant.PROCESS_FAIL);
+    public FileDto uploadImage(MultipartFile multipartFile) {
+        String originalName = Objects.requireNonNull(multipartFile.getOriginalFilename());
+        if (!hasExtension(originalName, IMAGE_EXTENSIONS)) {
+            throw new ValidationException(CommonConstant.IMAGE_INVALID);
         }
+        return doUpload(multipartFile, "image");
     }
 
     @Override
-    public FileDto uploadVideo(MultipartFile multipartFile) throws Exception {
-
-        String fileName = generateUniqueFileName(multipartFile.getOriginalFilename());
-        if (!isVideoFile(Objects.requireNonNull(multipartFile.getOriginalFilename())))
-            throw new Exception(CommonConstant.VIDEO_INVALID);
-
-        try {
-            byte[] fileBytes = multipartFile.getBytes();
-            String url = this.uploadFile(fileName, fileBytes, VIDEO);
-            return new FileDto(fileName, url);
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new Exception(CommonConstant.PROCESS_FAIL);
+    public FileDto uploadVideo(MultipartFile multipartFile) {
+        String originalName = Objects.requireNonNull(multipartFile.getOriginalFilename());
+        if (!hasExtension(originalName, VIDEO_EXTENSIONS)) {
+            throw new ValidationException(CommonConstant.VIDEO_INVALID);
         }
+        return doUpload(multipartFile, "video");
     }
 
     @Override
-    public boolean deleteFile(String fileName) throws Exception {
+    public boolean deleteFile(String fileName) {
         try {
             BlobId blobId = BlobId.of(bucketName, fileName);
-            ClassPathResource serviceAccount = new ClassPathResource(path);
-
-            Storage storage = StorageOptions.newBuilder().setCredentials(GoogleCredentials.fromStream(serviceAccount.getInputStream()))
-                    .setProjectId(appName).build().getService();
+            Storage storage = buildStorage();
             return storage.delete(blobId);
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new Exception(CommonConstant.PROCESS_FAIL);
+        } catch (IOException e) {
+            log.error("Failed to delete file: {}", fileName, e);
+            throw new BusinessException(CommonConstant.PROCESS_FAIL);
         }
-
     }
 
-    private String generateUniqueFileName(String name) {
-        StringBuilder sb = new StringBuilder();
-        sb.append(System.currentTimeMillis());
-        sb.append(name);
-        return sb.toString();
+    private FileDto doUpload(MultipartFile multipartFile, String contentType) {
+        String fileName = System.currentTimeMillis() + multipartFile.getOriginalFilename();
+        try {
+            BlobId blobId = BlobId.of(bucketName, fileName);
+            BlobInfo blobInfo = BlobInfo.newBuilder(blobId).setContentType(contentType).build();
+            Storage storage = buildStorage();
+            storage.create(blobInfo, multipartFile.getBytes());
+            String url = String.format(downloadUrl, URLEncoder.encode(fileName, StandardCharsets.UTF_8));
+            log.info("File uploaded: {}", fileName);
+            return new FileDto(fileName, url);
+        } catch (IOException e) {
+            log.error("Failed to upload file: {}", fileName, e);
+            throw new BusinessException(CommonConstant.PROCESS_FAIL);
+        }
     }
 
-    /**
-     * Upload file lên firebase storage
-     * @param fileName
-     * @param fileBytes
-     * @param type
-     * @return
-     * @throws IOException
-     */
-    private String uploadFile(String fileName, byte[] fileBytes, String type) throws IOException {
-        BlobId blobId = BlobId.of(bucketName, fileName);
-        BlobInfo blobInfo = BlobInfo.newBuilder(blobId).setContentType(type).build();
-        ClassPathResource serviceAccount = new ClassPathResource(path);
-        Storage storage = StorageOptions.newBuilder().setCredentials(GoogleCredentials.fromStream(serviceAccount.getInputStream()))
-                .setProjectId(appName).build().getService();
-        storage.create(blobInfo, fileBytes);
-
-        return String.format(downloadUrl, URLEncoder.encode(fileName, String.valueOf(StandardCharsets.UTF_8)));
+    private Storage buildStorage() throws IOException {
+        ClassPathResource serviceAccount = new ClassPathResource(keyName);
+        return StorageOptions.newBuilder()
+                .setCredentials(GoogleCredentials.fromStream(serviceAccount.getInputStream()))
+                .setProjectId(appName)
+                .build()
+                .getService();
     }
 
-    private boolean isImageFile(String fileName) {
-        // .jpeg,.jpg,.jpe,.png, .gif, .svg
-        // Implement a check for image file extensions
-        return fileName.toLowerCase().endsWith(".jpe") || fileName.toLowerCase().endsWith(".jpeg")
-                || fileName.toLowerCase().endsWith(".png") || fileName.toLowerCase().endsWith(".jpg")
-                || fileName.toLowerCase().endsWith(".gif") || fileName.toLowerCase().endsWith(".svg");
+    private boolean hasExtension(String fileName, Set<String> extensions) {
+        String lower = fileName.toLowerCase();
+        return extensions.stream().anyMatch(lower::endsWith);
     }
-
-    private boolean isVideoFile(String fileName) {
-        // Implement a check for video file extensions
-        return fileName.toLowerCase().endsWith(".mp4") || fileName.toLowerCase().endsWith(".mov") || fileName.toLowerCase().endsWith(".avi")
-                || fileName.toLowerCase().endsWith(".vmw");
-    }
-
 }
