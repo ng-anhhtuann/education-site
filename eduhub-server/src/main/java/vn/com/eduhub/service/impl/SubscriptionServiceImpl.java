@@ -1,8 +1,8 @@
 package vn.com.eduhub.service.impl;
 
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -10,254 +10,127 @@ import org.springframework.stereotype.Service;
 import vn.com.eduhub.controller.req.CommonSearchReq;
 import vn.com.eduhub.dto.master.CourseDto;
 import vn.com.eduhub.dto.master.SubscriptionDto;
-import vn.com.eduhub.dto.res.ObjectDataRes;
+import vn.com.eduhub.dto.master.UserDto;
+import vn.com.eduhub.dto.res.PagedResponse;
 import vn.com.eduhub.entity.Course;
 import vn.com.eduhub.entity.Subscription;
 import vn.com.eduhub.entity.User;
+import vn.com.eduhub.exception.BusinessException;
+import vn.com.eduhub.exception.ResourceNotFoundException;
 import vn.com.eduhub.repository.CourseRepository;
 import vn.com.eduhub.repository.SubscriptionRepository;
 import vn.com.eduhub.repository.UserRepository;
 import vn.com.eduhub.service.ISubscriptionService;
 import vn.com.eduhub.service.IUserService;
+import vn.com.eduhub.service.SearchHelper;
 import vn.com.eduhub.utils.CommonConstant;
 
-import java.util.*;
+import java.time.Instant;
+import java.util.Objects;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
+@RequiredArgsConstructor
 public class SubscriptionServiceImpl implements ISubscriptionService {
 
-    private final ModelMapper mapper = new ModelMapper();
+    private final ModelMapper mapper;
+    private final MongoTemplate mongoTemplate;
+    private final UserRepository userRepository;
+    private final CourseRepository courseRepository;
+    private final SubscriptionRepository subscriptionRepository;
+    private final IUserService userService;
+    private final SearchHelper searchHelper;
 
-    @Autowired
-    MongoTemplate mongoTemplate;
-
-    @Autowired
-    IUserService userService;
-
-    @Autowired
-    UserRepository userRepository;
-
-    @Autowired
-    CourseRepository courseRepository;
-
-    @Autowired
-    SubscriptionRepository subscriptionRepository;
-
-    /**
-     * Add subscription with validate data Not edit
-     */
     @Override
-    public SubscriptionDto createSubscription(SubscriptionDto dto) throws Exception {
-        Optional<Course> courseOptional = courseRepository.findById(dto.getCourseId());
-        if (courseOptional.isEmpty())
-            throw new Exception(CommonConstant.COURSE_NOT_FOUND);
+    public SubscriptionDto createSubscription(SubscriptionDto dto) {
+        Course course = courseRepository.findById(dto.getCourseId())
+                .orElseThrow(() -> new ResourceNotFoundException(CommonConstant.COURSE_NOT_FOUND));
+        User user = userRepository.findById(dto.getStudentId())
+                .orElseThrow(() -> new ResourceNotFoundException(CommonConstant.USER_NOT_FOUND));
 
-        Optional<User> userOptional = userRepository.findById(dto.getStudentId());
-        if (userOptional.isEmpty())
-            throw new Exception(CommonConstant.USER_NOT_FOUND);
-
-        Query query = new Query();
-        query.addCriteria(new Criteria().andOperator(Criteria.where("student_id").is(dto.getStudentId()),
-            Criteria.where("course_id").is(dto.getCourseId())));
-        Subscription subQuery = mongoTemplate.findOne(query, Subscription.class);
-        if (subQuery != null)
-            throw new Exception(CommonConstant.DUPLICATE_SUBSCRIPTION);
-
-        Long userBalance = userOptional.get().getBalance();
-        Long coursePrice = courseOptional.get().getPrice();
-        if (userBalance - coursePrice < 0) {
-            throw new Exception(CommonConstant.BALANCE_INVALID);
+        Query dupCheck = new Query();
+        dupCheck.addCriteria(new Criteria().andOperator(
+                Criteria.where("student_id").is(dto.getStudentId()),
+                Criteria.where("course_id").is(dto.getCourseId())
+        ));
+        if (mongoTemplate.exists(dupCheck, Subscription.class)) {
+            throw new BusinessException(CommonConstant.DUPLICATE_SUBSCRIPTION);
         }
 
-        try {
-            Subscription subscription = new Subscription();
-            subscription.setCourseId(dto.getCourseId());
-            subscription.setStudentId(dto.getStudentId());
-            subscription.setId(String.valueOf(UUID.randomUUID()).concat(String.valueOf(System.currentTimeMillis())));
-            subscription.setCreatedDate(new Date());
-            subscriptionRepository.insert(subscription);
-
-            Course currentCourse = courseOptional.get();
-            currentCourse.setStudentCount(currentCourse.getStudentCount() + 1);
-            courseRepository.save(currentCourse);
-
-            User user = userOptional.get();
-            user.setBalance(userBalance - coursePrice);
-            user.setUpdatedDate(new Date());
-            userRepository.save(user);
-
-            dto.setBalance(userBalance - coursePrice);
-            return dto;
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new Exception(CommonConstant.REPASSWORD_FAIL);
+        if (user.getBalance() - course.getPrice() < 0) {
+            throw new BusinessException(CommonConstant.BALANCE_INVALID);
         }
+
+        Subscription subscription = Subscription.builder()
+                .id(UUID.randomUUID().toString() + System.currentTimeMillis())
+                .courseId(dto.getCourseId())
+                .studentId(dto.getStudentId())
+                .createdDate(Instant.now())
+                .build();
+        subscriptionRepository.insert(subscription);
+
+        course.setStudentCount(course.getStudentCount() + 1);
+        courseRepository.save(course);
+
+        user.setBalance(user.getBalance() - course.getPrice());
+        user.setUpdatedDate(Instant.now());
+        userRepository.save(user);
+
+        dto.setBalance(user.getBalance());
+        log.info("Subscription created: student={} course={}", dto.getStudentId(), dto.getCourseId());
+        return dto;
     }
 
     @Override
-    public Subscription edit(SubscriptionDto dto) throws Exception {
-        return null;
-    }
+    public PagedResponse<CourseDto> searchCourseByUser(CommonSearchReq req) {
+        SearchHelper.SearchResult<Subscription> result = searchHelper.search(req, Subscription.class);
 
-    /**
-     * Search by student_id and course_id
-     */
-    @Override
-    public ObjectDataRes<Subscription> getList(CommonSearchReq req) {
-        return null;
-    }
+        var courseIds = result.items().stream()
+                .map(Subscription::getCourseId)
+                .collect(Collectors.toList());
 
-    @Override
-    public SubscriptionDto detail(String id) throws Exception {
-        // TODO Auto-generated method stub
-        return null;
-    }
+        var courses = courseRepository.findAllById(courseIds).stream()
+                .filter(Objects::nonNull)
+                .map(course -> {
+                    CourseDto dto = mapper.map(course, CourseDto.class);
+                    try {
+                        dto.setTeacherName(userService.detail(course.getTeacherId()).getUserName());
+                    } catch (Exception e) {
+                        log.warn("Could not resolve teacher for teacherId={}", course.getTeacherId());
+                        dto.setTeacherName("UNKNOWN");
+                    }
+                    return dto;
+                })
+                .collect(Collectors.toList());
 
-    @Override
-    public String delete(String id) throws Exception {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public ObjectDataRes<CourseDto> searchCourseByUser(CommonSearchReq req) {
-        List<Subscription> listData = new ArrayList<>();
-
-        Query query = new Query();
-
-        query.with(Sort.by(Sort.Order.desc("created_date")));
-
-        if (req.getPage() != null && req.getPage() > 0 && req.getPageSize() != null && req.getPageSize() >= 0) {
-            query.skip((long) (req.getPage() - 1) * req.getPageSize());
-            query.limit(req.getPageSize());
-        }
-
-        /**
-         * Limit the number of returned documents to limit. A zero or negative value is considered as unlimited.
-         */
-        if ((req.getPage() != null && req.getPage() == 0) || (req.getPageSize() == null && req.getPage() == null)) {
-            query.limit(0);
-        }
-
-        if (req.getSearchType().equals("ALL")) {
-            listData = mongoTemplate.find(query, Subscription.class);
-        }
-        if (req.getSearchType().equals("FIELD") && req.getParams() != null) {
-            Criteria criteria = new Criteria();
-            List<Criteria> criteriaList = new ArrayList<>();
-
-            for (Map.Entry<String, Object> entry : req.getParams().entrySet()) {
-                String key = entry.getKey();
-                Object value = entry.getValue();
-
-                if (value instanceof String)
-                    criteriaList.add(Criteria.where(key).regex(String.valueOf(value), "i"));
-            }
-
-            if (!criteriaList.isEmpty()) {
-                criteria.andOperator(criteriaList.toArray(new Criteria[0]));
-                query.addCriteria(criteria);
-                listData = mongoTemplate.find(query, Subscription.class);
-            }
-
-        }
-
-        List<String> courseIds = listData.stream()
-            .map(Subscription::getCourseId)
-            .collect(Collectors.toList());
-
-        List<Course> courseList = courseRepository.findAllById(courseIds);
-
-        courseList.removeIf(Objects::isNull);
-
-        List<CourseDto> courseDtoList = courseList.stream().map(course -> {
-            CourseDto courseDto = mapper.map(course, CourseDto.class);
-            try {
-                courseDto.setTeacherName(userService.detail(course.getTeacherId()).getUserName());
-            } catch (Exception e) {
-                e.printStackTrace();
-                courseDto.setTeacherName("UNKNOWN");
-            }
-            return courseDto;
-        }).collect(Collectors.toList());
-
-        query.skip(0);
-        query.limit(0);
-        int size = mongoTemplate.find(query, Subscription.class).size();
-
-        return new ObjectDataRes<>(size, courseDtoList);
+        return new PagedResponse<>(result.total(), courses);
     }
 
     @Override
-    public ObjectDataRes<User> searchStudentByCourse(CommonSearchReq req) {
-        List<Subscription> listData = new ArrayList<>();
+    public PagedResponse<UserDto> searchStudentByCourse(CommonSearchReq req) {
+        SearchHelper.SearchResult<Subscription> result = searchHelper.search(req, Subscription.class);
 
-        Query query = new Query();
+        var studentIds = result.items().stream()
+                .map(Subscription::getStudentId)
+                .collect(Collectors.toList());
 
-        query.with(Sort.by(Sort.Order.desc("created_date")));
+        var users = userRepository.findAllById(studentIds).stream()
+                .filter(Objects::nonNull)
+                .map(u -> mapper.map(u, UserDto.class))
+                .collect(Collectors.toList());
 
-        if (req.getPage() != null && req.getPage() > 0 && req.getPageSize() != null && req.getPageSize() >= 0) {
-            query.skip((long) (req.getPage() - 1) * req.getPageSize());
-            query.limit(req.getPageSize());
-        }
-
-        /**
-         * Limit the number of returned documents to limit. A zero or negative value is considered as unlimited.
-         */
-        if ((req.getPage() != null && req.getPage() == 0) || (req.getPageSize() == null && req.getPage() == null)) {
-            query.limit(0);
-        }
-
-        if (req.getSearchType().equals("ALL")) {
-            listData = mongoTemplate.find(query, Subscription.class);
-        }
-        if (req.getSearchType().equals("FIELD") && req.getParams() != null) {
-            Criteria criteria = new Criteria();
-            List<Criteria> criteriaList = new ArrayList<>();
-
-            for (Map.Entry<String, Object> entry : req.getParams().entrySet()) {
-                String key = entry.getKey();
-                Object value = entry.getValue();
-
-                if (value instanceof String)
-                    criteriaList.add(Criteria.where(key).regex(String.valueOf(value), "i"));
-            }
-
-            if (!criteriaList.isEmpty()) {
-                criteria.andOperator(criteriaList.toArray(new Criteria[0]));
-                query.addCriteria(criteria);
-                listData = mongoTemplate.find(query, Subscription.class);
-            }
-
-        }
-
-        List<String> userId = listData.stream()
-            .map(Subscription::getStudentId)
-            .collect(Collectors.toList());
-
-        List<User> userList = userRepository.findAllById(userId);
-
-        userList.removeIf(Objects::isNull);
-
-        query.skip(0);
-        query.limit(0);
-        int size = mongoTemplate.find(query, Subscription.class).size();
-
-        return new ObjectDataRes<>(size, userList);
+        return new PagedResponse<>(result.total(), users);
     }
 
     @Override
     public boolean checkSubscription(String userId, String courseId) {
-        Criteria criteria = new Criteria();
-        criteria.andOperator(
-            Criteria.where("student_id").is(userId),
-            Criteria.where("course_id").is(courseId)
-        );
-
         Query query = new Query();
-        query.addCriteria(criteria);
+        query.addCriteria(new Criteria().andOperator(
+                Criteria.where("student_id").is(userId),
+                Criteria.where("course_id").is(courseId)
+        ));
         return mongoTemplate.exists(query, Subscription.class);
     }
-
 }

@@ -1,180 +1,118 @@
 package vn.com.eduhub.service.impl;
 
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 import vn.com.eduhub.controller.req.CommonSearchReq;
-import vn.com.eduhub.dto.master.CourseDto;
 import vn.com.eduhub.dto.master.VideoDto;
-import vn.com.eduhub.dto.res.ObjectDataRes;
-import vn.com.eduhub.entity.Course;
+import vn.com.eduhub.dto.res.PagedResponse;
 import vn.com.eduhub.entity.Video;
+import vn.com.eduhub.exception.ResourceNotFoundException;
+import vn.com.eduhub.exception.ValidationException;
 import vn.com.eduhub.repository.CourseRepository;
 import vn.com.eduhub.repository.VideoRepository;
 import vn.com.eduhub.service.ICourseService;
 import vn.com.eduhub.service.IVideoService;
+import vn.com.eduhub.service.SearchHelper;
 import vn.com.eduhub.utils.CommonConstant;
 
-import java.util.*;
+import java.time.Instant;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
+import org.springframework.data.mongodb.core.query.Criteria;
+
 @Service
+@Slf4j
+@RequiredArgsConstructor
 public class VideoServiceImpl implements IVideoService {
 
-    private final ModelMapper mapper = new ModelMapper();
+    private final ModelMapper mapper;
+    private final VideoRepository videoRepository;
+    private final CourseRepository courseRepository;
+    private final ICourseService courseService;
+    private final SearchHelper searchHelper;
 
-    @Autowired
-    MongoTemplate mongoTemplate;
-
-    @Autowired
-    CourseRepository courseRepository;
-
-    @Autowired
-    VideoRepository videoRepository;
-
-    @Autowired
-    ICourseService courseService;
-
-    /**
-     * Thêm mới hoặc chỉ thay đổi title và description
-     */
     @Override
-    public Video edit(VideoDto dto) throws Exception {
-        if (dto.getId() == null || dto.getId().isEmpty() || dto.getId().isBlank()) {
-            Video video = mapper.map(dto, Video.class);
-            Optional<Course> courseOptional = courseRepository.findById(video.getCourseId());
-            if (courseOptional.isEmpty())
-                throw new Exception(CommonConstant.COURSE_NOT_FOUND);
-            video.setId(String.valueOf(UUID.randomUUID()).concat(String.valueOf(System.currentTimeMillis())));
-            video.setCreatedDate(null);
-            video.setCreatedDate(new Date());
-            videoRepository.insert(video);
-            return video;
-        } else {
-            Optional<Video> imageOptional = videoRepository.findById(dto.getId());
-            if (imageOptional.isPresent()) {
-                Video video = imageOptional.get();
-                video.setUpdatedDate(new Date());
-                if (dto.getTitle() != null || !dto.getTitle().trim().isEmpty())
-                    video.setTitle(dto.getTitle());
-                else
-                    throw new Exception(CommonConstant.EMPTY_TITLE);
-
-                if (dto.getDescription() != null || !dto.getDescription().trim().isEmpty())
-                    video.setDescription(dto.getDescription());
-                else
-                    throw new Exception(CommonConstant.EMPTY_DESCRIPTION);
-                videoRepository.save(video);
-                return video;
-            } else {
-                throw new Exception(CommonConstant.FILE_NOT_FOUND);
-            }
+    public VideoDto edit(VideoDto dto) {
+        if (dto.getId() == null || dto.getId().isBlank()) {
+            return createVideo(dto);
         }
+        return updateVideo(dto);
     }
 
-    /**
-     * Tìm kiếm danh sách theo course_id và title
-     */
-    @Override
-    public ObjectDataRes<Video> getList(CommonSearchReq req) {
-        return null;
+    private VideoDto createVideo(VideoDto dto) {
+        Video video = mapper.map(dto, Video.class);
+        if (!courseRepository.existsById(video.getCourseId())) {
+            throw new ResourceNotFoundException(CommonConstant.COURSE_NOT_FOUND);
+        }
+        video.setId(UUID.randomUUID().toString() + System.currentTimeMillis());
+        video.setCreatedDate(Instant.now());
+        videoRepository.insert(video);
+        log.info("Video created: {}", video.getTitle());
+        return enrichWithCourse(mapper.map(video, VideoDto.class), video.getCourseId());
+    }
+
+    private VideoDto updateVideo(VideoDto dto) {
+        Video video = videoRepository.findById(dto.getId())
+                .orElseThrow(() -> new ResourceNotFoundException(CommonConstant.FILE_NOT_FOUND));
+
+        if (dto.getTitle() == null || dto.getTitle().isBlank()) {
+            throw new ValidationException(CommonConstant.EMPTY_TITLE);
+        }
+
+        video.setTitle(dto.getTitle());
+        if (dto.getDescription() != null) video.setDescription(dto.getDescription());
+        video.setUpdatedDate(Instant.now());
+        videoRepository.save(video);
+        log.info("Video updated: {}", video.getId());
+        return enrichWithCourse(mapper.map(video, VideoDto.class), video.getCourseId());
     }
 
     @Override
-    public VideoDto detail(String id) throws Exception {
-        Optional<Video> videoOptional = videoRepository.findById(id);
-        if (videoOptional.isEmpty()) {
-            throw new Exception(CommonConstant.FILE_NOT_FOUND);
-        }
-        Video video = videoOptional.get();
-        VideoDto videoDto = mapper.map(video, VideoDto.class);
-        try {
-            videoDto.setCourseName(courseService.detail(video.getCourseId()).getTitle());
-        } catch (Exception e) {
-            e.printStackTrace();
-            videoDto.setCourseName("UNKNOWN");
-        }
-        return videoDto;
-    }
-
-    @Override
-    public String delete(String id) throws Exception {
-        Optional<Video> videoOptional = videoRepository.findById(id);
-        if (videoOptional.isEmpty()) {
-            throw new Exception(CommonConstant.FILE_NOT_FOUND);
-        }
-        try {
-            videoRepository.deleteById(id);
-            return id;
-        } catch (Exception ex) {
-            throw new Exception(CommonConstant.PROCESS_FAIL);
-        }
-    }
-
-    @Override
-    public ObjectDataRes<VideoDto> search(CommonSearchReq req) {
-        List<Video> listData = new ArrayList<>();
-        List<VideoDto> dtoList;
-
-        Query query = new Query();
-
-        query.with(Sort.by(Sort.Order.desc("created_date")));
-
-        if (req.getPage() != null && req.getPage() > 0 && req.getPageSize() != null && req.getPageSize() >= 0) {
-            query.skip((long) (req.getPage() - 1) * req.getPageSize());
-            query.limit(req.getPageSize());
-        }
-
-        /**
-         * Limit the number of returned documents to limit. A zero or negative value is considered as unlimited.
-         */
-        if ((req.getPage() != null && req.getPage() == 0) || (req.getPageSize() == null && req.getPage() == null)) {
-            query.limit(0);
-        }
-
-        if (req.getSearchType().equals("ALL")) {
-            listData = mongoTemplate.find(query, Video.class);
-        }
-        if (req.getSearchType().equals("FIELD") && req.getParams() != null) {
-            Criteria criteria = new Criteria();
-            List<Criteria> criteriaList = new ArrayList<>();
-            for (Map.Entry<String, Object> entry : req.getParams().entrySet()) {
-                String key = entry.getKey();
-                Object value = entry.getValue();
-
-                if ("title".equals(key) && value instanceof String) {
-                    criteriaList.add(Criteria.where(key).regex(String.valueOf(value), "i"));
+    public PagedResponse<VideoDto> search(CommonSearchReq req) {
+        SearchHelper.SearchResult<Video> result = searchHelper.search(req, Video.class, (params, criteriaList) -> {
+            for (var entry : params.entrySet()) {
+                if ("title".equals(entry.getKey()) && entry.getValue() instanceof String) {
+                    criteriaList.add(Criteria.where("title").regex(String.valueOf(entry.getValue()), "i"));
                 } else {
-                    criteriaList.add(Criteria.where(key).is(value));
-                }
-
-                if (!criteriaList.isEmpty()) {
-                    criteria.andOperator(criteriaList.toArray(new Criteria[0]));
-                    query.addCriteria(criteria);
-                    listData = mongoTemplate.find(query, Video.class);
+                    criteriaList.add(Criteria.where(entry.getKey()).is(entry.getValue()));
                 }
             }
+        });
+
+        var dtos = result.items().stream()
+                .map(v -> enrichWithCourse(mapper.map(v, VideoDto.class), v.getCourseId()))
+                .collect(Collectors.toList());
+
+        return new PagedResponse<>(result.total(), dtos);
+    }
+
+    @Override
+    public VideoDto detail(String id) {
+        Video video = videoRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(CommonConstant.FILE_NOT_FOUND));
+        return enrichWithCourse(mapper.map(video, VideoDto.class), video.getCourseId());
+    }
+
+    @Override
+    public String delete(String id) {
+        if (!videoRepository.existsById(id)) {
+            throw new ResourceNotFoundException(CommonConstant.FILE_NOT_FOUND);
         }
+        videoRepository.deleteById(id);
+        log.info("Video deleted: {}", id);
+        return id;
+    }
 
-        dtoList = listData.stream().map(video -> {
-            VideoDto videoDto = mapper.map(video, VideoDto.class);
-            try {
-                videoDto.setCourseName(courseService.detail(video.getCourseId()).getTitle());
-            } catch (Exception e) {
-                e.printStackTrace();
-                videoDto.setCourseName("UNKNOWN");
-            }
-            return videoDto;
-        }).collect(Collectors.toList());
-
-        query.skip(0);
-        query.limit(0);
-        int size = mongoTemplate.find(query, Video.class).size();
-
-        return new ObjectDataRes<>(size, dtoList);
+    private VideoDto enrichWithCourse(VideoDto dto, String courseId) {
+        try {
+            dto.setCourseName(courseService.detail(courseId).getTitle());
+        } catch (Exception e) {
+            log.warn("Could not resolve course name for courseId={}", courseId);
+            dto.setCourseName("UNKNOWN");
+        }
+        return dto;
     }
 }

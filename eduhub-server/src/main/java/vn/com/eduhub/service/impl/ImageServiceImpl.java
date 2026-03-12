@@ -1,188 +1,115 @@
 package vn.com.eduhub.service.impl;
 
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 import vn.com.eduhub.controller.req.CommonSearchReq;
 import vn.com.eduhub.dto.master.ImageDto;
-import vn.com.eduhub.dto.res.ObjectDataRes;
-import vn.com.eduhub.entity.Course;
+import vn.com.eduhub.dto.res.PagedResponse;
 import vn.com.eduhub.entity.Image;
-import vn.com.eduhub.entity.User;
-import vn.com.eduhub.entity.Video;
+import vn.com.eduhub.exception.ResourceNotFoundException;
 import vn.com.eduhub.repository.CourseRepository;
 import vn.com.eduhub.repository.ImageRepository;
 import vn.com.eduhub.repository.UserRepository;
 import vn.com.eduhub.service.ICourseService;
 import vn.com.eduhub.service.IImageService;
 import vn.com.eduhub.service.IUserService;
+import vn.com.eduhub.service.SearchHelper;
 import vn.com.eduhub.utils.CommonConstant;
 
-import java.util.*;
+import java.time.Instant;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
+@RequiredArgsConstructor
 public class ImageServiceImpl implements IImageService {
 
-    private final ModelMapper mapper = new ModelMapper();
+    private final ModelMapper mapper;
+    private final ImageRepository imageRepository;
+    private final UserRepository userRepository;
+    private final CourseRepository courseRepository;
+    private final ICourseService courseService;
+    private final IUserService userService;
+    private final SearchHelper searchHelper;
 
-    @Autowired
-    MongoTemplate mongoTemplate;
-
-    @Autowired
-    ImageRepository imageRepository;
-
-    @Autowired
-    UserRepository userRepository;
-
-    @Autowired
-    CourseRepository courseRepository;
-
-    @Autowired
-    ICourseService courseService;
-
-    @Autowired
-    IUserService userService;
-
-    /**
-     * Thêm mới hoặc chỉnh sửa Chỉnh sửa chỉ theo các field name và url
-     */
     @Override
-    public Image edit(ImageDto dto) throws Exception {
-        if (dto.getId() == null || dto.getId().isEmpty() || dto.getId().isBlank()) {
-            Image img = mapper.map(dto, Image.class);
-            if (img.getIsAvatar()) {
-                Optional<User> userOptional = userRepository.findById(img.getOwnerId());
-                if (userOptional.isEmpty())
-                    throw new Exception(CommonConstant.USER_NOT_FOUND);
-            } else {
-                Optional<Course> courseOptional = courseRepository.findById(img.getOwnerId());
-                if (courseOptional.isEmpty())
-                    throw new Exception(CommonConstant.COURSE_NOT_FOUND);
+    public ImageDto edit(ImageDto dto) {
+        if (dto.getId() == null || dto.getId().isBlank()) {
+            return createImage(dto);
+        }
+        return updateImage(dto);
+    }
+
+    private ImageDto createImage(ImageDto dto) {
+        Image img = mapper.map(dto, Image.class);
+        if (Boolean.TRUE.equals(img.getIsAvatar())) {
+            if (!userRepository.existsById(img.getOwnerId())) {
+                throw new ResourceNotFoundException(CommonConstant.USER_NOT_FOUND);
             }
-            img.setId(String.valueOf(UUID.randomUUID()).concat(String.valueOf(System.currentTimeMillis())));
-            img.setCreatedDate(null);
-            img.setCreatedDate(new Date());
-            imageRepository.insert(img);
-            return img;
         } else {
-            Optional<Image> imageOptional = imageRepository.findById(dto.getId());
-            if (imageOptional.isPresent()) {
-                Image img = imageOptional.get();
-                img.setUpdatedDate(new Date());
-                if (dto.getName() != null)
-                    img.setName(dto.getName());
-                if (dto.getUrl() != null)
-                    img.setUrl(dto.getUrl());
-                imageRepository.save(img);
-                return img;
+            if (!courseRepository.existsById(img.getOwnerId())) {
+                throw new ResourceNotFoundException(CommonConstant.COURSE_NOT_FOUND);
+            }
+        }
+        img.setId(UUID.randomUUID().toString() + System.currentTimeMillis());
+        img.setCreatedDate(Instant.now());
+        imageRepository.insert(img);
+        log.info("Image created: {}", img.getName());
+        return enrichWithOwner(mapper.map(img, ImageDto.class), img);
+    }
+
+    private ImageDto updateImage(ImageDto dto) {
+        Image img = imageRepository.findById(dto.getId())
+                .orElseThrow(() -> new ResourceNotFoundException(CommonConstant.FILE_NOT_FOUND));
+
+        if (dto.getName() != null) img.setName(dto.getName());
+        if (dto.getUrl() != null) img.setUrl(dto.getUrl());
+        img.setUpdatedDate(Instant.now());
+        imageRepository.save(img);
+        log.info("Image updated: {}", img.getId());
+        return enrichWithOwner(mapper.map(img, ImageDto.class), img);
+    }
+
+    @Override
+    public PagedResponse<ImageDto> search(CommonSearchReq req) {
+        SearchHelper.SearchResult<Image> result = searchHelper.search(req, Image.class);
+        var dtos = result.items().stream()
+                .map(img -> enrichWithOwner(mapper.map(img, ImageDto.class), img))
+                .collect(Collectors.toList());
+        return new PagedResponse<>(result.total(), dtos);
+    }
+
+    @Override
+    public ImageDto detail(String id) {
+        Image img = imageRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(CommonConstant.FILE_NOT_FOUND));
+        return enrichWithOwner(mapper.map(img, ImageDto.class), img);
+    }
+
+    @Override
+    public String delete(String id) {
+        if (!imageRepository.existsById(id)) {
+            throw new ResourceNotFoundException(CommonConstant.FILE_NOT_FOUND);
+        }
+        imageRepository.deleteById(id);
+        log.info("Image deleted: {}", id);
+        return id;
+    }
+
+    private ImageDto enrichWithOwner(ImageDto dto, Image img) {
+        try {
+            if (Boolean.TRUE.equals(img.getIsAvatar())) {
+                dto.setOwnerName(userService.detail(img.getOwnerId()).getUserName());
             } else {
-                throw new Exception(CommonConstant.FILE_NOT_FOUND);
+                dto.setOwnerName(courseService.detail(img.getOwnerId()).getTeacherName());
             }
-        }
-    }
-
-    /**
-     * Tìm kiếm danh sách theo is_avatar và owner_id
-     */
-    @Override
-    public ObjectDataRes<Image> getList(CommonSearchReq req) {
-        return null;
-    }
-
-    @Override
-    public ImageDto detail(String id) throws Exception {
-        Optional<Image> imageOptional = imageRepository.findById(id);
-        if (imageOptional.isEmpty()) {
-            throw new Exception(CommonConstant.FILE_NOT_FOUND);
-        }
-        Image image = imageOptional.get();
-        ImageDto imageDto = mapper.map(image, ImageDto.class);
-        try {
-            imageDto.setOwnerName(image.getIsAvatar() ? userService.detail(image.getOwnerId()).getUserName()
-                    : courseService.detail(image.getOwnerId()).getTeacherName());
         } catch (Exception e) {
-            e.printStackTrace();
-            imageDto.setOwnerName("UNKNOWN");
+            log.warn("Could not resolve owner name for ownerId={}", img.getOwnerId());
+            dto.setOwnerName("UNKNOWN");
         }
-        return imageDto;
-    }
-
-    @Override
-    public String delete(String id) throws Exception {
-        Optional<Image> imageOptional = imageRepository.findById(id);
-        if (imageOptional.isEmpty()) {
-            throw new Exception(CommonConstant.FILE_NOT_FOUND);
-        }
-        try {
-            imageRepository.deleteById(id);
-            return id;
-        } catch (Exception ex) {
-            throw new Exception(CommonConstant.PROCESS_FAIL);
-        }
-    }
-
-    @Override
-    public ObjectDataRes<ImageDto> search(CommonSearchReq req) {
-        List<Image> listData = new ArrayList<>();
-        List<ImageDto> dtoList;
-
-        Query query = new Query();
-
-        query.with(Sort.by(Sort.Order.desc("created_date")));
-
-        if (req.getPage() != null && req.getPage() > 0 && req.getPageSize() != null && req.getPageSize() >= 0) {
-            query.skip((long) (req.getPage() - 1) * req.getPageSize());
-            query.limit(req.getPageSize());
-        }
-
-        /**
-         * Limit the number of returned documents to limit. A zero or negative value is considered as unlimited.
-         */
-        if ((req.getPage() != null && req.getPage() == 0) || (req.getPageSize() == null && req.getPage() == null)) {
-            query.limit(0);
-        }
-
-        if (req.getSearchType().equals("ALL")) {
-            listData = mongoTemplate.find(query, Image.class);
-        }
-        if (req.getSearchType().equals("FIELD") && req.getParams() != null) {
-            Criteria criteria = new Criteria();
-            List<Criteria> criteriaList = new ArrayList<>();
-            for (Map.Entry<String, Object> entry : req.getParams().entrySet()) {
-                String key = entry.getKey();
-                Object value = entry.getValue();
-
-                criteriaList.add(Criteria.where(key).is(value));
-            }
-
-            if (!criteriaList.isEmpty()) {
-                criteria.andOperator(criteriaList.toArray(new Criteria[0]));
-                query.addCriteria(criteria);
-                listData = mongoTemplate.find(query, Image.class);
-            }
-        }
-
-        dtoList = listData.stream().map(image -> {
-            ImageDto imageDto = mapper.map(image, ImageDto.class);
-            try {
-                imageDto.setOwnerName(image.getIsAvatar() ? userService.detail(image.getOwnerId()).getUserName()
-                        : courseService.detail(image.getOwnerId()).getTeacherName());
-            } catch (Exception e) {
-                e.printStackTrace();
-                imageDto.setOwnerName("UNKNOWN");
-            }
-            return imageDto;
-        }).collect(Collectors.toList());
-
-        query.skip(0);
-        query.limit(0);
-        int size = mongoTemplate.find(query, Image.class).size();
-
-        return new ObjectDataRes<>(dtoList.size(), dtoList);
+        return dto;
     }
 }
