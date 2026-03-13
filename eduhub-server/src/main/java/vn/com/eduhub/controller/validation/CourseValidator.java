@@ -1,54 +1,51 @@
 package vn.com.eduhub.controller.validation;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import vn.com.eduhub.controller.req.CourseAddReq;
 import vn.com.eduhub.entity.Course;
 import vn.com.eduhub.entity.User;
-import vn.com.eduhub.repository.CourseRepository;
-import vn.com.eduhub.repository.UserRepository;
+import vn.com.eduhub.exception.ResourceNotFoundException;
+import vn.com.eduhub.exception.ValidationException;
 import vn.com.eduhub.utils.CommonConstant;
 
-@Service
+@Component
+@RequiredArgsConstructor
 public class CourseValidator {
 
-    @Autowired
-    MongoTemplate mongoTemplate;
+    private final MongoTemplate mongoTemplate;
 
-    @Autowired
-    CourseRepository courseRepository;
-
-    @Autowired
-    UserRepository userRepository;
-
-    public void validateEdit(CourseAddReq req) throws Exception {
-        if (req.getId() == null) {
-            Query query = new Query();
-            query.addCriteria(Criteria.where("title").is(req.getTitle()));
-            if (mongoTemplate.findOne(query, Course.class) != null)
-                throw new Exception(CommonConstant.DUPLICATE_TITLE);
-
-            Query queryId = new Query();
-            Criteria criteriaId = Criteria.where("id").is(req.getTeacherId());
-            queryId.addCriteria(criteriaId);
-            if (mongoTemplate.findOne(queryId, User.class) == null)
-                throw new Exception(CommonConstant.USER_NOT_FOUND);
-
-            Query queryRole = new Query();
-            Criteria criteriaRole = Criteria.where("role").is("TEACHER");
-            queryRole.addCriteria(criteriaRole.andOperator(criteriaId));
-            if (mongoTemplate.findOne(queryRole, User.class) == null)
-                throw new Exception(CommonConstant.ROLE_NOT_MATCH);
-
+    public void validateEdit(CourseAddReq req) {
+        if (req.getId() == null || req.getId().isBlank()) {
+            validateCreate(req);
         } else {
-            Query query = new Query();
-            query.addCriteria(Criteria.where("title").is(req.getTitle()).and("id").ne(req.getId()));
-            if (mongoTemplate.findOne(query, Course.class) != null)
-                throw new Exception(CommonConstant.DUPLICATE_TITLE);
+            validateUpdate(req);
         }
     }
 
+    private void validateCreate(CourseAddReq req) {
+        Query titleQuery = new Query(Criteria.where("title").is(req.getTitle()));
+        if (mongoTemplate.findOne(titleQuery, Course.class) != null) {
+            throw new ValidationException(CommonConstant.DUPLICATE_TITLE);
+        }
+
+        Query teacherQuery = new Query(Criteria.where("id").is(req.getTeacherId()));
+        User teacher = mongoTemplate.findOne(teacherQuery, User.class);
+        if (teacher == null) {
+            throw new ResourceNotFoundException(CommonConstant.USER_NOT_FOUND);
+        }
+        if (!"TEACHER".equals(teacher.getRole())) {
+            throw new ValidationException(CommonConstant.ROLE_NOT_MATCH);
+        }
+    }
+
+    private void validateUpdate(CourseAddReq req) {
+        Query titleQuery = new Query(Criteria.where("title").is(req.getTitle()).and("id").ne(req.getId()));
+        if (mongoTemplate.findOne(titleQuery, Course.class) != null) {
+            throw new ValidationException(CommonConstant.DUPLICATE_TITLE);
+        }
+    }
 }

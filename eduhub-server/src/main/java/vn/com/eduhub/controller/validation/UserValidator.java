@@ -1,55 +1,49 @@
 package vn.com.eduhub.controller.validation;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import vn.com.eduhub.controller.req.UserAddReq;
 import vn.com.eduhub.entity.User;
-import vn.com.eduhub.repository.UserRepository;
+import vn.com.eduhub.exception.ValidationException;
 import vn.com.eduhub.utils.CommonConstant;
 
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-@Service
+@Component
+@RequiredArgsConstructor
 public class UserValidator {
 
-    public static final Pattern VALID_EMAIL_ADDRESS_REGEX = Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$",
-            Pattern.CASE_INSENSITIVE);
+    private static final Pattern EMAIL_PATTERN = Pattern.compile(
+            "^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
 
-    @Autowired
-    MongoTemplate mongoTemplate;
+    private final MongoTemplate mongoTemplate;
 
-    @Autowired
-    UserRepository userRepository;
+    public void validateEdit(UserAddReq req) {
+        if (req.getId() == null || req.getId().isBlank()) {
+            validateCreate(req);
+        }
 
-    public static boolean check(String mail) {
-        Matcher matcher = VALID_EMAIL_ADDRESS_REGEX.matcher(mail);
-        return matcher.find();
+        if (!req.getPassword().equals(req.getRePassword())) {
+            throw new ValidationException(CommonConstant.REPASSWORD_FAIL);
+        }
     }
 
-    /**
-     * Check userName - email có tồn tại trong hệ thống hay không
-     */
-    public void validateEdit(UserAddReq req) throws Exception {
-
-        if (req.getId() == null) {
-            if (!check(req.getEmail()))
-                throw new Exception(CommonConstant.VALID_EMAIL);
-
-            Query queryEmail = new Query();
-            queryEmail.addCriteria(Criteria.where("email").is(req.getEmail()));
-            if (mongoTemplate.findOne(queryEmail, User.class) != null)
-                throw new Exception(CommonConstant.DUPLICATE_EMAIL);
-
-            Query queryUsername = new Query();
-            queryUsername.addCriteria(Criteria.where("user_name").is(req.getUserName()));
-            if (mongoTemplate.findOne(queryUsername, User.class) != null)
-                throw new Exception(CommonConstant.DUPLICATE_USERNAME);
+    private void validateCreate(UserAddReq req) {
+        if (!EMAIL_PATTERN.matcher(req.getEmail()).matches()) {
+            throw new ValidationException(CommonConstant.VALID_EMAIL);
         }
-        if (!req.getPassword().equals(req.getRePassword()))
-            throw new Exception(CommonConstant.REPASSWORD_FAIL);
+
+        Query emailQuery = new Query(Criteria.where("email").is(req.getEmail()));
+        if (mongoTemplate.findOne(emailQuery, User.class) != null) {
+            throw new ValidationException(CommonConstant.DUPLICATE_EMAIL);
+        }
+
+        Query usernameQuery = new Query(Criteria.where("user_name").is(req.getUserName()));
+        if (mongoTemplate.findOne(usernameQuery, User.class) != null) {
+            throw new ValidationException(CommonConstant.DUPLICATE_USERNAME);
+        }
     }
 }
