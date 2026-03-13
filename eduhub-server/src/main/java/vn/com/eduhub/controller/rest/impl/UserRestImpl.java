@@ -2,97 +2,63 @@ package vn.com.eduhub.controller.rest.impl;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 import vn.com.eduhub.constant.ApiConstant;
 import vn.com.eduhub.constant.UrlConst;
 import vn.com.eduhub.controller.req.CommonSearchReq;
 import vn.com.eduhub.controller.req.UserAddReq;
-import vn.com.eduhub.controller.rest.AbstractRest;
-import vn.com.eduhub.controller.rest.IUserRest;
 import vn.com.eduhub.controller.validation.UserValidator;
 import vn.com.eduhub.dto.auth.LogInDto;
 import vn.com.eduhub.dto.auth.SignUpDto;
-import vn.com.eduhub.dto.res.BaseRes;
+import vn.com.eduhub.dto.master.UserDto;
+import vn.com.eduhub.dto.res.ApiResponse;
+import vn.com.eduhub.dto.res.PagedResponse;
 import vn.com.eduhub.service.IUserService;
 
 @RestController
-@CrossOrigin(origins = "*", allowedHeaders = "*")
 @RequestMapping(UrlConst.USER)
-@Component
 @Tag(name = ApiConstant.SWAGGER_USER)
-public class UserRestImpl extends AbstractRest implements IUserRest {
+@RequiredArgsConstructor
+public class UserRestImpl {
 
-    private final ModelMapper mapper = new ModelMapper();
+    private final IUserService userService;
+    private final UserValidator validator;
+    private final ModelMapper mapper;
 
-    @Autowired
-    IUserService userService;
-
-    @Autowired
-    UserValidator validator;
-
-    @Override
-    public BaseRes add(UserAddReq request, HttpServletRequest req, HttpServletResponse res) {
-        long start = System.currentTimeMillis();
-        try {
-            validator.validateEdit(request);
-            SignUpDto dto = mapper.map(request, SignUpDto.class);
-            return this.successHandler.handlerSuccess(this.userService.edit(dto), start);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            return this.errorHandler.handlerException(ex, req, res, start);
+    @PostMapping(UrlConst.EDIT)
+    @Operation(summary = ApiConstant.UPDATE_OR_CREATE)
+    public ResponseEntity<ApiResponse<UserDto>> add(@Valid @RequestBody UserAddReq request) {
+        validator.validateEdit(request);
+        SignUpDto dto = mapper.map(request, SignUpDto.class);
+        UserDto result;
+        if (request.getId() == null || request.getId().isBlank()) {
+            result = userService.register(dto);
+        } else {
+            dto.setId(request.getId());
+            result = userService.update(dto);
         }
+        return ResponseEntity.ok(ApiResponse.ok(result));
     }
 
-    @Override
-    public BaseRes list(CommonSearchReq searchDto, HttpServletRequest req, HttpServletResponse res) {
-        long start = System.currentTimeMillis();
-        try {
-            return this.successHandler.handlerSuccess(this.userService.getList(searchDto), start);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            return this.errorHandler.handlerException(ex, req, null, start);
-        }
+    @PostMapping(UrlConst.LIST)
+    @Operation(summary = ApiConstant.GET_SEARCH_LIST)
+    public ResponseEntity<ApiResponse<PagedResponse<UserDto>>> list(@Valid @RequestBody CommonSearchReq searchDto) {
+        return ResponseEntity.ok(ApiResponse.ok(userService.search(searchDto)));
     }
 
-    @Override
-    public BaseRes detail(String id, HttpServletRequest req, HttpServletResponse res) {
-        long start = System.currentTimeMillis();
-        try {
-            return this.successHandler.handlerSuccess(this.userService.detail(id), start);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            return this.errorHandler.handlerException(ex, req, res, start);
-        }
+    @GetMapping(UrlConst.DETAIL + "/{id}")
+    @Operation(summary = ApiConstant.GET_DETAIL)
+    public ResponseEntity<ApiResponse<UserDto>> detail(@PathVariable String id) {
+        return ResponseEntity.ok(ApiResponse.ok(userService.detail(id)));
     }
 
-    @Override
-    @Operation(hidden = true)
-    public BaseRes delete(String id, HttpServletRequest req, HttpServletResponse res) {
-        long start = System.currentTimeMillis();
-        try {
-            return this.successHandler.handlerSuccess(null, start);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            return this.errorHandler.handlerException(ex, req, res, start);
-        }
+    @PostMapping(UrlConst.LOGIN)
+    @Operation(summary = ApiConstant.LOGIN)
+    public ResponseEntity<ApiResponse<UserDto>> login(@Valid @RequestBody LogInDto dto) {
+        return ResponseEntity.ok(ApiResponse.ok(userService.login(dto)));
     }
-
-    @Override
-    public BaseRes login(LogInDto dto, HttpServletRequest req, HttpServletResponse res) {
-        long start = System.currentTimeMillis();
-        try {
-            return this.successHandler.handlerSuccess(this.userService.login(dto), start);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            return this.errorHandler.handlerException(ex, req, res, start);
-        }
-    }
-
 }

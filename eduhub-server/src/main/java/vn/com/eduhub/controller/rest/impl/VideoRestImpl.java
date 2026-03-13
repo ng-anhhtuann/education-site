@@ -1,79 +1,52 @@
 package vn.com.eduhub.controller.rest.impl;
 
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 import vn.com.eduhub.constant.ApiConstant;
 import vn.com.eduhub.constant.UrlConst;
 import vn.com.eduhub.controller.req.CommonSearchReq;
 import vn.com.eduhub.controller.req.VideoAddReq;
-import vn.com.eduhub.controller.rest.AbstractRest;
-import vn.com.eduhub.controller.rest.IVideoRest;
 import vn.com.eduhub.dto.master.VideoDto;
-import vn.com.eduhub.dto.res.BaseRes;
+import vn.com.eduhub.dto.res.ApiResponse;
+import vn.com.eduhub.dto.res.PagedResponse;
 import vn.com.eduhub.service.IVideoService;
 
 @RestController
-@CrossOrigin(origins = "*", allowedHeaders = "*")
 @RequestMapping(UrlConst.VIDEO)
-@Component
 @Tag(name = ApiConstant.SWAGGER_VIDEO)
-public class VideoRestImpl extends AbstractRest implements IVideoRest {
+@RequiredArgsConstructor
+public class VideoRestImpl {
 
-    private final ModelMapper mapper = new ModelMapper();
+    private final IVideoService videoService;
+    private final ModelMapper mapper;
 
-    @Autowired
-    IVideoService videoService;
-
-    @Override
-    public BaseRes add(VideoAddReq request, HttpServletRequest req, HttpServletResponse res) {
-        long start = System.currentTimeMillis();
-        try {
-//            validator.validateEdit(courseAddReq);
-            VideoDto dto = mapper.map(request, VideoDto.class);
-            return this.successHandler.handlerSuccess(this.videoService.edit(dto), start);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            return this.errorHandler.handlerException(ex, req, res, start);
-        }
+    @PostMapping(UrlConst.EDIT)
+    @Operation(summary = ApiConstant.UPDATE_OR_CREATE)
+    public ResponseEntity<ApiResponse<VideoDto>> add(@Valid @RequestBody VideoAddReq request) {
+        VideoDto dto = mapper.map(request, VideoDto.class);
+        return ResponseEntity.ok(ApiResponse.ok(videoService.edit(dto)));
     }
 
-    @Override
-    public BaseRes list(CommonSearchReq searchDto, HttpServletRequest req, HttpServletResponse res) {
-        long start = System.currentTimeMillis();
-        try {
-            return this.successHandler.handlerSuccess(this.videoService.search(searchDto), start);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            return this.errorHandler.handlerException(ex, req, null, start);
-        }
+    @PostMapping(UrlConst.LIST)
+    @Operation(summary = ApiConstant.GET_SEARCH_LIST)
+    public ResponseEntity<ApiResponse<PagedResponse<VideoDto>>> list(@Valid @RequestBody CommonSearchReq searchDto) {
+        return ResponseEntity.ok(ApiResponse.ok(videoService.search(searchDto)));
     }
 
-    @Override
-    public BaseRes detail(String id, HttpServletRequest req, HttpServletResponse res) {
-        long start = System.currentTimeMillis();
-        try {
-            return this.successHandler.handlerSuccess(this.videoService.detail(id), start);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            return this.errorHandler.handlerException(ex, req, res, start);
-        }
+    @GetMapping(UrlConst.DETAIL + "/{id}")
+    @Operation(summary = ApiConstant.GET_DETAIL)
+    public ResponseEntity<ApiResponse<VideoDto>> detail(@PathVariable String id) {
+        return ResponseEntity.ok(ApiResponse.ok(videoService.detail(id)));
     }
 
-    @Override
-    public BaseRes delete(String id, HttpServletRequest req, HttpServletResponse res) {
-        long start = System.currentTimeMillis();
-        try {
-            return this.successHandler.handlerSuccess(this.videoService.delete(id), start);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            return this.errorHandler.handlerException(ex, req, res, start);
-        }
+    @DeleteMapping(UrlConst.DELETE + "/{id}")
+    @Operation(summary = ApiConstant.DELETE)
+    public ResponseEntity<ApiResponse<String>> delete(@PathVariable String id) {
+        return ResponseEntity.ok(ApiResponse.ok(videoService.delete(id)));
     }
 }
