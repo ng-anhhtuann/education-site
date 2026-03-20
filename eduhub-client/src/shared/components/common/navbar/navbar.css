@@ -1,63 +1,117 @@
-/* navbar.css */
-
 .navbar {
-    background-color: #1eb2a6;
-    color: #fff;
-    padding: 10px 20px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    box-shadow: 0px 5px 5px 0px rgba(64, 64, 64, 0.5);
+  background: var(--primary-gradient);
+  color: #fff;
+  padding: 0 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 2px 12px rgba(30, 178, 166, 0.2);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  height: 64px;
 }
 
 .navbar-container {
-    display: flex;
-    justify-content: space-between;
-    width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
 .navbar-brand {
-    align-self: center;
-    margin: 0;
-    cursor: pointer;
+  align-self: center;
+  margin: 0;
+  cursor: pointer;
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  transition: var(--transition);
+}
+
+.navbar-brand:hover {
+  opacity: 0.9;
 }
 
 .navbar-menu {
-    display: flex;
-    align-items: center;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .notification-badge {
-    position: relative;
-    font-size: small;
-    color: black;
-    margin-right: 20px;
+  position: relative;
+  font-size: 13px;
+  color: #fff;
+  margin-right: 8px;
+  padding: 6px 14px;
+  border-radius: var(--radius-full);
+  background: rgba(255, 255, 255, 0.15);
+  transition: var(--transition);
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
 
-.icon {
-    margin-right: 5px;
+.notification-badge:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.notification-badge h2 {
+  font-size: 14px;
+  font-weight: 600;
+  margin: 0;
 }
 
 .badge {
-    position: absolute;
-    top: 0;
-    right: 0;
-    background-color: red;
-    color: white;
-    padding: 5px;
-    border-radius: 50%;
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  background-color: #ef4444;
+  color: white;
+  padding: 2px 6px;
+  border-radius: var(--radius-full);
+  font-size: 11px;
+  font-weight: 600;
 }
 
 .user-profile {
-    display: flex;
-    align-items: center;
-    cursor: pointer;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  padding: 4px 12px 4px 4px;
+  border-radius: var(--radius-full);
+  transition: var(--transition);
+  gap: 8px;
+}
+
+.user-profile:hover {
+  background: rgba(255, 255, 255, 0.15);
 }
 
 .avatar {
-    margin-right: 10px;
-    border-radius: 50%;
+  margin-right: 0;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  object-fit: cover;
 }
+
 .username {
-    margin: 0;
+  margin: 0;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+@media screen and (max-width: 768px) {
+  .navbar {
+    padding: 0 16px;
+  }
+  .notification-badge h2 {
+    font-size: 12px;
+  }
+  .username {
+    display: none;
+  }
 }

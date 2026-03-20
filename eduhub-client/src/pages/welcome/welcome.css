@@ -1,51 +1,77 @@
 .aboutHome {
   height: auto;
+  padding-bottom: 40px;
 }
+
 .aboutHome #heading {
   text-align: left;
   padding: 0;
 }
+
 .aboutHome .left img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  border-radius: var(--radius-lg);
 }
+
 .aboutHome .right {
-  padding: 80px 50px;
+  padding: 60px 48px;
 }
+
 .aboutHome .items {
-  margin-top: 50px;
+  margin-top: 40px;
 }
+
 .aboutHome .item {
-  background-color: #fff;
-  margin-top: 30px;
-  padding: 20px;
-  transition: 0.5s;
+  background-color: var(--bg-white);
+  margin-top: 24px;
+  padding: 24px;
+  transition: var(--transition);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border-light);
 }
+
 .aboutHome .img {
-  width: 200px;
+  width: 80px;
+  min-width: 80px;
 }
+
 .aboutHome img {
-  width: 70px;
-  height: 70px;
+  width: 56px;
+  height: 56px;
 }
+
 .aboutHome .item h2 {
-  font-size: 20px;
-  margin-bottom: 15px;
+  font-size: 18px;
+  margin-bottom: 8px;
+  font-weight: 600;
+  color: var(--text-primary);
 }
+
 .aboutHome .item p {
-  color: #999999;
+  color: var(--text-muted);
+  font-size: 14px;
+  line-height: 1.6;
 }
+
 .aboutHome .item:hover {
-  background-color: #1eb2a6;
+  background: var(--primary-gradient);
   color: #fff;
   cursor: pointer;
-  box-shadow: 0 5px 25px -2px rgb(0 0 0 / 6%);
+  box-shadow: 0 8px 25px rgba(30, 178, 166, 0.3);
+  transform: translateY(-2px);
 }
-.aboutHome .item:hover p {
+
+.aboutHome .item:hover h2 {
   color: #fff;
 }
-/*----------awrapper------------*/
+
+.aboutHome .item:hover p {
+  color: rgba(255, 255, 255, 0.85);
+}
+
 .awrapper {
   background-image: url("../../../public/images/awrapper.webp");
   background-repeat: no-repeat;
@@ -54,26 +80,33 @@
   height: 30vh;
   color: #fff;
 }
+
 .awrapper .box {
   padding: 70px 0;
 }
+
 .awrapper img {
   margin-right: 30px;
 }
+
 .awrapper h1 {
   font-size: 50px;
 }
+
 .awrapper h3 {
   font-size: 20px;
   font-weight: 500;
 }
-/*----------awrapper------------*/
+
 @media screen and (max-width: 768px) {
   .aboutHome .container {
     flex-direction: column-reverse;
   }
   .aboutHome .row {
     width: 100%;
+  }
+  .aboutHome .right {
+    padding: 40px 16px;
   }
   .awrapper {
     height: 50vh;

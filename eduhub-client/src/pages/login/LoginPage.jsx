@@ -1,9 +1,8 @@
 import React, { useState, useMemo } from "react";
-import Back from "../../shared/components/common/back/Back";
 import { Link, useNavigate } from "react-router-dom";
 import "./login.css";
 import Toast from "../../shared/components/Toast";
-import AuthService from "../../shared/service/authService"; // Import your AuthService
+import AuthService from "../../shared/service/authService";
 import Header from "../../shared/components/common/header/Header";
 
 const LoginPage = () => {
@@ -57,11 +56,11 @@ const LoginPage = () => {
   return (
     <>
       <Header route={'/register'} routeName={"REGISTER"} hidden={false}/>
-      <Back title="Login" />
       <section className="login-container">
         {toast}
         <form className="login-form">
-          <h2>Login</h2>
+          <h2>Welcome Back</h2>
+          <p className="login-subtitle">Sign in to continue learning</p>
           <input
             id="Username"
             type="text"

@@ -1,40 +1,73 @@
 .contain {
   display: flex;
-  margin-top: 10px;
-  height: 90vh;
+  margin-top: 0;
+  min-height: calc(100vh - 64px);
   flex-direction: row;
+  gap: 24px;
+  padding: 24px;
+  max-width: 1400px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .searchBar {
-  background-color: white;
-  padding: 10px;
-  width: fit-content;
+  background-color: var(--bg-white);
+  padding: 0;
+  width: 280px;
+  min-width: 280px;
   height: fit-content;
-  margin-left: 5px;
-  border-radius: 20px;
-  border: 1px solid black;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-light);
+  box-shadow: var(--shadow-sm);
+  position: sticky;
+  top: 88px;
+  overflow: hidden;
 }
 
 .searchRes {
-  background-color: white;
-  margin-left: 10px;
-  width: 80%;
-  border-radius: 20px;
-  border: 1px solid black;
-  height: auto;
+  background-color: var(--bg-white);
+  width: 100%;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-light);
+  box-shadow: var(--shadow-sm);
+  min-height: 400px;
   display: flex;
   flex-direction: column;
+  padding: 24px;
 }
 
 .course-items-container {
   width: 100%;
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 20px;
+  flex: 1;
 }
 
 .pagination-container {
-  position: absolute;
-  bottom: 10px;
-  left: 55%;
+  display: flex;
+  justify-content: center;
+  padding: 24px 0 8px;
+  margin-top: auto;
+}
+
+@media screen and (max-width: 1024px) {
+  .contain {
+    flex-direction: column;
+    padding: 16px;
+  }
+  .searchBar {
+    width: 100%;
+    min-width: 100%;
+    position: static;
+  }
+  .searchRes {
+    width: 100%;
+  }
+}
+
+@media screen and (max-width: 640px) {
+  .course-items-container {
+    grid-template-columns: 1fr;
+  }
 }

@@ -1,9 +1,8 @@
 import React, { useState, useMemo } from "react";
-import Back from "../../shared/components/common/back/Back";
 import { Link, useNavigate } from "react-router-dom";
 import "./register.css";
 import Toast from "../../shared/components/Toast";
-import AuthService from "../../shared/service/authService"; // Import your AuthService
+import AuthService from "../../shared/service/authService";
 import Header from "../../shared/components/common/header/Header";
 
 const Register = () => {
@@ -57,11 +56,11 @@ const Register = () => {
   return (
     <>
       <Header route={'/login'} routeName={"LOGIN"} hidden={false}/>
-      <Back title="Register" />
       <section className="register-container">
         {toast}
         <form className="register-form">
-          <h2>Register</h2>
+          <h2>Create Account</h2>
+          <p className="register-subtitle">Start your learning journey today</p>
           <input
             type="text"
             placeholder="Username"

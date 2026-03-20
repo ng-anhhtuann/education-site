@@ -1,34 +1,83 @@
 .videoList {
-    display: flex;
-    margin-top: 10px;
-    height: 90vh;
-    flex-direction: row;
+  display: flex;
+  padding: 24px;
+  min-height: calc(100vh - 64px);
+  flex-direction: row;
+  gap: 24px;
+  max-width: 1400px;
+  margin: 0 auto;
 }
 
 .videoPlayer {
-    background-color: white;
-    margin-left: 10px;
-    width: 80%;
-    border-radius: 20px;
-    border: 1px solid black;
-    height: auto;
-    display: flex;
-    padding: 20px;
-    flex-direction: column;
+  background-color: var(--bg-white);
+  width: 100%;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-light);
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  padding: 24px;
+  flex-direction: column;
+  overflow: hidden;
 }
 
 .videoPlayer h1 {
-    margin-top: 10px;
+  margin-top: 16px;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text-primary);
 }
 
-.videoPlayer h2,
-h3 {
-    font-size: 1.2em;
-    margin-top: 10px;
-    font-weight: lighter;
-    color: darkgray;
+.videoPlayer h2 {
+  font-size: 15px;
+  margin-top: 8px;
+  font-weight: 400;
+  color: var(--text-secondary);
+  line-height: 1.6;
 }
 
 .videoPlayer h3 {
-    font-size: 1em;
+  font-size: 13px;
+  margin-top: 12px;
+  font-weight: 500;
+  color: var(--text-muted);
+}
+
+.videoListContainer {
+  width: 320px;
+  min-width: 320px;
+  max-height: calc(100vh - 112px);
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.videoListContainer::-webkit-scrollbar {
+  width: 4px;
+}
+
+.videoListContainer::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.videoListContainer::-webkit-scrollbar-thumb {
+  background: var(--border-medium);
+  border-radius: 4px;
+}
+
+@media screen and (max-width: 1024px) {
+  .videoList {
+    flex-direction: column;
+    padding: 16px;
+  }
+  .videoListContainer {
+    width: 100%;
+    min-width: 100%;
+    max-height: 200px;
+    display: flex;
+    flex-direction: row;
+    overflow-x: auto;
+    overflow-y: hidden;
+    gap: 8px;
+    padding-right: 0;
+    padding-bottom: 4px;
+  }
 }

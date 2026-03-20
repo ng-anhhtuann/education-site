@@ -1,35 +1,90 @@
 .login-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 40px 20px;
 }
 
 .login-form {
-    background-color: #fff;
-    padding: 150px;
-    border-radius: 5px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  background-color: var(--bg-white);
+  padding: 48px 40px;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  width: 100%;
+  max-width: 420px;
+  border: 1px solid var(--border-light);
 }
+
 .login-form h2 {
-    margin-bottom: 20px;
+  margin-bottom: 4px;
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--text-primary);
+  text-align: center;
+}
+
+.login-subtitle {
+  text-align: center;
+  font-size: 15px;
+  color: var(--text-muted);
+  margin-bottom: 28px;
 }
 
 .login-form input[type="text"],
 .login-form input[type="password"] {
-    width: 100%;
-    padding: 10px;
-    margin-bottom: 20px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
+  width: 100%;
+  padding: 14px 16px;
+  margin-bottom: 16px;
+  border: 1.5px solid var(--border-light);
+  border-radius: var(--radius-sm);
+  font-size: 15px;
+  font-family: var(--font-family);
+  color: var(--text-primary);
+  background: var(--bg-body);
+  transition: var(--transition);
+}
+
+.login-form input::placeholder {
+  color: var(--text-muted);
+}
+
+.login-form a {
+  display: block;
+  text-align: center;
+  color: var(--primary);
+  font-size: 14px;
+  margin-bottom: 20px;
+  font-weight: 500;
+  transition: var(--transition);
+}
+
+.login-form a:hover {
+  color: var(--primary-dark);
+  text-decoration: underline;
 }
 
 .login-form button {
-    width: 100%;
-    padding: 15px;
-    background-color: #1eb2a6;
-    color: #fff;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
+  width: 100%;
+  padding: 14px;
+  background: var(--primary-gradient);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 600;
+  font-family: var(--font-family);
+  transition: var(--transition);
+}
+
+.login-form button:hover {
+  box-shadow: 0 6px 20px rgba(30, 178, 166, 0.35);
+  transform: translateY(-1px);
+}
+
+@media screen and (max-width: 480px) {
+  .login-form {
+    padding: 32px 24px;
+  }
 }

@@ -1,43 +1,55 @@
-
 .admin-manage {
-    padding: 10px;
-    text-align: center;
+  padding: 24px;
+  text-align: center;
 }
 
 .manage-title {
-    margin: 20px 20px;
-    line-height: 30px;
-    font-size: 25px;
-    font-weight: bold;
+  margin-bottom: 20px;
+  line-height: 1.2;
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--text-primary);
 }
 
 .admin-avt {
-    margin-bottom: 15px;
-    flex-direction: row;
-    display: flex;
-    width: 100%;
-    align-items: center;
-    justify-content: center;
+  margin-bottom: 16px;
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
 }
 
-.avatar-image {
-    max-height: 150px;
-    max-width: 150px;
-    border: 1px solid;
-    border-radius: 30px;
-    border-color: black;
-    cursor: pointer;
-    position: relative;
+.admin-manage .avatar-image {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  border: 3px solid var(--primary-light);
+  border-radius: 50%;
 }
 
 .manage-info-row {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    margin-top: 8px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 8px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.manage-info-row:last-child {
+  border-bottom: none;
 }
 
 .manage-info-key {
-    font-size: 18px;
-    text-align: start;
+  font-size: 13px;
+  text-align: start;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.manage-info-row p {
+  font-size: 13px;
+  color: var(--text-primary);
+  font-weight: 500;
 }

@@ -1,58 +1,118 @@
 .register-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 40px 20px;
 }
 
 .register-form {
-    background-color: #fff;
-    padding: 40px;
-    border-radius: 5px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  background-color: var(--bg-white);
+  padding: 48px 40px;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  width: 100%;
+  max-width: 480px;
+  border: 1px solid var(--border-light);
 }
 
 .register-form h2 {
-  margin-bottom: 20px;
+  margin-bottom: 4px;
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--text-primary);
+  text-align: center;
+}
+
+.register-subtitle {
+  text-align: center;
+  font-size: 15px;
+  color: var(--text-muted);
+  margin-bottom: 28px;
 }
 
 .register-form input[type="text"],
 .register-form input[type="password"],
 .register-form input[type="email"] {
-    width: 100%;
-    padding: 10px;
-    margin-bottom: 20px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
+  width: 100%;
+  padding: 14px 16px;
+  margin-bottom: 16px;
+  border: 1.5px solid var(--border-light);
+  border-radius: var(--radius-sm);
+  font-size: 15px;
+  font-family: var(--font-family);
+  color: var(--text-primary);
+  background: var(--bg-body);
+  transition: var(--transition);
+}
+
+.register-form input::placeholder {
+  color: var(--text-muted);
+}
+
+.register-form a {
+  display: block;
+  text-align: center;
+  color: var(--primary);
+  font-size: 14px;
+  margin-bottom: 20px;
+  font-weight: 500;
+  transition: var(--transition);
+}
+
+.register-form a:hover {
+  color: var(--primary-dark);
+  text-decoration: underline;
 }
 
 .register-form button {
-    width: 100%;
-    padding: 15px;
-    background-color: #1eb2a6;
-    color: #fff;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
+  width: 100%;
+  padding: 14px;
+  background: var(--primary-gradient);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 600;
+  font-family: var(--font-family);
+  transition: var(--transition);
+}
+
+.register-form button:hover {
+  box-shadow: 0 6px 20px rgba(30, 178, 166, 0.35);
+  transform: translateY(-1px);
 }
 
 .select-container {
-    display: flex;
-    margin-bottom: 20px;
-    align-items: center;
-    justify-content: space-between;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 16px;
+  gap: 8px;
+}
+
+.select-container label {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.select-container select {
+  width: 100%;
+  padding: 14px 16px;
+  border: 1.5px solid var(--border-light);
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  font-family: var(--font-family);
+  color: var(--text-primary);
+  background: var(--bg-body);
+  transition: var(--transition);
+  cursor: pointer;
+  appearance: auto;
+}
+
+@media screen and (max-width: 480px) {
+  .register-form {
+    padding: 32px 24px;
   }
-  
-  .select-container label {
-    display: flex;
-    margin-right: 10px; /* Add spacing between label and select */
-  }
-  
-  .select-container select {
-    display: flex;
-    flex: 1; /* Expand the select element to fill available space */
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-  }
-  
+}

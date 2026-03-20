@@ -1,62 +1,75 @@
 .newletter {
-    background-color: #1eb2a6;
-    padding: 50px 0;
-    color: #fff;
-  }
-  .newletter .right,
-  .newletter .left {
-    padding-right: 50px;
-  }
-  .newletter h1 {
-    color: #fff;
-    font-size: 30px;
-    font-weight: 500;
-  }
-  .newletter .right {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  .newletter input {
-    width: 100%;
-    padding: 20px;
-    border: none;
-    outline: none;
-    height: 30px;
-  }
-  .newletter i {
-    padding: 12px;
-    color: #1eb2a6;
-    background-color: #fff;
-  }
-  /* Apply this CSS to your footer */
-footer {
-  background-color: #70d2ca;
-  display: flex;
-  flex-direction: column;
-  justify-content: center; /* Center vertically */
-  align-items: center; /* Center horizontally */
-  padding: 30px;
+  background: var(--primary-gradient);
+  padding: 50px 0;
+  color: #fff;
 }
 
-/* Style for the footer content */
+.newletter .right,
+.newletter .left {
+  padding-right: 50px;
+}
+
+.newletter h1 {
+  color: #fff;
+  font-size: 30px;
+  font-weight: 500;
+}
+
+.newletter .right {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.newletter input {
+  width: 100%;
+  padding: 20px;
+  border: none;
+  outline: none;
+  height: 30px;
+}
+
+.newletter i {
+  padding: 12px;
+  color: var(--primary);
+  background-color: #fff;
+}
+
+footer {
+  background: linear-gradient(135deg, #f0faf9 0%, #e8f8f7 50%, #f0f7ff 100%);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 48px 24px;
+  border-top: 1px solid var(--border-light);
+}
+
 .footer-content {
   text-align: center;
+  max-width: 600px;
 }
 
 .footer-logo h1 {
   font-size: 24px;
+  font-weight: 800;
+  color: var(--primary);
   margin: 0;
+  letter-spacing: -0.5px;
 }
 
 .footer-logo span {
-  font-size: 14px;
-  color: #777;
+  font-size: 11px;
+  color: var(--text-muted);
+  letter-spacing: 3px;
+  text-transform: uppercase;
 }
 
 .footer-description p {
   font-size: 14px;
-  color: #333;
+  color: var(--text-secondary);
+  margin-top: 16px;
+  line-height: 1.6;
 }
 
 .footer-social {
@@ -64,37 +77,52 @@ footer {
   display: flex;
   justify-content: center;
   align-items: center;
+  gap: 12px;
 }
 
 .footer-social i {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 24px;
-  margin-right: 10px;
-  color: #000000;
-  width: 40px; /* Adjust the width as needed */
-  height: 40px; /* Adjust the height as needed */
-  background-color: #ffffff; /* Add a background color for the circle */
-  border-radius: 50%; /* Make it a circle */
+  font-size: 18px;
+  color: var(--text-secondary);
+  width: 40px;
+  height: 40px;
+  background-color: var(--bg-white);
+  border-radius: 50%;
+  transition: var(--transition);
+  box-shadow: var(--shadow-sm);
 }
 
+.footer-social i:hover {
+  background: var(--primary-gradient);
+  color: #fff;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(30, 178, 166, 0.3);
+}
 
 .footer-legal {
   text-align: center;
-  font-size: 14px;
-  color: #777;
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-top: 24px;
 }
 
-  .legal {
-    text-align: center;
-    padding: 50px 0;
-    color: grey;
-    background-color: #e9e9e9;
-  }
-  .legal p {
-    font-size: 15px;
-  }
-  .legal i {
-    color: #1eb2a6;
-  }
+.footer-legal p {
+  font-size: 13px;
+}
+
+.legal {
+  text-align: center;
+  padding: 50px 0;
+  color: grey;
+  background-color: #e9e9e9;
+}
+
+.legal p {
+  font-size: 15px;
+}
+
+.legal i {
+  color: var(--primary);
+}

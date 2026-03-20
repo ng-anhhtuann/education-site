@@ -1,152 +1,191 @@
 .profile-container {
-    background-color: white;
-    width: 100vw;
-    border-radius: 20px;
-    align-items: center;
-    border: 2px solid black;
-    height: 90vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 60px;
-    flex-direction: column;
+  background-color: var(--bg-body);
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 24px;
+  min-height: calc(100vh - 64px);
 }
 
 .profile-main {
-    width: 40%;
-    height: fit-content;
-    background-color: rgb(250, 241, 255);
-    text-align: center;
-    display: flex;
-    padding: 20px;
-    flex-direction: column;
-    align-items: center;
-    border: 1px solid;
-    border-radius: 20px;
-    border-color: rgb(86, 86, 86);
+  width: 100%;
+  max-width: 480px;
+  background-color: var(--bg-white);
+  text-align: center;
+  display: flex;
+  padding: 40px 32px;
+  flex-direction: column;
+  align-items: center;
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
 }
 
 .profile-main h2 {
-    font-size: 1rem;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-secondary);
 }
 
 .profile-header {
-    margin: 20px 20px;
-    line-height: 40px;
-    font-size: 30px;
-    font-weight: bold;
+  margin-bottom: 24px;
+  line-height: 1.2;
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--text-primary);
 }
 
 .profile-name {
-    margin-bottom: 15px;
-    width: 100%;
+  margin-bottom: 12px;
+  width: 100%;
 }
 
 .profile-name input {
-    width: 80%;
-    padding: 10px;
-    margin-bottom: 10px;
-    color: black;
-    font-weight: bold;
-    border: 1px solid;
-    border-radius: 10px;
-    border-color: black;
+  width: 100%;
+  padding: 12px 16px;
+  color: var(--text-primary);
+  font-weight: 500;
+  font-family: var(--font-family);
+  border: 1.5px solid var(--border-light);
+  border-radius: var(--radius-sm);
+  background: var(--bg-body);
+  font-size: 14px;
 }
 
 .profile-avatar {
-    margin-bottom: 15px;
-    flex-direction: row;
-    display: flex;
-    width: 100%;
-    align-items: center;
-    justify-content: center;
+  margin-bottom: 20px;
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
 }
 
 .profile-avatar p {
-    line-height: 12px;
-    margin-right: 20px;
-    font-size: 12px;
-    font-weight: bold;
+  line-height: 1;
+  margin-right: 20px;
+  font-size: 12px;
+  font-weight: bold;
 }
 
 .avatar-image {
-    max-height: 150px;
-    max-width: 150px;
-    border: 1px solid;
-    border-radius: 30px;
-    border-color: black;
-    cursor: pointer;
-    position: relative;
+  width: 120px;
+  height: 120px;
+  object-fit: cover;
+  border: 3px solid var(--primary-light);
+  border-radius: 50%;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.avatar-image:hover {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 4px rgba(30, 178, 166, 0.15);
 }
 
 .tooltip-text {
-    visibility: hidden;
-    position: absolute;
-    background-color: black;
-    color: white;
-    padding: 5px;
-    border-radius: 5px;
-    font-size: 12px;
-    margin-left: 140px;
+  visibility: hidden;
+  position: absolute;
+  background-color: var(--text-primary);
+  color: white;
+  padding: 6px 12px;
+  border-radius: var(--radius-sm);
+  font-size: 12px;
+  margin-left: 130px;
+  white-space: nowrap;
+  z-index: 10;
 }
 
 .profile-change {
-    margin: 10px 0;
-    width: 100%;
-    background-color: #1eb2a6;
-    color: #fff;
-    border: none;
-    font-size: large;
-    border-radius: 10px;
-    border: 1px solid;
-    border-color: black;
-    cursor: pointer;
-    padding: 5px 5px;
+  margin: 8px 0;
+  width: 100%;
+  background: var(--primary-gradient);
+  color: #fff;
+  border: none;
+  font-size: 14px;
+  font-weight: 600;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  padding: 12px;
+  transition: var(--transition);
+}
+
+.profile-change:hover {
+  box-shadow: 0 4px 15px rgba(30, 178, 166, 0.35);
 }
 
 .profile-confirm {
-    width: 100%;
-    background-color: #fff;
-    color: #1eb2a6;
-    border: none;
-    font-size: large;
-    border: 1px solid;
-    border-color: black;
-    border-radius: 10px;
-    cursor: pointer;
-    padding: 5px 5px;
+  width: 100%;
+  background-color: var(--bg-white);
+  color: var(--primary);
+  border: 2px solid var(--primary);
+  font-size: 14px;
+  font-weight: 600;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  padding: 12px;
+  transition: var(--transition);
+}
+
+.profile-confirm:hover {
+  background: var(--primary-gradient);
+  color: #fff;
+  border-color: var(--primary);
 }
 
 .profile-date,
 .profile-role {
-    display: flex;
-    flex-direction: row;
-    width: 80%;
-    justify-content: space-between;
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.profile-date:last-of-type {
+  border-bottom: none;
+  margin-bottom: 16px;
+}
+
+.profile-date p,
+.profile-role p {
+  font-size: 13px;
+  color: var(--text-secondary);
 }
 
 .profile-change-pwd {
-    margin-bottom: 10px;
-    width: 80%;
+  margin-bottom: 10px;
+  width: 100%;
 }
 
 .profile-change-pwd input {
-    width: 70%;
-    padding: 10px;
-    margin-bottom: 10px;
-    border: 1px solid;
-    border-radius: 10px;
-    border-color: black;
+  width: 100%;
+  padding: 12px 16px;
+  margin-bottom: 8px;
+  border: 1.5px solid var(--border-light);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-family);
+  font-size: 14px;
+  background: var(--bg-body);
+  transition: var(--transition);
 }
 
-.password-holder{
-
+.password-holder {
+  padding: 16px 0;
 }
 
 .password-jc {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    text-align: start;
-    align-items: center;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 8px;
+  text-align: start;
+}
+
+.password-jc h2 {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
