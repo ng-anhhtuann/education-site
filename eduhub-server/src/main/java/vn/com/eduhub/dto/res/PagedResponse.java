@@ -8,6 +8,6 @@ import java.util.List;
 @Getter
 @AllArgsConstructor
 public class PagedResponse<T> {
-    private final long totalElements;
-    private final List<T> items;
+    private final long totalData;
+    private final List<T> datas;
 }

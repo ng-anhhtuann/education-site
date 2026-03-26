@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Layout from "../Layout";
 import "./courseSubscription.css";
-import SearchSpace from "../../shared/components/common/search/SearchSpace";
 import CourseItem from "../../shared/components/common/courseItem/CourseItem";
 import Pagination from "@mui/material/Pagination";
 import SubscriptionService from "../../shared/service/subscriptionService";
